@@ -9,7 +9,12 @@ type InquireBody = {
 }
 
 export async function POST(req: NextRequest) {
-  const body: InquireBody = await req.json()
+  let body: InquireBody
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
 
   if (!body.name || !body.email || !body.message) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
