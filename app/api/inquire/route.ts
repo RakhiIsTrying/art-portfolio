@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   const resend = getResendClient()
   const { error } = await resend.emails.send({
-    from:    'noreply@yourdomain.com',
+    from:    'noreply@resend.dev',
     to:      process.env.INQUIRE_TO_EMAIL!,
     subject: `Inquiry from ${body.name}${body.piece ? ` — "${body.piece}"` : ''}`,
     text:    `Name: ${body.name}\nEmail: ${body.email}\n\n${body.message}`,
