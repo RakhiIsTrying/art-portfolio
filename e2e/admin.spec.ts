@@ -14,3 +14,11 @@ test('/admin/login is accessible without auth', async ({ page }) => {
   await page.goto('/admin/login')
   await expect(page).toHaveURL(/\/admin\/login/)
 })
+
+test('login with wrong credentials shows error', async ({ page }) => {
+  await page.goto('/admin/login')
+  await page.fill('[name="email"]', 'wrong@test.com')
+  await page.fill('[name="password"]', 'wrongpassword')
+  await page.getByRole('button', { name: /sign in/i }).click()
+  await expect(page.getByText(/invalid login/i)).toBeVisible()
+})
