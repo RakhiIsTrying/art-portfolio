@@ -18,9 +18,9 @@ export default function Hero() {
 
       <h1 className="text-[clamp(44px,9vw,82px)] font-black uppercase tracking-widest
                      text-ink text-center leading-none">
-        YOUR{' '}
+        VAN GONE{' '}
         <span className="[-webkit-text-stroke:3px_#b04a33] text-transparent">
-          NAME
+          BROKE
         </span>
       </h1>
 
