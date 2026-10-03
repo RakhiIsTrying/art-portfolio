@@ -22,7 +22,7 @@ export default function AboutPage() {
         <div className="p-8 flex flex-col justify-between gap-8">
           <div>
             <h2 className="text-xl font-black uppercase tracking-widest text-ink mb-4">
-              Your Name
+              Van Gone Broke
             </h2>
             <p className="text-sm text-ink leading-relaxed font-bold mb-3">
               Artist based in [City]. Creating pop culture digital and paper art

@@ -15,9 +15,9 @@ export default function Nav() {
           href="/"
           className="text-base font-black uppercase tracking-widest text-ink"
         >
-          YOUR{' '}
+          VAN GONE{' '}
           <span className="text-rust">★</span>{' '}
-          NAME
+          BROKE
         </Link>
 
         <div className="flex items-center gap-6">

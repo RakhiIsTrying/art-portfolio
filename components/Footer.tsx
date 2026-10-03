@@ -10,7 +10,7 @@ export default function Footer() {
     <footer className="bg-ink text-cream">
       <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
         <span className="text-[9px] font-black uppercase tracking-widest">
-          © Your Name <span className="text-rust">★</span> Art Studio
+          © Van Gone Broke <span className="text-rust">★</span> Art Studio
         </span>
 
         <div className="flex items-center gap-4">
