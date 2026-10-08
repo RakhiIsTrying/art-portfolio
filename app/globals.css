@@ -1,21 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream:  #fef9e2;
-  --color-ink:    #1f1f1f;
-  --color-rust:   #b04a33;
-  --color-blush:  #d4b6a6;
-  --color-rose:   #bc8f87;
+  /* New palette */
+  --color-bg:      #e6e6e6;
+  --color-ink:     #1a1014;
+  --color-border:  #d0d0d0;
+  --color-dim:     #a0a0a0;
 
-  --font-family-display: "Arial Black", "Arial Bold", Arial, sans-serif;
+  /* Category stripe colors */
+  --color-music:   #7a3040;
+  --color-movies:  #1e3a8a;
+  --color-comics:  #1a6060;
+  --color-paper:   #7a5020;
+  --color-about:   #4a3a7a;
+
+  /* Legacy aliases kept so existing components don't break */
+  --color-cream:   #e6e6e6;
+  --color-rust:    #7a3040;
+  --color-blush:   #b07880;
+  --color-rose:    #b07880;
+
+  --font-family-display: 'Playfair Display', Georgia, serif;
+  --font-family-sans:    'Inter', system-ui, sans-serif;
 }
 
 :root {
-  --cream:  #fef9e2;
-  --black:  #1f1f1f;
-  --rust:   #b04a33;
-  --blush:  #d4b6a6;
-  --rose:   #bc8f87;
+  --bg:      #e6e6e6;
+  --ink:     #1a1014;
+  --border:  #d0d0d0;
+  --dim:     #a0a0a0;
+  --music:   #7a3040;
+  --movies:  #1e3a8a;
+  --comics:  #1a6060;
+  --paper:   #7a5020;
+  --about:   #4a3a7a;
+  /* legacy */
+  --cream:   #e6e6e6;
+  --black:   #1a1014;
+  --rust:    #7a3040;
+  --blush:   #b07880;
+  --rose:    #b07880;
 }
 
 * {
@@ -25,9 +49,10 @@
 }
 
 body {
-  background-color: var(--cream);
-  color: var(--black);
-  font-family: 'Arial Black', 'Arial Bold', Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 300;
 }
 
 /* Ticker animation */
