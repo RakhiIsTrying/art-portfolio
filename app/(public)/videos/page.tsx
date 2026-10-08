@@ -5,25 +5,36 @@ import type { Video } from '@/lib/types'
 export default async function VideosPage() {
   const supabase = await getSupabaseServerClient()
   const { data: videos } = await supabase
-    .from('videos')
-    .select('*')
+    .from('videos').select('*')
     .order('created_at', { ascending: false })
 
   return (
-    <div className="max-w-7xl mx-auto px-8 py-12">
-      <h1 className="text-3xl font-black uppercase tracking-widest text-ink mb-10">
-        ✦ Videos
-      </h1>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '36px 36px 60px' }}>
+
+      {/* Page header */}
+      <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #d0d0d0' }}>
+        <div style={{ width: 3, background: '#1e3a8a', marginRight: 16, flexShrink: 0 }} />
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#1e3a8a', marginBottom: 6 }}>Watch</p>
+          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 32, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Videos</h1>
+        </div>
+        {videos && videos.length > 0 && (
+          <span style={{ fontSize: '7px', fontWeight: 300, letterSpacing: '.3em', color: '#a0a0a0', textTransform: 'uppercase', alignSelf: 'flex-end' }}>
+            {videos.length} videos
+          </span>
+        )}
+      </div>
 
       {videos && videos.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1px', background: '#d0d0d0', border: '1px solid #d0d0d0' }}>
           {(videos as Video[]).map(v => <VideoCard key={v.id} video={v} />)}
         </div>
       ) : (
-        <p className="text-rose font-black uppercase tracking-widest text-sm">
+        <p style={{ fontSize: '8px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
           No videos yet — check back soon.
         </p>
       )}
+
     </div>
   )
 }

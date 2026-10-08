@@ -14,11 +14,13 @@ export default function MasonryGrid({ artworks }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-0 border-4 border-ink">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1px', background: '#d0d0d0', border: '1px solid #d0d0d0' }}>
         {columns.map((col, ci) => (
-          <div key={ci} className="flex flex-col border-r-4 border-ink last:border-r-0">
+          <div key={ci} style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: '#d0d0d0' }}>
             {col.map(art => (
-              <ArtworkCard key={art.id} artwork={art} onClick={setSelected} />
+              <div key={art.id} style={{ position: 'relative', aspectRatio: '1' }}>
+                <ArtworkCard artwork={art} onClick={setSelected} />
+              </div>
             ))}
           </div>
         ))}

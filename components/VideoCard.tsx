@@ -15,56 +15,71 @@ export default function VideoCard({ video }: Props) {
   return (
     <>
       <div
-        className="border-4 border-ink overflow-hidden cursor-pointer group
-                   hover:shadow-[4px_4px_0_#b04a33] transition-all"
+        style={{ overflow: 'hidden', cursor: 'pointer', background: '#1a1014' }}
         onClick={() => setOpen(true)}
+        className="group"
       >
-        <div className="relative aspect-video">
+        {/* Thumbnail */}
+        <div style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden' }}>
           <Image
             src={video.thumbnail_url}
             alt={video.title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 33vw"
+            unoptimized
           />
-          <div className="absolute inset-0 flex items-center justify-center
-                          bg-ink/0 group-hover:bg-ink/30 transition-all">
-            <div className="w-12 h-12 bg-rust border-2 border-ink flex items-center
-                            justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="text-cream text-lg ml-1">▶</span>
+          {/* Overlay + play button */}
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(26,16,20,0)', transition: 'background .3s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            className="group-hover:[background:rgba(26,16,20,0.5)]">
+            <div style={{
+              width: 40, height: 40, borderRadius: '50%', background: '#7a3040',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              opacity: 0, transform: 'scale(0.85)', transition: 'opacity .25s, transform .25s',
+            }} className="group-hover:[opacity:1] group-hover:[transform:scale(1)]">
+              <span style={{ color: '#fff', fontSize: 14, marginLeft: 3 }}>▶</span>
             </div>
           </div>
         </div>
-        <div className="p-3 border-t-4 border-ink bg-cream">
-          <h3 className="text-xs font-black uppercase tracking-widest text-ink">
+
+        {/* Caption */}
+        <div style={{ padding: '12px 14px', background: '#e6e6e6', borderTop: '1px solid #d0d0d0' }}>
+          <h3 style={{ fontSize: '9px', fontWeight: 500, letterSpacing: '.3em', textTransform: 'uppercase', color: '#1a1014', marginBottom: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {video.title}
           </h3>
           {video.description && (
-            <p className="text-[9px] text-rose mt-1 font-black uppercase tracking-widest">
+            <p style={{ fontSize: '7px', fontWeight: 300, letterSpacing: '.15em', color: '#a0a0a0' }}>
               {video.description}
             </p>
           )}
         </div>
       </div>
 
+      {/* Lightbox */}
       {open && (
         <div
-          className="fixed inset-0 z-50 bg-ink/85 flex items-center justify-center p-4"
+          style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(26,16,20,.88)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-3xl aspect-video border-4 border-ink"
+            style={{ width: '100%', maxWidth: 860, aspectRatio: '16/9', background: '#000' }}
             onClick={e => e.stopPropagation()}
           >
             {videoId && (
               <iframe
                 src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-                className="w-full h-full"
+                style={{ width: '100%', height: '100%', border: 'none' }}
                 allow="autoplay; fullscreen"
                 title={video.title}
               />
             )}
           </div>
+          <button
+            onClick={() => setOpen(false)}
+            style={{ position: 'absolute', top: 20, right: 24, fontSize: '8px', letterSpacing: '.35em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+          >
+            Close ✕
+          </button>
         </div>
       )}
     </>
