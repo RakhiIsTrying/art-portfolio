@@ -18,7 +18,7 @@ export default function Ticker({ text, direction, variant }: TickerProps) {
     <div style={{ background: bg, borderTop: '1px solid rgba(255,255,255,.08)', borderBottom: '1px solid rgba(255,255,255,.08)', overflow: 'hidden', padding: '7px 0', whiteSpace: 'nowrap' }}>
       <span
         className={`${animation} inline-block`}
-        style={{ color, fontSize: '7px', fontWeight: 400, letterSpacing: '.4em', textTransform: 'uppercase' }}
+        style={{ color, fontSize: 9, fontWeight: 400, letterSpacing: '.4em', textTransform: 'uppercase' }}
       >
         {content}
       </span>

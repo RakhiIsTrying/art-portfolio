@@ -18,7 +18,7 @@ function validate(f: FormState): Errors {
 const inputStyle = (hasError: boolean): React.CSSProperties => ({
   width: '100%', background: 'transparent',
   border: 'none', borderBottom: `1px solid ${hasError ? '#7a3040' : '#d0d0d0'}`,
-  padding: '7px 0', fontSize: '13px', fontWeight: 300, color: '#1a1014',
+  padding: '7px 0', fontSize: 13, fontWeight: 300, color: '#1a1014',
   outline: 'none', fontFamily: 'inherit', resize: 'vertical' as const,
 })
 
@@ -51,7 +51,7 @@ export default function InquireForm() {
         <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 22, fontStyle: 'italic', fontWeight: 400, color: '#1a1014', marginBottom: 8 }}>
           Message sent.
         </p>
-        <p style={{ fontSize: '8px', letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
+        <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
           Thank you — I&apos;ll get back to you soon.
         </p>
       </div>
@@ -66,7 +66,7 @@ export default function InquireForm() {
         { id: 'email',   label: 'Email',   type: 'email', field: 'email'   as const },
       ].map(({ id, label, type, field }) => (
         <div key={id}>
-          <label htmlFor={id} style={{ display: 'block', fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8 }}>
+          <label htmlFor={id} style={{ display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8 }}>
             {label}
           </label>
           <input
@@ -76,13 +76,13 @@ export default function InquireForm() {
             onFocus={e => !errors[field] && (e.target.style.borderBottomColor = '#7a3040')}
             onBlur={e => !errors[field] && (e.target.style.borderBottomColor = '#d0d0d0')}
           />
-          {errors[field] && <p style={{ fontSize: '7px', letterSpacing: '.3em', textTransform: 'uppercase', color: '#7a3040', marginTop: 4 }}>{errors[field]}</p>}
+          {errors[field] && <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#7a3040', marginTop: 4 }}>{errors[field]}</p>}
         </div>
       ))}
 
       {form.piece && (
         <div>
-          <label htmlFor="piece" style={{ display: 'block', fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8 }}>
+          <label htmlFor="piece" style={{ display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8 }}>
             Piece you&apos;re interested in
           </label>
           <input id="piece" type="text" value={form.piece} onChange={update('piece')} style={inputStyle(false)} />
@@ -90,15 +90,15 @@ export default function InquireForm() {
       )}
 
       <div>
-        <label htmlFor="message" style={{ display: 'block', fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8 }}>
+        <label htmlFor="message" style={{ display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8 }}>
           Message
         </label>
         <textarea id="message" rows={5} value={form.message} onChange={update('message')} required style={inputStyle(!!errors.message)} />
-        {errors.message && <p style={{ fontSize: '7px', letterSpacing: '.3em', textTransform: 'uppercase', color: '#7a3040', marginTop: 4 }}>{errors.message}</p>}
+        {errors.message && <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#7a3040', marginTop: 4 }}>{errors.message}</p>}
       </div>
 
       {status === 'error' && (
-        <p style={{ fontSize: '7px', letterSpacing: '.3em', textTransform: 'uppercase', color: '#7a3040' }}>
+        <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#7a3040' }}>
           Something went wrong — please try again.
         </p>
       )}
@@ -108,7 +108,7 @@ export default function InquireForm() {
         disabled={status === 'sending'}
         style={{
           marginTop: 4, background: status === 'sending' ? '#d0d0d0' : '#1a1014',
-          color: '#faf8f5', fontSize: '8px', letterSpacing: '.4em', textTransform: 'uppercase',
+          color: '#faf8f5', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase',
           fontWeight: 500, padding: '13px 24px', border: 'none',
           cursor: status === 'sending' ? 'not-allowed' : 'pointer', fontFamily: 'inherit',
           transition: 'background .2s', alignSelf: 'flex-start',

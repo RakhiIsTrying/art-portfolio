@@ -20,7 +20,7 @@ export default function Nav() {
         href="/"
         style={{
           padding: '0 24px',
-          fontSize: '8px', letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 600,
+          fontSize: 10, letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 600,
           color: '#7a3040',
           borderRight: '1px solid #d0d0d0',
           display: 'flex', alignItems: 'center',
@@ -42,7 +42,7 @@ export default function Nav() {
               style={{
                 flex: 1,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '8px', letterSpacing: '.4em', textTransform: 'uppercase',
+                fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase',
                 fontWeight: active ? 500 : 300,
                 color: active ? '#fff' : 'rgba(255,255,255,.6)',
                 background: color,
@@ -61,7 +61,7 @@ export default function Nav() {
 
       <div style={{
         padding: '0 24px',
-        fontSize: '8px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
+        fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
         color: '#a0a0a0',
         borderLeft: '1px solid #d0d0d0',
         display: 'flex', alignItems: 'center',

@@ -16,14 +16,14 @@ export default async function AboutPage() {
       <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: 36, paddingBottom: 20, borderBottom: '1px solid #d0d0d0' }}>
         <div style={{ width: 3, background: '#7a5020', marginRight: 16, flexShrink: 0 }} />
         <div>
-          <p style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 6 }}>The Studio</p>
-          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 32, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>About</h1>
+          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 6 }}>The Studio</p>
+          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 30, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>About</h1>
         </div>
       </div>
 
       {content?.html ? (
         <div
-          style={{ fontSize: '14px', lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }}
+          style={{ fontSize: 14, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }}
           className="prose max-w-none"
           dangerouslySetInnerHTML={{ __html: content.html }}
         />
@@ -41,7 +41,7 @@ export default async function AboutPage() {
           {/* Right: bio content */}
           <div style={{ padding: '36px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#fff' }}>
             <div>
-              <p style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
+              <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
                 ✦ The artist
               </p>
               <h2 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 26, fontWeight: 700, color: '#1a1014', lineHeight: 1, marginBottom: 6 }}>
@@ -51,7 +51,7 @@ export default async function AboutPage() {
                 Broke
               </h2>
               <div style={{ width: 24, height: 1, background: '#7a3040', marginBottom: 20 }} />
-              <p style={{ fontSize: '13px', lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
+              <p style={{ fontSize: 13, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
                 Pop culture digital and paper art — music, movies, comics, originals. An original hand-crafted lens on the icons and moments that define culture.
               </p>
             </div>
@@ -59,7 +59,7 @@ export default async function AboutPage() {
               href="/inquire"
               style={{
                 display: 'inline-block', marginTop: 28,
-                fontSize: '8px', letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
+                fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
                 color: '#1a1014', borderBottom: '1px solid #1a1014', paddingBottom: 2, textDecoration: 'none',
               }}
             >

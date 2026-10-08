@@ -20,7 +20,7 @@ export default async function AdminContentPage() {
       <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', paddingBottom: 20 }}>
         <div style={{ width: 3, background: '#7a5020', marginRight: 16, flexShrink: 0 }} />
         <div>
-          <p style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 6 }}>Manage</p>
+          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 6 }}>Manage</p>
           <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Content Editor</h1>
         </div>
       </div>

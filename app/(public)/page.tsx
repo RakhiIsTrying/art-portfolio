@@ -38,17 +38,17 @@ export default async function HomePage() {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 14 }}>
-            <h2 style={{ fontSize: '8px', fontWeight: 500, letterSpacing: '.45em', textTransform: 'uppercase', color: '#1a1014' }}>
+            <h2 style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.45em', textTransform: 'uppercase', color: '#1a1014' }}>
               Featured Work
             </h2>
             {works.length > 0 && (
-              <span style={{ fontSize: '7px', fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
+              <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
                 {String(works.length).padStart(2, '0')} works
               </span>
             )}
           </div>
           <a href="/gallery" style={{
-            fontSize: '7px', fontWeight: 400, letterSpacing: '.35em', textTransform: 'uppercase',
+            fontSize: 10, fontWeight: 400, letterSpacing: '.35em', textTransform: 'uppercase',
             color: '#7a3040', borderBottom: '1px solid #7a3040', paddingBottom: 1, textDecoration: 'none',
           }}>
             View All →
@@ -66,10 +66,10 @@ export default async function HomePage() {
       }}>
         <div style={{ width: 4, background: '#1e3a8a', flexShrink: 0 }} />
         <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h2 style={{ fontSize: '8px', fontWeight: 500, letterSpacing: '.45em', textTransform: 'uppercase', color: '#1a1014' }}>
+          <h2 style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.45em', textTransform: 'uppercase', color: '#1a1014' }}>
             Browse Collections
           </h2>
-          <span style={{ fontSize: '7px', fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
+          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
             05 categories
           </span>
         </div>

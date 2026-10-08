@@ -52,7 +52,7 @@ export default function CollectionsStrip() {
 
             {/* Name */}
             <span style={{
-              fontSize: '8px', fontWeight: 500, letterSpacing: '.4em', textTransform: 'uppercase',
+              fontSize: 11, fontWeight: 500, letterSpacing: '.4em', textTransform: 'uppercase',
               color: '#fff', display: 'block', marginBottom: 6, lineHeight: 1.3,
             }}>
               {col.name}
@@ -60,7 +60,7 @@ export default function CollectionsStrip() {
 
             {/* Description */}
             <span style={{
-              fontSize: '7px', fontWeight: 300, letterSpacing: '.15em',
+              fontSize: 10, fontWeight: 300, letterSpacing: '.15em',
               color: 'rgba(255,255,255,.5)', display: 'block',
             }}>
               {desc}
@@ -69,7 +69,7 @@ export default function CollectionsStrip() {
             {/* Bottom arrow */}
             <span style={{
               position: 'absolute', bottom: 16, right: 16,
-              fontSize: '10px', color: 'rgba(255,255,255,.35)',
+              fontSize: 12, color: 'rgba(255,255,255,.35)',
             }}>
               →
             </span>

@@ -26,7 +26,7 @@ export default function Footer() {
             style={{
               display: 'flex', alignItems: 'center',
               padding: '0 14px',
-              fontSize: '7px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
+              fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
               color: 'rgba(255,255,255,.3)',
               borderRight: '1px solid rgba(255,255,255,.07)',
               textDecoration: 'none',
@@ -50,7 +50,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              fontSize: '7px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
+              fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
               color: 'rgba(255,255,255,.3)', textDecoration: 'none',
             }}
           >
@@ -60,7 +60,7 @@ export default function Footer() {
         <Link
           href="/gallery"
           style={{
-            fontSize: '8px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+            fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
             color: '#faf8f5', borderBottom: '1px solid rgba(250,248,245,.35)', paddingBottom: 1,
             textDecoration: 'none',
           }}

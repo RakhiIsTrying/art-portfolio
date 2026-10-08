@@ -11,7 +11,7 @@ export default function LoginPage() {
 
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
-          <p style={{ fontSize: '7px', letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 8 }}>
+          <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 8 }}>
             Van Gone Broke
           </p>
           <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>
@@ -25,7 +25,7 @@ export default function LoginPage() {
 
           {state?.error && (
             <div style={{ padding: '10px 20px', borderBottom: '1px solid #d0d0d0', background: '#fdf0f2' }}>
-              <p style={{ fontSize: '8px', letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040' }}>
+              <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040' }}>
                 {state.error}
               </p>
             </div>
@@ -34,14 +34,14 @@ export default function LoginPage() {
           <form action={formAction} style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label htmlFor="email" style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>
+              <label htmlFor="email" style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>
                 Email
               </label>
               <input
                 id="email" name="email" type="email" required
                 style={{
                   border: 'none', borderBottom: '1px solid #d0d0d0', background: 'transparent',
-                  padding: '6px 0', fontSize: '13px', fontWeight: 300, color: '#1a1014',
+                  padding: '6px 0', fontSize: 13, fontWeight: 300, color: '#1a1014',
                   outline: 'none', fontFamily: 'inherit',
                 }}
                 onFocus={e => (e.target.style.borderBottomColor = '#7a3040')}
@@ -50,14 +50,14 @@ export default function LoginPage() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label htmlFor="password" style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>
+              <label htmlFor="password" style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>
                 Password
               </label>
               <input
                 id="password" name="password" type="password" required
                 style={{
                   border: 'none', borderBottom: '1px solid #d0d0d0', background: 'transparent',
-                  padding: '6px 0', fontSize: '13px', fontWeight: 300, color: '#1a1014',
+                  padding: '6px 0', fontSize: 13, fontWeight: 300, color: '#1a1014',
                   outline: 'none', fontFamily: 'inherit',
                 }}
                 onFocus={e => (e.target.style.borderBottomColor = '#7a3040')}
@@ -72,7 +72,7 @@ export default function LoginPage() {
                 marginTop: 4,
                 background: pending ? '#d0d0d0' : '#1a1014',
                 color: '#faf8f5',
-                fontSize: '8px', letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500,
+                fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500,
                 padding: '12px 20px', border: 'none', cursor: pending ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit', transition: 'background .2s',
               }}

@@ -44,11 +44,11 @@ export default function VideoCard({ video }: Props) {
 
         {/* Caption */}
         <div style={{ padding: '12px 14px', background: '#e6e6e6', borderTop: '1px solid #d0d0d0' }}>
-          <h3 style={{ fontSize: '9px', fontWeight: 500, letterSpacing: '.3em', textTransform: 'uppercase', color: '#1a1014', marginBottom: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <h3 style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.3em', textTransform: 'uppercase', color: '#1a1014', marginBottom: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {video.title}
           </h3>
           {video.description && (
-            <p style={{ fontSize: '7px', fontWeight: 300, letterSpacing: '.15em', color: '#a0a0a0' }}>
+            <p style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.15em', color: '#a0a0a0' }}>
               {video.description}
             </p>
           )}
@@ -76,7 +76,7 @@ export default function VideoCard({ video }: Props) {
           </div>
           <button
             onClick={() => setOpen(false)}
-            style={{ position: 'absolute', top: 20, right: 24, fontSize: '8px', letterSpacing: '.35em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+            style={{ position: 'absolute', top: 20, right: 24, fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
           >
             Close ✕
           </button>

@@ -39,7 +39,7 @@ export default function Hero() {
           >
             <span style={{
               writingMode: 'vertical-rl',
-              fontSize: '6.5px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 300,
+              fontSize: 8, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 300,
               transform: 'rotate(180deg)',
               color: 'rgba(255,255,255,.7)',
             }}>
@@ -64,7 +64,7 @@ export default function Hero() {
 
         <span style={{
           position: 'absolute', top: 18, left: 18,
-          fontSize: '7px', letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
+          fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
           color: 'rgba(255,255,255,.28)',
         }}>
           Latest Work
@@ -81,7 +81,7 @@ export default function Hero() {
 
         <span style={{
           position: 'absolute', bottom: 18, right: 18,
-          fontSize: '12px', fontWeight: 300, letterSpacing: '.1em',
+          fontSize: 12, fontWeight: 300, letterSpacing: '.1em',
           color: 'rgba(255,255,255,.14)',
         }}>
           2026
@@ -102,7 +102,7 @@ export default function Hero() {
       }}>
         <div>
           <p style={{
-            fontSize: '7px', letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 400,
+            fontSize: 10, letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 400,
             color: '#7a3040', marginBottom: 10,
           }}>
             ✦ Welcome to the studio
@@ -131,7 +131,7 @@ export default function Hero() {
           <div style={{ width: 28, height: 1, background: '#7a3040', margin: '16px 0' }} />
 
           <p style={{
-            fontSize: '10px', lineHeight: 1.8, fontWeight: 300, color: '#787878',
+            fontSize: 13, lineHeight: 1.8, fontWeight: 300, color: '#787878',
             marginBottom: 20,
           }}>
             Pop culture art — music, cinema and comics,<br />
@@ -153,13 +153,13 @@ export default function Hero() {
               <div style={{ width: 10, flexShrink: 0, background: color }} />
               <div style={{
                 padding: '7px 12px',
-                fontSize: '8px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
+                fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
                 color: '#1a1014', borderBottom: '1px solid #d0d0d0', flex: 1,
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 background: '#e6e6e6',
               }}>
                 {label}
-                <span style={{ fontSize: '7px', fontWeight: 300, color: '#a0a0a0', letterSpacing: '.1em' }}>
+                <span style={{ fontSize: 10, fontWeight: 300, color: '#a0a0a0', letterSpacing: '.1em' }}>
                   →
                 </span>
               </div>
@@ -171,7 +171,7 @@ export default function Hero() {
               href="/gallery"
               style={{
                 display: 'inline-block',
-                fontSize: '8px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+                fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
                 color: '#1a1014', borderBottom: '1px solid #1a1014', paddingBottom: 1,
                 textDecoration: 'none',
               }}

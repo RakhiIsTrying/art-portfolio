@@ -29,7 +29,7 @@ export default function AdminNav() {
 
       {/* Logo */}
       <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
-        <p style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 6 }}>
+        <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 6 }}>
           Admin
         </p>
         <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 16, fontWeight: 700, color: '#faf8f5', lineHeight: 1.1 }}>
@@ -55,7 +55,7 @@ export default function AdminNav() {
               <div style={{ width: 3, alignSelf: 'stretch', background: active ? color : 'transparent', flexShrink: 0, transition: 'background .2s' }} />
               <div style={{
                 flex: 1, padding: '10px 16px',
-                fontSize: '8px', letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: active ? 500 : 300,
+                fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: active ? 500 : 300,
                 color: active ? '#faf8f5' : 'rgba(250,248,245,.35)',
                 background: active ? 'rgba(255,255,255,.05)' : 'transparent',
                 transition: 'all .15s',
@@ -72,13 +72,13 @@ export default function AdminNav() {
         <Link
           href="/"
           target="_blank"
-          style={{ fontSize: '7px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: 'rgba(250,248,245,.3)', textDecoration: 'none' }}
+          style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: 'rgba(250,248,245,.3)', textDecoration: 'none' }}
         >
           View Site →
         </Link>
         <button
           onClick={handleLogout}
-          style={{ fontSize: '7px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: 'rgba(250,248,245,.3)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0, fontFamily: 'inherit' }}
+          style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: 'rgba(250,248,245,.3)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0, fontFamily: 'inherit' }}
         >
           Sign Out
         </button>

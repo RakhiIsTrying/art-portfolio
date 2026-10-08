@@ -54,13 +54,13 @@ export default function ArtworkCard({ artwork, onClick, size = 'medium' }: Props
         transition: 'opacity .25s, transform .25s',
       }} className="group-hover:[opacity:1] group-hover:[transform:translateY(0)]">
         <p style={{
-          fontSize: '7px', letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
+          fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
           color: 'rgba(255,255,255,.55)', marginBottom: 4,
         }}>
           {artwork.collection_slug}
         </p>
         <p style={{
-          fontSize: '10px', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)',
+          fontSize: 13, fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)',
           fontStyle: 'italic', fontWeight: 400, color: '#fff', lineHeight: 1.2,
         }}>
           {artwork.title}
