@@ -4,10 +4,10 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 
 const links = [
-  { href: '/admin/artworks',  label: '🖼️  Artworks' },
-  { href: '/admin/videos',    label: '🎬  Videos' },
-  { href: '/admin/featured',  label: '⭐  Featured' },
-  { href: '/admin/content',   label: '✏️  Content' },
+  { href: '/admin/artworks', label: 'Artworks', color: '#7a3040' },
+  { href: '/admin/videos',   label: 'Videos',   color: '#1e3a8a' },
+  { href: '/admin/featured', label: 'Featured', color: '#1a6060' },
+  { href: '/admin/content',  label: 'Content',  color: '#7a5020' },
 ]
 
 export default function AdminNav() {
@@ -25,44 +25,65 @@ export default function AdminNav() {
   }
 
   return (
-    <aside className="w-56 min-h-screen bg-ink border-r-4 border-ink flex flex-col shrink-0">
-      <div className="px-5 py-5 border-b-4 border-rust">
-        <p className="text-[9px] font-black uppercase tracking-[4px] text-rose">
+    <aside style={{ width: 200, minHeight: '100svh', background: '#1a1014', display: 'flex', flexDirection: 'column', flexShrink: 0, borderRight: '1px solid rgba(255,255,255,.06)' }}>
+
+      {/* Logo */}
+      <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
+        <p style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 6 }}>
           Admin
         </p>
-        <p className="text-base font-black uppercase tracking-widest text-cream mt-0.5">
-          Van Gone Broke
+        <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 16, fontWeight: 700, color: '#faf8f5', lineHeight: 1.1 }}>
+          Van Gone<br />
+          <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#b07880' }}>Broke</span>
         </p>
       </div>
 
-      <nav className="flex flex-col flex-1 py-4">
-        {links.map(({ href, label }) => {
+      {/* Nav links */}
+      <nav style={{ flex: 1, padding: '12px 0' }}>
+        {links.map(({ href, label, color }) => {
           const active = pathname.startsWith(href)
           return (
             <Link
               key={href}
               href={href}
-              className={`px-5 py-3 text-xs font-black uppercase tracking-widest transition-colors
-                ${active
-                  ? 'bg-rust text-cream border-l-4 border-cream'
-                  : 'text-blush hover:bg-rust/20 hover:text-cream border-l-4 border-transparent'
-                }`}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 0,
+                textDecoration: 'none', overflow: 'hidden',
+                marginBottom: 2,
+              }}
             >
-              {label}
+              <div style={{ width: 3, alignSelf: 'stretch', background: active ? color : 'transparent', flexShrink: 0, transition: 'background .2s' }} />
+              <div style={{
+                flex: 1, padding: '10px 16px',
+                fontSize: '8px', letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: active ? 500 : 300,
+                color: active ? '#faf8f5' : 'rgba(250,248,245,.35)',
+                background: active ? 'rgba(255,255,255,.05)' : 'transparent',
+                transition: 'all .15s',
+              }}>
+                {label}
+              </div>
             </Link>
           )
         })}
       </nav>
 
-      <div className="px-5 pb-6">
+      {/* View site + sign out */}
+      <div style={{ padding: '12px 20px 20px', borderTop: '1px solid rgba(255,255,255,.06)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <Link
+          href="/"
+          target="_blank"
+          style={{ fontSize: '7px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: 'rgba(250,248,245,.3)', textDecoration: 'none' }}
+        >
+          View Site →
+        </Link>
         <button
           onClick={handleLogout}
-          className="w-full text-[9px] font-black uppercase tracking-widest
-                     text-rose hover:text-cream transition-colors text-left"
+          style={{ fontSize: '7px', letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: 'rgba(250,248,245,.3)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0, fontFamily: 'inherit' }}
         >
-          ← Sign Out
+          Sign Out
         </button>
       </div>
+
     </aside>
   )
 }

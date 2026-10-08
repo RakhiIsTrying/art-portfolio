@@ -11,14 +11,18 @@ export default async function AdminFeaturedPage() {
     .order('title', { ascending: true })
 
   return (
-    <div className="p-8 max-w-4xl mx-auto flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-black uppercase tracking-widest text-ink">
-          ⭐ Featured Grid
-        </h1>
-        <p className="text-xs font-black uppercase tracking-widest text-rose mt-1">
-          Select up to 9 artworks to show on the homepage
-        </p>
+    <div style={{ padding: '32px 36px', maxWidth: 900, display: 'flex', flexDirection: 'column', gap: 32 }}>
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', paddingBottom: 20 }}>
+        <div style={{ width: 3, background: '#1a6060', marginRight: 16, flexShrink: 0 }} />
+        <div>
+          <p style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#1a6060', marginBottom: 6 }}>Manage</p>
+          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Featured Grid</h1>
+          <p style={{ fontSize: '8px', letterSpacing: '.2em', fontWeight: 300, color: '#a0a0a0', marginTop: 8 }}>
+            Select up to 9 artworks to show on the homepage
+          </p>
+        </div>
       </div>
 
       <FeaturedPicker artworks={artworks ?? []} />

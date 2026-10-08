@@ -6,68 +6,82 @@ export default function LoginPage() {
   const [state, formAction, pending] = useActionState(loginAction, null)
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center p-8">
-      <div className="w-full max-w-sm border-4 border-ink shadow-[6px_6px_0_#1f1f1f]">
-        <div className="bg-rust px-6 py-4 border-b-4 border-ink">
-          <h1 className="text-lg font-black uppercase tracking-widest text-cream">
-            Admin Login
+    <div style={{ minHeight: '100svh', background: '#e6e6e6', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
+      <div style={{ width: '100%', maxWidth: 360 }}>
+
+        {/* Header */}
+        <div style={{ marginBottom: 32 }}>
+          <p style={{ fontSize: '7px', letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 8 }}>
+            Van Gone Broke
+          </p>
+          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>
+            Admin
           </h1>
+          <div style={{ width: 24, height: 1, background: '#7a3040', marginTop: 12 }} />
         </div>
 
-        <form action={formAction} className="bg-cream p-6 flex flex-col gap-4">
+        {/* Card */}
+        <div style={{ background: '#fff', border: '1px solid #d0d0d0' }}>
+
           {state?.error && (
-            <p className="text-rust font-black text-xs uppercase tracking-widest border-2 border-rust px-3 py-2">
-              {state.error}
-            </p>
+            <div style={{ padding: '10px 20px', borderBottom: '1px solid #d0d0d0', background: '#fdf0f2' }}>
+              <p style={{ fontSize: '8px', letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040' }}>
+                {state.error}
+              </p>
+            </div>
           )}
 
-          <div className="flex flex-col gap-1">
-            <label
-              htmlFor="email"
-              className="text-[9px] font-black uppercase tracking-[4px] text-ink"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm
-                         focus:outline-none focus:border-rust"
-            />
-          </div>
+          <form action={formAction} style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-          <div className="flex flex-col gap-1">
-            <label
-              htmlFor="password"
-              className="text-[9px] font-black uppercase tracking-[4px] text-ink"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm
-                         focus:outline-none focus:border-rust"
-            />
-          </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label htmlFor="email" style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>
+                Email
+              </label>
+              <input
+                id="email" name="email" type="email" required
+                style={{
+                  border: 'none', borderBottom: '1px solid #d0d0d0', background: 'transparent',
+                  padding: '6px 0', fontSize: '13px', fontWeight: 300, color: '#1a1014',
+                  outline: 'none', fontFamily: 'inherit',
+                }}
+                onFocus={e => (e.target.style.borderBottomColor = '#7a3040')}
+                onBlur={e => (e.target.style.borderBottomColor = '#d0d0d0')}
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={pending}
-            className="mt-2 bg-ink text-cream font-black uppercase tracking-widest
-                       text-sm px-6 py-3 border-2 border-ink
-                       shadow-[3px_3px_0_#b04a33]
-                       hover:translate-x-0.5 hover:translate-y-0.5
-                       hover:shadow-[1px_1px_0_#b04a33] transition-all
-                       disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {pending ? 'Signing in…' : 'Sign In →'}
-          </button>
-        </form>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label htmlFor="password" style={{ fontSize: '7px', letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>
+                Password
+              </label>
+              <input
+                id="password" name="password" type="password" required
+                style={{
+                  border: 'none', borderBottom: '1px solid #d0d0d0', background: 'transparent',
+                  padding: '6px 0', fontSize: '13px', fontWeight: 300, color: '#1a1014',
+                  outline: 'none', fontFamily: 'inherit',
+                }}
+                onFocus={e => (e.target.style.borderBottomColor = '#7a3040')}
+                onBlur={e => (e.target.style.borderBottomColor = '#d0d0d0')}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={pending}
+              style={{
+                marginTop: 4,
+                background: pending ? '#d0d0d0' : '#1a1014',
+                color: '#faf8f5',
+                fontSize: '8px', letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500,
+                padding: '12px 20px', border: 'none', cursor: pending ? 'not-allowed' : 'pointer',
+                fontFamily: 'inherit', transition: 'background .2s',
+              }}
+            >
+              {pending ? 'Signing in…' : 'Sign In →'}
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
   )
