@@ -21,7 +21,7 @@ export default function ArtworkCard({ artwork, onClick, size = 'medium' }: Props
 
   return (
     <div
-      style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer', background: '#1a1014' }}
+      style={{ position: 'absolute', inset: 0, overflow: 'hidden', cursor: 'pointer', background: '#1a1014' }}
       onClick={() => onClick(artwork)}
       className="group"
     >
