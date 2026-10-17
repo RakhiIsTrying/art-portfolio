@@ -58,7 +58,7 @@ export default async function AboutPage() {
             <Link
               href="/inquire"
               style={{
-                display: 'inline-block', marginTop: 28,
+                display: 'inline-block', alignSelf: 'flex-start', marginTop: 28,
                 fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
                 color: '#1a1014', borderBottom: '1px solid #1a1014', paddingBottom: 2, textDecoration: 'none',
               }}
