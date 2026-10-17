@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
+import type { Artwork } from '@/lib/types'
 
 const categories = [
   { label: 'Music',   color: '#7a3040', href: '/gallery?cat=music'   },
@@ -9,7 +11,7 @@ const categories = [
   { label: 'Paper',   color: '#7a5020', href: '/gallery?cat=paper'   },
 ]
 
-export default function Hero() {
+export default function Hero({ latest }: { latest?: Artwork }) {
   return (
     <section style={{
       display: 'grid',
@@ -62,17 +64,38 @@ export default function Hero() {
           `,
         }} />
 
+        {latest && (
+          <Link href={`/gallery/${latest.collection_slug}`} aria-label={`${latest.title} — view collection`} className="group" style={{ position: 'absolute', inset: 0, display: 'block' }}>
+            <Image
+              src={latest.image_url}
+              alt={latest.title}
+              fill priority
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            {/* Scrims keep the labels legible over any artwork */}
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(20,16,16,.55) 0%, transparent 22%, transparent 70%, rgba(20,16,16,.75) 100%)' }} />
+            <p style={{
+              position: 'absolute', bottom: 22, left: 18, right: 70,
+              fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+              fontSize: 20, fontStyle: 'italic', fontWeight: 400, color: '#fff', lineHeight: 1.2,
+            }}>
+              {latest.title}
+            </p>
+          </Link>
+        )}
+
         <span style={{
-          position: 'absolute', top: 18, left: 18,
+          position: 'absolute', top: 18, left: 18, pointerEvents: 'none',
           fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
-          color: 'rgba(255,255,255,.28)',
+          color: latest ? 'rgba(255,255,255,.75)' : 'rgba(255,255,255,.28)',
         }}>
           Latest Work
         </span>
 
         {/* Glowing rose dot */}
         <span style={{
-          position: 'absolute', top: 16, right: 18,
+          position: 'absolute', top: 16, right: 18, pointerEvents: 'none',
           width: 7, height: 7, borderRadius: '50%',
           background: '#7a3040',
           boxShadow: '0 0 12px rgba(122,48,64,.6)',
@@ -80,9 +103,9 @@ export default function Hero() {
         }} />
 
         <span style={{
-          position: 'absolute', bottom: 18, right: 18,
+          position: 'absolute', bottom: 18, right: 18, pointerEvents: 'none',
           fontSize: 12, fontWeight: 300, letterSpacing: '.1em',
-          color: 'rgba(255,255,255,.14)',
+          color: latest ? 'rgba(255,255,255,.55)' : 'rgba(255,255,255,.14)',
         }}>
           2026
         </span>

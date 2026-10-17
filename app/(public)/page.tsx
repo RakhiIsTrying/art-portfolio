@@ -19,10 +19,17 @@ export default async function HomePage() {
 
   const works = (artworks ?? []) as Artwork[]
 
+  const { data: latest } = await supabase
+    .from('artworks')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
   return (
     <>
       <Ticker text={TOP_TICKER} direction="left" variant="rust" />
-      <Hero />
+      <Hero latest={(latest as Artwork | null) ?? undefined} />
       <Ticker text={BOTTOM_TICKER} direction="right" variant="blush" />
 
       {/* ── Featured Work header ── */}

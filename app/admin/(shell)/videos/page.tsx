@@ -47,9 +47,9 @@ export default async function AdminVideosPage() {
           {videos?.map((video, i) => (
             <div key={video.id} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 20px', borderBottom: i < videos.length - 1 ? '1px solid #ebebeb' : 'none' }}>
               <div style={{ position: 'relative', width: 72, height: 44, flexShrink: 0, background: '#e6e6e6', overflow: 'hidden' }}>
-                {video.video_url
-                  ? <video src={`${video.video_url}#t=0.5`} muted preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : video.thumbnail_url && <Image src={video.thumbnail_url} alt={video.title} fill className="object-cover" unoptimized />}
+                {video.thumbnail_url
+                  ? <Image src={video.thumbnail_url} alt={video.title} fill className="object-cover" unoptimized />
+                  : video.video_url && <video src={`${video.video_url}#t=0.5`} muted preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 13, fontWeight: 500, color: '#1a1014', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 3 }}>

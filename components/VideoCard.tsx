@@ -23,21 +23,21 @@ export default function VideoCard({ video }: Props) {
       >
         {/* Thumbnail */}
         <div style={{ position: 'relative', aspectRatio: aspect, overflow: 'hidden' }}>
-          {video.video_url ? (
-            <video
-              src={`${video.video_url}#t=0.5`}
-              muted playsInline preload="metadata"
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-              className="transition-transform duration-500 group-hover:scale-105"
-            />
-          ) : video.thumbnail_url && (
+          {video.thumbnail_url ? (
             <Image
               src={video.thumbnail_url}
               alt={video.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 33vw"
-              unoptimized
+              sizes="(max-width: 768px) 100vw, 25vw"
+              unoptimized={!video.video_url}
+            />
+          ) : video.video_url && (
+            <video
+              src={`${video.video_url}#t=0.5`}
+              muted playsInline preload="metadata"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              className="transition-transform duration-500 group-hover:scale-105"
             />
           )}
           {/* Overlay + play button */}
