@@ -26,7 +26,7 @@ export default async function VideosPage() {
       </div>
 
       {videos && videos.length > 0 ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1px', background: '#d0d0d0', border: '1px solid #d0d0d0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1px', background: '#d0d0d0', border: '1px solid #d0d0d0' }}>
           {(videos as Video[]).map(v => <VideoCard key={v.id} video={v} />)}
         </div>
       ) : (

@@ -20,8 +20,9 @@ export type Artwork = {
 export type Video = {
   id: string
   title: string
-  youtube_url: string
-  thumbnail_url: string
+  youtube_url: string | null
+  video_url: string | null
+  thumbnail_url: string | null
   description: string | null
   created_at: string
 }

@@ -47,15 +47,21 @@ export default async function AdminVideosPage() {
           {videos?.map((video, i) => (
             <div key={video.id} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 20px', borderBottom: i < videos.length - 1 ? '1px solid #ebebeb' : 'none' }}>
               <div style={{ position: 'relative', width: 72, height: 44, flexShrink: 0, background: '#e6e6e6', overflow: 'hidden' }}>
-                <Image src={video.thumbnail_url} alt={video.title} fill className="object-cover" unoptimized />
+                {video.video_url
+                  ? <video src={`${video.video_url}#t=0.5`} muted preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : video.thumbnail_url && <Image src={video.thumbnail_url} alt={video.title} fill className="object-cover" unoptimized />}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 13, fontWeight: 500, color: '#1a1014', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 3 }}>
                   {video.title}
                 </p>
-                <a href={video.youtube_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, letterSpacing: '.2em', fontWeight: 300, color: '#1e3a8a' }}>
-                  {video.youtube_url.length > 55 ? video.youtube_url.slice(0, 55) + '…' : video.youtube_url}
-                </a>
+                {video.youtube_url ? (
+                  <a href={video.youtube_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, letterSpacing: '.2em', fontWeight: 300, color: '#1e3a8a' }}>
+                    {video.youtube_url.length > 55 ? video.youtube_url.slice(0, 55) + '…' : video.youtube_url}
+                  </a>
+                ) : (
+                  <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>Uploaded video</span>
+                )}
               </div>
               <form action={deleteVideo.bind(null, video.id)}>
                 <button type="submit" style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', background: 'none', border: '1px solid #7a3040', padding: '4px 10px', cursor: 'pointer', fontFamily: 'inherit' }}>
