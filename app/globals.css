@@ -66,3 +66,22 @@ body {
 }
 .animate-ticker-left  { animation: ticker-left  24s linear infinite; }
 .animate-ticker-right { animation: ticker-right 28s linear infinite; }
+
+/* Videos — screening room */
+@keyframes vgb-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes vgb-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes vgb-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .3; }
+}
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .vgb-motion { animation: none !important; transition: none !important; }
+}
