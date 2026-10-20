@@ -61,6 +61,33 @@ export default function VideoAddForm() {
           />
         </div>
 
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
+              Category
+            </label>
+            <select name="category" defaultValue="" className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust">
+              <option value="">—</option>
+              <option value="movies">Movie Art</option>
+              <option value="music">Music</option>
+              <option value="comics">Comics</option>
+              <option value="paper">Paper Art</option>
+              <option value="bee-ben">Bee Ben &amp; Dug-Dug</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
+              Instagram Link
+            </label>
+            <input
+              name="instagram_url"
+              type="url"
+              placeholder="https://www.instagram.com/reel/..."
+              className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust"
+            />
+          </div>
+        </div>
+
         <button
           type="submit"
           disabled={pending}

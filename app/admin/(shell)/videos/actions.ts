@@ -10,6 +10,8 @@ export async function addVideo(
   const title = formData.get('title') as string
   const youtube_url = formData.get('youtube_url') as string
   const description = (formData.get('description') as string) || null
+  const category = (formData.get('category') as string) || null
+  const instagram_url = (formData.get('instagram_url') as string) || null
 
   if (!title || !youtube_url) return { error: 'Title and YouTube URL are required.' }
 
@@ -23,7 +25,7 @@ export async function addVideo(
   const admin = getSupabaseAdminClient()
   const { error } = await admin
     .from('videos')
-    .insert({ title, youtube_url, thumbnail_url, description })
+    .insert({ title, youtube_url, thumbnail_url, description, category, instagram_url })
 
   if (error) return { error: error.message }
 

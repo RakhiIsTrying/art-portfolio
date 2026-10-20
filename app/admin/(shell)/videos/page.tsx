@@ -59,8 +59,15 @@ export default async function AdminVideosPage() {
                   <a href={video.youtube_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, letterSpacing: '.2em', fontWeight: 300, color: '#1e3a8a' }}>
                     {video.youtube_url.length > 55 ? video.youtube_url.slice(0, 55) + '…' : video.youtube_url}
                   </a>
+                ) : video.instagram_url ? (
+                  <a href={video.instagram_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, letterSpacing: '.2em', fontWeight: 300, color: '#1e3a8a' }}>
+                    {video.instagram_url}
+                  </a>
                 ) : (
                   <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>Uploaded video</span>
+                )}
+                {video.category && (
+                  <span style={{ marginLeft: 10, fontSize: 9, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400, color: '#a0a0a0' }}>· {video.category}</span>
                 )}
               </div>
               <form action={deleteVideo.bind(null, video.id)}>

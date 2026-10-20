@@ -24,6 +24,8 @@ export type Video = {
   video_url: string | null
   thumbnail_url: string | null
   description: string | null
+  category: string | null
+  instagram_url: string | null
   created_at: string
 }
 

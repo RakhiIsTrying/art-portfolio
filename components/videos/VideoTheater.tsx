@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useEffect, useRef } from 'react'
 import type { Video } from '@/lib/types'
 import { PLAYFAIR } from './VideoTile'
+import InstagramLink from './InstagramLink'
 
 type Props = {
   videos: Video[]
@@ -135,6 +136,9 @@ export default function VideoTheater({ videos, index, onClose, onNavigate, onSel
             <button style={navButton} onClick={() => onNavigate(1)} aria-label="Next video"
               className="hover:[border-color:#fff] hover:[color:#fff]">Next →</button>
           </div>
+          {video.instagram_url && (
+            <div style={{ marginTop: 22 }}><InstagramLink href={video.instagram_url} /></div>
+          )}
           <p className="hidden md:block" style={{ marginTop: 18, fontSize: 10, letterSpacing: '.2em', color: 'rgba(255,255,255,.3)' }}>
             ← → to browse · Esc to close
           </p>
