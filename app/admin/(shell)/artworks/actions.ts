@@ -12,6 +12,7 @@ export async function uploadArtwork(
   const medium = formData.get('medium') as string || null
   const yearRaw = formData.get('year') as string
   const year = yearRaw ? parseInt(yearRaw) : null
+  const instagram_url = formData.get('instagram_url') as string || null
 
   if (!file || !file.size || !title || !collection_slug) {
     return { error: 'Title, collection, and image are required.' }
@@ -31,7 +32,7 @@ export async function uploadArtwork(
 
   const { error: dbError } = await admin
     .from('artworks')
-    .insert({ title, collection_slug, image_url: publicUrl, medium, year })
+    .insert({ title, collection_slug, image_url: publicUrl, medium, year, instagram_url })
 
   if (dbError) return { error: dbError.message }
 

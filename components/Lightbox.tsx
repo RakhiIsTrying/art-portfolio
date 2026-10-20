@@ -52,6 +52,26 @@ export default function Lightbox({ artwork, onClose }: Props) {
             <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 20, fontStyle: 'italic', fontWeight: 400, color: '#1a1014', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {artwork.title}
             </p>
+            {artwork.instagram_url && (
+              <a
+                href={artwork.instagram_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:[color:#1a1014]"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8,
+                  fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400,
+                  color: '#787878', textDecoration: 'none', transition: 'color .2s',
+                }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <rect x="2" y="2" width="20" height="20" rx="5" />
+                  <circle cx="12" cy="12" r="4.5" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                </svg>
+                View on Instagram ↗
+              </a>
+            )}
           </div>
           <Link
             href={`/inquire?piece=${encodeURIComponent(artwork.title)}`}

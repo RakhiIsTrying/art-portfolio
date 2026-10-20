@@ -14,6 +14,7 @@ export type Artwork = {
   year: number | null
   featured: boolean
   featured_order: number | null
+  instagram_url: string | null
   created_at: string
 }
 

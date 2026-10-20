@@ -97,6 +97,18 @@ export default function ArtworkUploadForm() {
 
         <div className="md:col-span-2 flex flex-col gap-1">
           <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
+            Instagram Link
+          </label>
+          <input
+            name="instagram_url"
+            type="url"
+            placeholder="https://www.instagram.com/p/..."
+            className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust"
+          />
+        </div>
+
+        <div className="md:col-span-2 flex flex-col gap-1">
+          <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
             Image File *
           </label>
           <input
