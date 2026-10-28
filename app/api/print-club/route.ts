@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getResendClient } from '@/lib/resend'
+import { PLANS, planForCountry } from '@/lib/printClub'
 
 const REQUIRED = ['name', 'email', 'phone', 'address_line1', 'city', 'country'] as const
 const OPTIONAL = ['address_line2', 'region', 'postal_code', 'note'] as const
@@ -27,8 +28,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid phone number' }, { status: 400 })
   }
 
+  const plan = planForCountry(row.country!)
   const admin = getSupabaseAdminClient()
-  const { error } = await admin.from('print_club_signups').insert(row)
+  const { error } = await admin.from('print_club_signups').insert({ ...row, plan })
 
   // Unique violation: already signed up — treat as success so the visitor isn't confused
   if (error && error.code !== '23505') {
@@ -43,9 +45,13 @@ export async function POST(req: NextRequest) {
       from:    'noreply@resend.dev',
       to:      process.env.INQUIRE_TO_EMAIL!,
       subject: `New Print Club sign-up — ${row.name}`,
-      text:    `Name: ${row.name}\nEmail: ${row.email}\nPhone: ${row.phone}\n\nAddress:\n${address}${row.note ? `\n\nNote: ${row.note}` : ''}`,
+      text:    `Plan: ${PLANS[plan].price} / month (${PLANS[plan].region})\n\nName: ${row.name}\nEmail: ${row.email}\nPhone: ${row.phone}\n\nAddress:\n${address}${row.note ? `\n\nNote: ${row.note}` : ''}`,
     }).catch(() => {})
   }
 
-  return NextResponse.json({ ok: true, checkoutUrl: process.env.NEXT_PUBLIC_PRINT_CLUB_CHECKOUT_URL || null })
+  // Separate payment links per plan, once configured
+  const checkoutUrl = plan === 'india'
+    ? process.env.PRINT_CLUB_CHECKOUT_URL_INDIA
+    : process.env.PRINT_CLUB_CHECKOUT_URL_INTERNATIONAL
+  return NextResponse.json({ ok: true, checkoutUrl: checkoutUrl || null })
 }

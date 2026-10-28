@@ -4,6 +4,8 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import ShopGrid from '@/components/shop/ShopGrid'
 import { PRINT_SIZES } from '@/components/shop/ShopCard'
 import type { Artwork } from '@/lib/types'
+import { PLANS } from '@/lib/printClub'
+import { planForVisitor } from '@/lib/printClubServer'
 
 export const metadata: Metadata = {
   title: 'Originals & Prints — Van Gone Broke',
@@ -28,6 +30,7 @@ export default async function ShopPage() {
   // Columns may not exist yet on older databases: default to prints on, originals off
   const prints    = artworks.filter(a => a.prints_available !== false)
   const originals = artworks.filter(a => a.original_available === true)
+  const clubPrice = PLANS[await planForVisitor()].price
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto' }} className="px-5 md:px-9 pt-9 pb-16">
@@ -73,7 +76,7 @@ export default async function ShopPage() {
         style={{ marginBottom: 40, padding: '18px 22px', background: '#fff', border: '1px solid #d0d0d0', borderLeft: '4px solid #7a3040', textDecoration: 'none' }}
       >
         <span style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>
-          $15<span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}> / mo</span>
+          {clubPrice}<span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}> / mo</span>
         </span>
         <span>
           <span style={{ display: 'block', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', marginBottom: 4 }}>Print Club</span>

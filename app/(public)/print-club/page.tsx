@@ -2,11 +2,13 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import PrintClubForm from '@/components/PrintClubForm'
+import { PLANS, type PlanId } from '@/lib/printClub'
+import { planForVisitor } from '@/lib/printClubServer'
 import type { Artwork } from '@/lib/types'
 
 export const metadata: Metadata = {
   title: 'Print Club — Van Gone Broke',
-  description: 'A new print in your mailbox every month. $15 / month.',
+  description: 'A new print in your mailbox every month. ₹750 / month in India, $16 / month internationally.',
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -32,6 +34,7 @@ export default async function PrintClubPage() {
     .order('created_at', { ascending: false })
     .limit(3)
   const pieces = (data ?? []) as Artwork[]
+  const visitorPlan = await planForVisitor()
 
   return (
     <div style={{ maxWidth: 1140, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
@@ -52,9 +55,23 @@ export default async function PrintClubPage() {
             </span>
           </h1>
 
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 18 }}>
-            <span style={{ fontFamily: PLAYFAIR, fontSize: 44, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>$15</span>
-            <span style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month</span>
+          {/* Pricing — the visitor's region first */}
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: 0, marginBottom: 20, border: '1px solid #d0d0d0', width: 'fit-content' }}>
+            {(visitorPlan === 'india' ? ['india', 'international'] : ['international', 'india'] as PlanId[]).map((id, i) => {
+              const plan = PLANS[id as PlanId]
+              const primary = i === 0
+              return (
+                <div key={id} style={{ padding: '14px 20px', background: primary ? '#fff' : 'transparent', borderLeft: i ? '1px solid #d0d0d0' : 'none' }}>
+                  <p style={{ fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400, color: primary ? '#7a3040' : '#a0a0a0', marginBottom: 8 }}>
+                    {plan.region}
+                  </p>
+                  <p style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                    <span style={{ fontFamily: PLAYFAIR, fontSize: primary ? 40 : 26, fontWeight: 700, color: primary ? '#1a1014' : '#787878', lineHeight: 1 }}>{plan.price}</span>
+                    <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month</span>
+                  </p>
+                </div>
+              )
+            })}
           </div>
 
           <p style={{ maxWidth: 440, fontSize: 14, lineHeight: 1.8, fontWeight: 300, color: '#787878', marginBottom: 30 }}>
@@ -106,11 +123,11 @@ export default async function PrintClubPage() {
             A little art, every month.
           </p>
           <p style={{ fontSize: 12, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
-            $15 a month, cancel anytime. Fill in where to reach you and where to send your prints — I’ll be in touch to get you set up.
+            {PLANS.india.price} a month in India, {PLANS.international.price} internationally — cancel anytime. Fill in where to reach you and where to send your prints — I’ll be in touch to get you set up.
           </p>
         </div>
         <div className="p-7 md:p-10 md:pl-0">
-          <PrintClubForm />
+          <PrintClubForm defaultPlan={visitorPlan} />
         </div>
       </div>
 

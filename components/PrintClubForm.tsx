@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { PLANS, planForCountry, type PlanId } from '@/lib/printClub'
 
 type FormState = {
   name: string; email: string; phone: string
@@ -63,10 +64,12 @@ const inputStyle = (hasError: boolean): React.CSSProperties => ({
   outline: 'none', fontFamily: 'inherit', resize: 'vertical' as const,
 })
 
-export default function PrintClubForm() {
+export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) {
   const [form, setForm]     = useState<FormState>(EMPTY)
   const [errors, setErrors] = useState<Errors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  // Price follows the shipping country once it's entered
+  const plan = PLANS[form.country.trim() ? planForCountry(form.country) : defaultPlan]
 
   function update(field: Field) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -153,7 +156,7 @@ export default function PrintClubForm() {
           background: '#1a1014', color: '#fff', transition: 'background .25s', opacity: status === 'sending' ? .6 : 1,
         }}
       >
-        {status === 'sending' ? 'Sending…' : 'Apply — $15 / month →'}
+        {status === 'sending' ? 'Sending…' : `Apply — ${plan.price} / month →`}
       </button>
 
       <p className="col-span-2" style={{ fontSize: 10, lineHeight: 1.7, fontWeight: 300, color: '#a0a0a0' }}>

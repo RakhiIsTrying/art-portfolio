@@ -1,4 +1,5 @@
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
+import { PLANS, type PlanId } from '@/lib/printClub'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,6 +43,11 @@ export default async function AdminPrintClubPage() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 13, fontWeight: 500, color: '#1a1014', marginBottom: 3 }}>
                 {s.name}
+                {PLANS[s.plan as PlanId] && (
+                  <span style={{ marginLeft: 10, fontSize: 10, letterSpacing: '.2em', fontWeight: 400, color: '#4a3a7a' }}>
+                    {PLANS[s.plan as PlanId].price} / mo
+                  </span>
+                )}
               </p>
               <p style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px', fontSize: 11, letterSpacing: '.05em', fontWeight: 300 }}>
                 <a href={`mailto:${s.email}`} style={{ color: '#1e3a8a' }}>{s.email}</a>
