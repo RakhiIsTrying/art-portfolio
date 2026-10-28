@@ -3,6 +3,7 @@ create table if not exists print_club_signups (
   name text not null,
   email text not null unique,
   phone text not null,
+  birthday date,
   address_line1 text not null,
   address_line2 text,
   city text not null,

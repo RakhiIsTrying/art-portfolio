@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { PLANS, planForCountry, type PlanId } from '@/lib/printClub'
 
 type FormState = {
-  name: string; email: string; phone: string
+  name: string; email: string; phone: string; birthday: string
   address_line1: string; address_line2: string; city: string; region: string; postal_code: string; country: string
   note: string
 }
@@ -11,7 +11,7 @@ type Field  = keyof FormState
 type Errors = Partial<Record<Field, string>>
 
 const EMPTY: FormState = {
-  name: '', email: '', phone: '',
+  name: '', email: '', phone: '', birthday: '',
   address_line1: '', address_line2: '', city: '', region: '', postal_code: '', country: '',
   note: '',
 }
@@ -25,16 +25,21 @@ function validate(f: FormState): Errors {
   if (!f.phone.trim()) e.phone = 'Phone is required'
   else if (f.phone.replace(/\D/g, '').length < 7)
                        e.phone = 'Enter a valid phone number'
+  if (f.birthday) {
+    const d = new Date(f.birthday)
+    if (isNaN(d.getTime()) || d > new Date() || d.getFullYear() < 1900) e.birthday = 'Enter a valid date'
+  }
   if (!f.address_line1.trim()) e.address_line1 = 'Address is required'
   if (!f.city.trim())          e.city          = 'City is required'
   if (!f.country.trim())       e.country       = 'Country is required'
   return e
 }
 
-type FieldDef = { id: Field; label: string; type?: string; autoComplete: string; optional?: boolean; half?: boolean }
+type FieldDef = { id: Field; label: string; type?: string; autoComplete: string; optional?: boolean; half?: boolean; hint?: string }
 
 const CONTACT: FieldDef[] = [
-  { id: 'name',  label: 'Full name', autoComplete: 'name' },
+  { id: 'name',     label: 'Full name', autoComplete: 'name', half: true },
+  { id: 'birthday', label: 'Birthday',  autoComplete: 'bday', type: 'date', half: true, optional: true, hint: 'So I can send you a birthday greeting 🎂' },
   { id: 'email', label: 'Email',     autoComplete: 'email', type: 'email', half: true },
   { id: 'phone', label: 'Phone',     autoComplete: 'tel',   type: 'tel',   half: true },
 ]
@@ -96,7 +101,7 @@ export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) 
     setStatus('sent')
   }
 
-  const renderField = ({ id, label, type = 'text', autoComplete, optional, half }: FieldDef) => (
+  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint }: FieldDef) => (
     <div key={id} className={half ? 'col-span-2 sm:col-span-1' : 'col-span-2'}>
       <label htmlFor={`pc-${id}`} style={labelStyle}>
         {label}
@@ -106,7 +111,9 @@ export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) 
         id={`pc-${id}`} name={id} type={type} autoComplete={autoComplete}
         value={form[id]} onChange={update(id)} style={inputStyle(!!errors[id])}
         aria-invalid={!!errors[id]}
+        max={type === 'date' ? new Date().toISOString().slice(0, 10) : undefined}
       />
+      {hint && !errors[id] && <p style={{ fontSize: 10, letterSpacing: '.1em', fontWeight: 300, color: '#a0a0a0', marginTop: 6 }}>{hint}</p>}
       {errors[id] && <p style={{ fontSize: 10, letterSpacing: '.2em', color: '#7a3040', marginTop: 6 }}>{errors[id]}</p>}
     </div>
   )
