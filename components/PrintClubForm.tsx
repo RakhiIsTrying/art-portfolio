@@ -153,7 +153,7 @@ export default function PrintClubForm() {
           background: '#1a1014', color: '#fff', transition: 'background .25s', opacity: status === 'sending' ? .6 : 1,
         }}
       >
-        {status === 'sending' ? 'Sending…' : 'Apply — $10 / month →'}
+        {status === 'sending' ? 'Sending…' : 'Apply — $15 / month →'}
       </button>
 
       <p className="col-span-2" style={{ fontSize: 10, lineHeight: 1.7, fontWeight: 300, color: '#a0a0a0' }}>

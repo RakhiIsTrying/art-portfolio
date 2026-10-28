@@ -6,7 +6,7 @@ import type { Artwork } from '@/lib/types'
 
 export const metadata: Metadata = {
   title: 'Print Club — Van Gone Broke',
-  description: 'A new print in your mailbox every month. $10 / month.',
+  description: 'A new print in your mailbox every month. $15 / month.',
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -53,7 +53,7 @@ export default async function PrintClubPage() {
           </h1>
 
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 18 }}>
-            <span style={{ fontFamily: PLAYFAIR, fontSize: 44, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>$10</span>
+            <span style={{ fontFamily: PLAYFAIR, fontSize: 44, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>$15</span>
             <span style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month</span>
           </div>
 
@@ -106,7 +106,7 @@ export default async function PrintClubPage() {
             A little art, every month.
           </p>
           <p style={{ fontSize: 12, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
-            $10 a month, cancel anytime. Fill in where to reach you and where to send your prints — I’ll be in touch to get you set up.
+            $15 a month, cancel anytime. Fill in where to reach you and where to send your prints — I’ll be in touch to get you set up.
           </p>
         </div>
         <div className="p-7 md:p-10 md:pl-0">

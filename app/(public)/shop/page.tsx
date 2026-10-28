@@ -73,7 +73,7 @@ export default async function ShopPage() {
         style={{ marginBottom: 40, padding: '18px 22px', background: '#fff', border: '1px solid #d0d0d0', borderLeft: '4px solid #7a3040', textDecoration: 'none' }}
       >
         <span style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>
-          $10<span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}> / mo</span>
+          $15<span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}> / mo</span>
         </span>
         <span>
           <span style={{ display: 'block', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', marginBottom: 4 }}>Print Club</span>
