@@ -15,6 +15,8 @@ export type Artwork = {
   featured: boolean
   featured_order: number | null
   instagram_url: string | null
+  prints_available: boolean
+  original_available: boolean
   created_at: string
 }
 

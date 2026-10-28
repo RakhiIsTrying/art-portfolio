@@ -39,7 +39,16 @@ export async function uploadArtwork(
   revalidatePath('/admin/artworks')
   revalidatePath('/')
   revalidatePath('/gallery')
+  revalidatePath('/shop')
   return { ok: true }
+}
+
+export async function toggleShopFlag(id: string, field: 'prints_available' | 'original_available', value: boolean) {
+  const admin = getSupabaseAdminClient()
+  await admin.from('artworks').update({ [field]: value }).eq('id', id)
+  revalidatePath('/admin/artworks')
+  revalidatePath('/shop')
+  revalidatePath('/gallery', 'layout')
 }
 
 export async function deleteArtwork(id: string) {

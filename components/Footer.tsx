@@ -10,7 +10,7 @@ const categories = [
 ]
 
 const socials = [
-  { href: 'https://instagram.com', label: 'Instagram' },
+  { href: 'https://www.instagram.com/van_gone_broke/', label: 'Instagram' },
   { href: 'https://twitter.com',   label: 'Twitter'   },
 ]
 
@@ -57,6 +57,15 @@ export default function Footer() {
             {label}
           </a>
         ))}
+        <Link
+          href="/shop"
+          style={{
+            fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+            color: '#b07880', textDecoration: 'none',
+          }}
+        >
+          Shop
+        </Link>
         <Link
           href="/gallery"
           style={{

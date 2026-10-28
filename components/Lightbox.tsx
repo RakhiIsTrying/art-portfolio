@@ -74,7 +74,9 @@ export default function Lightbox({ artwork, onClose }: Props) {
             )}
           </div>
           <Link
-            href={`/inquire?piece=${encodeURIComponent(artwork.title)}`}
+            href={artwork.prints_available === false
+              ? `/inquire?piece=${encodeURIComponent(artwork.title)}`
+              : `/inquire?piece=${encodeURIComponent(`Print — ${artwork.title}`)}`}
             style={{
               flexShrink: 0,
               fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
@@ -82,7 +84,7 @@ export default function Lightbox({ artwork, onClose }: Props) {
               padding: '10px 18px', textDecoration: 'none',
             }}
           >
-            Inquire →
+            {artwork.prints_available === false ? 'Inquire →' : 'Get a print →'}
           </Link>
         </div>
       </div>

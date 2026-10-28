@@ -201,6 +201,17 @@ export default function Hero({ latest }: { latest?: Artwork }) {
             >
               View Full Gallery →
             </Link>
+            <Link
+              href="/shop"
+              style={{
+                display: 'inline-block', marginLeft: 22,
+                fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+                color: '#7a3040', borderBottom: '1px solid #7a3040', paddingBottom: 1,
+                textDecoration: 'none',
+              }}
+            >
+              Originals &amp; Prints →
+            </Link>
           </div>
         </div>
       </div>
