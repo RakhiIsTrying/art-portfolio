@@ -3,7 +3,7 @@ import Link from 'next/link'
 import type { Artwork } from '@/lib/types'
 
 // Sizes offered for prints — edit here to change what the shop lists
-export const PRINT_SIZES = ['A4', 'A3', 'A2']
+export const PRINT_SIZES = ['A5', 'A4', 'A3', 'A2']
 
 export const CATEGORY_COLORS: Record<string, string> = {
   music:     '#7a3040',

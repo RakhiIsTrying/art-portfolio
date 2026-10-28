@@ -67,6 +67,15 @@ export default function Footer() {
           Shop
         </Link>
         <Link
+          href="/print-club"
+          style={{
+            fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+            color: '#b07880', textDecoration: 'none',
+          }}
+        >
+          Print Club
+        </Link>
+        <Link
           href="/gallery"
           style={{
             fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,

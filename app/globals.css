@@ -42,17 +42,20 @@
   --rose:    #b07880;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* In the base layer so Tailwind utilities (p-*, m-*) can override it */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-body {
-  background-color: var(--bg);
-  color: var(--ink);
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 300;
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
+  }
 }
 
 /* Ticker animation */

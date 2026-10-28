@@ -66,6 +66,24 @@ export default async function ShopPage() {
         </ol>
       </div>
 
+      {/* Print Club */}
+      <Link
+        href="/print-club"
+        className="group grid sm:grid-cols-[auto_1fr_auto] gap-x-6 gap-y-2 items-center"
+        style={{ marginBottom: 40, padding: '18px 22px', background: '#fff', border: '1px solid #d0d0d0', borderLeft: '4px solid #7a3040', textDecoration: 'none' }}
+      >
+        <span style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>
+          $10<span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}> / mo</span>
+        </span>
+        <span>
+          <span style={{ display: 'block', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', marginBottom: 4 }}>Print Club</span>
+          <span style={{ fontSize: 13, fontWeight: 300, color: '#787878' }}>A new print in your mailbox every month.</span>
+        </span>
+        <span className="group-hover:[color:#7a3040] group-hover:[border-color:#7a3040]" style={{ justifySelf: 'start', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', borderBottom: '1px solid #1a1014', paddingBottom: 1, transition: 'color .2s, border-color .2s' }}>
+          Join the club →
+        </span>
+      </Link>
+
       {/* Prints */}
       <section style={{ marginBottom: 56 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 6 }}>
