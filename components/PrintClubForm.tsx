@@ -5,7 +5,6 @@ import { PLANS, planForCountry, type PlanId } from '@/lib/printClub'
 type FormState = {
   name: string; email: string; phone: string; birthday: string
   address_line1: string; address_line2: string; city: string; region: string; postal_code: string; country: string
-  note: string
 }
 type Field  = keyof FormState
 type Errors = Partial<Record<Field, string>>
@@ -13,7 +12,6 @@ type Errors = Partial<Record<Field, string>>
 const EMPTY: FormState = {
   name: '', email: '', phone: '', birthday: '',
   address_line1: '', address_line2: '', city: '', region: '', postal_code: '', country: '',
-  note: '',
 }
 
 function validate(f: FormState): Errors {
@@ -66,7 +64,7 @@ const inputStyle = (hasError: boolean): React.CSSProperties => ({
   width: '100%', background: 'transparent',
   border: 'none', borderBottom: `1px solid ${hasError ? '#7a3040' : '#d0d0d0'}`,
   padding: '7px 0', fontSize: 13, fontWeight: 300, color: '#1a1014',
-  outline: 'none', fontFamily: 'inherit', resize: 'vertical' as const,
+  outline: 'none', fontFamily: 'inherit',
 })
 
 export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) {
@@ -77,7 +75,7 @@ export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) 
   const plan = PLANS[form.country.trim() ? planForCountry(form.country) : defaultPlan]
 
   function update(field: Field) {
-    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
       setForm(f => ({ ...f, [field]: e.target.value }))
       if (errors[field]) setErrors(er => ({ ...er, [field]: undefined }))
     }
@@ -139,13 +137,6 @@ export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) 
 
       <p className="col-span-2" style={{ ...groupStyle, marginTop: 10 }}>Shipping address</p>
       {ADDRESS.map(renderField)}
-
-      <div className="col-span-2" style={{ marginTop: 6 }}>
-        <label htmlFor="pc-note" style={labelStyle}>
-          Anything you&apos;d love to see? <span style={{ fontWeight: 300, color: '#a0a0a0', letterSpacing: '.2em' }}>(optional)</span>
-        </label>
-        <textarea id="pc-note" name="note" rows={2} value={form.note} onChange={update('note')} style={inputStyle(false)} />
-      </div>
 
       {status === 'error' && (
         <p className="col-span-2" style={{ fontSize: 11, letterSpacing: '.15em', color: '#7a3040' }}>

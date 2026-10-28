@@ -100,7 +100,6 @@ export default async function AdminPrintClubPage() {
                 {[s.address_line1, s.address_line2].filter(Boolean).join(', ')}<br />
                 {[s.city, s.region, s.postal_code].filter(Boolean).join(', ')} · {s.country}
               </p>
-              {s.note && <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginTop: 6 }}>{s.note}</p>}
             </div>
             <span style={{ flexShrink: 0, fontSize: 10, letterSpacing: '.2em', fontWeight: 300, color: '#a0a0a0' }}>
               {new Date(s.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}

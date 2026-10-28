@@ -11,7 +11,6 @@ create table if not exists print_club_signups (
   postal_code text,
   country text not null,
   plan text not null check (plan in ('india', 'international')),
-  note text,
   created_at timestamptz not null default now()
 );
 

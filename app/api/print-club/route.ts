@@ -4,7 +4,7 @@ import { getResendClient } from '@/lib/resend'
 import { PLANS, planForCountry } from '@/lib/printClub'
 
 const REQUIRED = ['name', 'email', 'phone', 'address_line1', 'city', 'country'] as const
-const OPTIONAL = ['birthday', 'address_line2', 'region', 'postal_code', 'note'] as const
+const OPTIONAL = ['birthday', 'address_line2', 'region', 'postal_code'] as const
 type Field = typeof REQUIRED[number] | typeof OPTIONAL[number]
 
 export async function POST(req: NextRequest) {
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       from:    'noreply@resend.dev',
       to:      process.env.INQUIRE_TO_EMAIL!,
       subject: `New Print Club sign-up — ${row.name}`,
-      text:    `Plan: ${PLANS[plan].price} / month (${PLANS[plan].region})\n\nName: ${row.name}\nEmail: ${row.email}\nPhone: ${row.phone}${row.birthday ? `\nBirthday: ${row.birthday}` : ''}\n\nAddress:\n${address}${row.note ? `\n\nNote: ${row.note}` : ''}`,
+      text:    `Plan: ${PLANS[plan].price} / month (${PLANS[plan].region})\n\nName: ${row.name}\nEmail: ${row.email}\nPhone: ${row.phone}${row.birthday ? `\nBirthday: ${row.birthday}` : ''}\n\nAddress:\n${address}`,
     }).catch(() => {})
   }
 
