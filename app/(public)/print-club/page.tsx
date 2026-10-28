@@ -100,13 +100,13 @@ export default async function PrintClubPage() {
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, #7a3040 25%, #1e3a8a 25% 50%, #1a6060 50% 75%, #7a5020 75%)' }} />
         <div className="p-7 md:p-10 md:pr-0">
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
-            Join the club
+            Apply to join
           </p>
           <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(24px, 2.6vw, 32px)', lineHeight: 1.2, color: '#1a1014', marginBottom: 14 }}>
             A little art, every month.
           </p>
           <p style={{ fontSize: 12, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
-            $10 a month, cancel anytime. Leave your details and I’ll be in touch to get you set up.
+            $10 a month, cancel anytime. Fill in where to reach you and where to send your prints — I’ll be in touch to get you set up.
           </p>
         </div>
         <div className="p-7 md:p-10 md:pl-0">

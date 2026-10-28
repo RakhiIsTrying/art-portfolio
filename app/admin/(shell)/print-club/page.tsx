@@ -41,9 +41,16 @@ export default async function AdminPrintClubPage() {
           <div key={s.id} style={{ display: 'flex', alignItems: 'baseline', gap: 16, padding: '12px 20px', borderBottom: i < signups.length - 1 ? '1px solid #ebebeb' : 'none' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 13, fontWeight: 500, color: '#1a1014', marginBottom: 3 }}>
-                {s.name} <span style={{ fontWeight: 300, color: '#787878' }}>· {s.country}</span>
+                {s.name}
               </p>
-              <a href={`mailto:${s.email}`} style={{ fontSize: 11, letterSpacing: '.05em', fontWeight: 300, color: '#1e3a8a' }}>{s.email}</a>
+              <p style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px', fontSize: 11, letterSpacing: '.05em', fontWeight: 300 }}>
+                <a href={`mailto:${s.email}`} style={{ color: '#1e3a8a' }}>{s.email}</a>
+                <a href={`tel:${s.phone}`} style={{ color: '#1e3a8a' }}>{s.phone}</a>
+              </p>
+              <p style={{ fontSize: 12, lineHeight: 1.6, fontWeight: 300, color: '#1a1014', marginTop: 6 }}>
+                {[s.address_line1, s.address_line2].filter(Boolean).join(', ')}<br />
+                {[s.city, s.region, s.postal_code].filter(Boolean).join(', ')} · {s.country}
+              </p>
               {s.note && <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginTop: 6 }}>{s.note}</p>}
             </div>
             <span style={{ flexShrink: 0, fontSize: 10, letterSpacing: '.2em', fontWeight: 300, color: '#a0a0a0' }}>
