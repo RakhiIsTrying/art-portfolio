@@ -1,13 +1,14 @@
 'use client'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { PRINT_SIZES, SAMPLE_GREETINGS, formatPrice, type Currency, type PrintSize } from '@/lib/prints'
 import type { Artwork } from '@/lib/types'
 import ShopGrid from './ShopGrid'
+import { useAspect } from '@/lib/useAspects'
 import SizePicker, { orderPayload, type Quantities } from './SizePicker'
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 const INK = '#1a1014'
-const PX_PER_INCH = 17          // scale for the side-by-side size comparison
+const MAX_PX_PER_INCH = 17      // largest scale for the side-by-side size comparison
 const CARD_PX_PER_INCH = 30     // the larger greeting-card mockup
 
 const label: React.CSSProperties = { display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: INK, marginBottom: 8 }
@@ -40,6 +41,15 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
   const [error, setError] = useState<string | null>(null)
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const topRef = useRef<HTMLDivElement>(null)
+  const rowRef = useRef<HTMLDivElement>(null)
+  const [rowWidth, setRowWidth] = useState(0)
+  useEffect(() => {
+    const el = rowRef.current
+    if (!el) return
+    const ro = new ResizeObserver(([e]) => setRowWidth(e.contentRect.width))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   const cards = qty.card ?? 0
   const greetingText = greetingMode === 'custom' && greeting.trim() ? greeting.trim() : SAMPLE_GREETINGS[sample % SAMPLE_GREETINGS.length]
@@ -59,13 +69,26 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
     setError(null); setStatus('sending')
     const res = await fetch('/api/inquire', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: contact.name.trim(), email: contact.email.trim(), piece: `Print — ${art.title}`, message: contact.note.trim(), order }),
+      body: JSON.stringify({ name: contact.name.trim(), email: contact.email.trim(), piece: `Print — ${art.title} (${landscape ? 'landscape' : 'portrait'})`, message: contact.note.trim(), order }),
     })
     setStatus(res.ok ? 'sent' : 'error')
   }
 
   const prints = PRINT_SIZES.filter(s => !s.card)
   const card = PRINT_SIZES.find(s => s.card) as PrintSize
+  // Wide pieces print on landscape paper (and a sideways card) so the art fits properly
+  const aspect = useAspect(art.image_url)
+  const landscape = (aspect ?? 0) > 1.05
+  const fit = (s: PrintSize) => (landscape ? { w: s.h, h: s.w } : { w: s.w, h: s.h })
+  const dims = (s: PrintSize) => { const { w, h } = fit(s); return `${w}" × ${h}"` }
+  // Shrink the comparison so every size fits side by side (all at the same scale)
+  const allSizes = [...prints, card]
+  const LABEL_WIDTH = 96 // the caption under each size needs about this much room
+  let PX_PER_INCH = MAX_PX_PER_INCH
+  while (rowWidth && PX_PER_INCH > 4 &&
+         allSizes.reduce((sum, s) => sum + Math.max(fit(s).w * PX_PER_INCH, LABEL_WIDTH), 0) + 22 * (allSizes.length - 1) + 8 > rowWidth) {
+    PX_PER_INCH -= .25
+  }
 
   return (
     <div ref={topRef} style={{ scrollMarginTop: 60 }}>
@@ -146,24 +169,29 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
         <div style={{ minWidth: 0 }}>
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>See it to scale</p>
           <h3 style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: INK, marginBottom: 18 }}>{art.title}, every size</h3>
+          <p style={{ fontSize: 11, fontWeight: 300, color: '#787878', margin: '-12px 0 18px' }}>
+            {landscape ? '↔ Landscape: this piece is wider than it is tall, so it prints sideways.' : '↕ Portrait'} The whole artwork is printed, never cropped.
+          </p>
 
-          <div className="no-scrollbar" style={{ overflowX: 'auto', paddingBottom: 6 }}>
+          <div ref={rowRef} className="no-scrollbar" style={{ overflowX: 'auto', paddingBottom: 6 }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 22, minWidth: 'max-content', padding: '6px 4px 0' }}>
               {[...prints, card].map(s => (
                 <div key={s.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   {s.card ? (
                     // Folded card, standing: art on the front flap only
                     <div style={{ position: 'relative' }}>
-                      <Paper art={art} w={s.w} h={s.h} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} />
-                      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 5, background: 'linear-gradient(90deg, rgba(26,16,20,.18), transparent)' }} />
+                      <Paper art={art} {...fit(s)} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} />
+                      <div style={landscape
+                        ? { position: 'absolute', left: 0, right: 0, top: 0, height: 5, background: 'linear-gradient(180deg, rgba(26,16,20,.18), transparent)' }
+                        : { position: 'absolute', left: 0, top: 0, bottom: 0, width: 5, background: 'linear-gradient(90deg, rgba(26,16,20,.18), transparent)' }} />
                     </div>
                   ) : (
-                    <Paper art={art} w={s.w} h={s.h} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} />
+                    <Paper art={art} {...fit(s)} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} />
                   )}
                   <p style={{ marginTop: 10, fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: INK }}>
                     {s.card ? 'Card' : s.name}{(qty[s.id] ?? 0) > 0 && <span style={{ color: '#4a3a7a' }}> ×{qty[s.id]}</span>}
                   </p>
-                  <p style={{ fontSize: 11, fontWeight: 300, color: '#787878' }}>{s.dims} · {formatPrice(s[currency], currency)}</p>
+                  <p style={{ fontSize: 11, fontWeight: 300, color: '#787878' }}>{dims(s)} · {formatPrice(s[currency], currency)}</p>
                 </div>
               ))}
             </div>
@@ -171,7 +199,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
 
           {/* Greeting card, closed and open */}
           <div style={{ marginTop: 36, paddingTop: 24, borderTop: '1px solid #d0d0d0' }}>
-            <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>Greeting card · {card.dims}</p>
+            <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>Greeting card · {dims(card)}{landscape ? ' · landscape, folds at the top' : ''}</p>
             <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginBottom: 18, maxWidth: 520 }}>
               The art is printed on the front flap. Inside, a greeting: a surprise one from me, or your own words.
             </p>
@@ -179,20 +207,23 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
               {/* Closed */}
               <div style={{ textAlign: 'center' }}>
                 <div style={{ position: 'relative', transform: 'rotate(-2deg)' }}>
-                  <Paper art={art} w={card.w} h={card.h} ppi={CARD_PX_PER_INCH} />
-                  <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 8, background: 'linear-gradient(90deg, rgba(26,16,20,.2), transparent)' }} />
+                  <Paper art={art} {...fit(card)} ppi={CARD_PX_PER_INCH} />
+                  <div style={landscape
+                    ? { position: 'absolute', left: 0, right: 0, top: 0, height: 8, background: 'linear-gradient(180deg, rgba(26,16,20,.2), transparent)' }
+                    : { position: 'absolute', left: 0, top: 0, bottom: 0, width: 8, background: 'linear-gradient(90deg, rgba(26,16,20,.2), transparent)' }} />
                 </div>
                 <p style={{ marginTop: 12, fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>Front</p>
               </div>
 
               {/* Open */}
               <div style={{ textAlign: 'center' }}>
-                <div style={{ display: 'flex', boxShadow: '0 10px 26px rgba(26,16,20,.16)' }}>
-                  <div style={{ width: card.w * CARD_PX_PER_INCH, height: card.h * CARD_PX_PER_INCH, background: '#f7f5f2', borderRight: '1px solid #e3ded8',
+                <div style={{ display: 'flex', flexDirection: landscape ? 'column' : 'row', boxShadow: '0 10px 26px rgba(26,16,20,.16)' }}>
+                  <div style={{ width: fit(card).w * CARD_PX_PER_INCH, height: fit(card).h * CARD_PX_PER_INCH, background: '#f7f5f2',
+                                [landscape ? 'borderBottom' : 'borderRight']: '1px solid #e3ded8',
                                 display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: 14 }}>
                     <span style={{ fontSize: 8, letterSpacing: '.35em', textTransform: 'uppercase', color: '#c4bdb5' }}>Van Gone Broke</span>
                   </div>
-                  <div style={{ width: card.w * CARD_PX_PER_INCH, height: card.h * CARD_PX_PER_INCH, background: '#fff', padding: 22,
+                  <div style={{ width: fit(card).w * CARD_PX_PER_INCH, height: fit(card).h * CARD_PX_PER_INCH, background: '#fff', padding: 22,
                                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
                     <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 16, lineHeight: 1.5, color: INK, wordBreak: 'break-word' }}>
                       {greetingText}
