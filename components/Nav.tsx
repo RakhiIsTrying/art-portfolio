@@ -10,14 +10,14 @@ const navItems = [
   { href: '/about',    label: 'About',   color: '#7a5020' },
   { href: '/inquire',  label: 'Inquire', color: '#4a3a7a' },
   { href: '/shop',     label: 'Shop',    color: '#1a1014' },
-  { href: '/print-club', label: 'Print Club', color: '#9a5a64' },
+  { href: '/print-club', label: 'Print Club', color: '#9a5a64', wide: true },
 ]
 
 export default function Nav() {
   const pathname = usePathname()
 
   return (
-    <nav style={{ display: 'flex', alignItems: 'stretch', height: '44px', borderBottom: '1px solid #d0d0d0', position: 'sticky', top: 0, zIndex: 50, background: '#e6e6e6' }}>
+    <nav className="md:h-[44px]" style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', position: 'sticky', top: 0, zIndex: 50, background: '#e6e6e6' }}>
       <Link
         href="/"
         style={{
@@ -34,15 +34,17 @@ export default function Nav() {
         VGB
       </Link>
 
-      <div className="no-scrollbar" style={{ display: 'flex', flex: 1, overflowX: 'auto' }}>
-        {navItems.map(({ href, label, color }) => {
+      {/* Phones: tabs wrap into rows of 4 so every one stays visible */}
+      <div className="grid grid-cols-4 md:flex" style={{ flex: 1 }}>
+        {navItems.map(({ href, label, color, wide }) => {
           const active = pathname === href || pathname.startsWith(href + '/')
           return (
             <Link
               key={href}
               href={href}
+              className={`h-9 md:h-auto ${wide ? 'col-span-2 md:col-span-1' : ''}`}
               style={{
-                flex: '1 0 auto', padding: '0 14px', whiteSpace: 'nowrap',
+                flex: '1 0 auto', padding: '0 8px', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase',
                 fontWeight: active ? 500 : 300,
