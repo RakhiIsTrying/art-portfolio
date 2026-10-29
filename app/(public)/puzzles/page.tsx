@@ -31,7 +31,7 @@ export default async function PuzzlesPage({ searchParams }: { searchParams: Prom
   const theme = { mascot, arts: arts.slice(daily.number % Math.max(arts.length, 1)).concat(arts.slice(0, daily.number % Math.max(arts.length, 1))) }
 
   return (
-    <div style={{ maxWidth: 1180, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
+    <div style={{ maxWidth: 1000, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
       <div style={{ paddingBottom: 22, borderBottom: '1px solid #d0d0d0', marginBottom: 22, textAlign: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/puzzles/dugdug.png" alt="Dug-Dug" style={{ height: 96, margin: '0 auto 12px', display: 'block', filter: 'drop-shadow(0 8px 12px rgba(26,16,20,.2))' }} />

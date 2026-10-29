@@ -52,8 +52,10 @@ function Archive({ dates, current, today }: { dates: string[]; current: string; 
   const weekday = (d: string) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' })
 
   return (
-    <nav aria-label="Past puzzles" className="no-scrollbar flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible lg:sticky lg:top-[60px]">
-      <p className="hidden lg:block" style={{ fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878', marginBottom: 8 }}>Past month</p>
+    // Wide screens: pinned to the far left so the puzzles stay centred. Narrower: a strip above them.
+    <nav aria-label="Past puzzles"
+         className="no-scrollbar flex gap-1 overflow-x-auto mb-5 xl:mb-0 xl:flex-col xl:fixed xl:left-6 xl:top-[120px] xl:w-[170px] xl:max-h-[calc(100vh-150px)] xl:overflow-x-visible xl:overflow-y-auto xl:z-10">
+      <p className="hidden xl:block" style={{ fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878', marginBottom: 8 }}>Past month</p>
       {dates.map(d => {
         const on = d === current
         const n = counts[d] ?? 0
@@ -112,9 +114,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div className="grid lg:grid-cols-[180px_minmax(0,1fr)] gap-6 lg:gap-8 items-start">
       <Archive dates={dates} current={daily.date} today={today} />
-      <div style={{ minWidth: 0 }}>
       {/* Date strip */}
       <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2" style={{ marginBottom: 18, textAlign: 'center' }}>
         <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878' }}>
@@ -155,8 +155,6 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
       {active === 'queens' && <Queens date={daily.date} regions={daily.queens.regions} solution={daily.queens.solution} onSolved={done('queens')} />}
       {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} solution={daily.wend.solution} onSolved={done('wend')} />}
       {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} onSolved={done('bee')} />}
-      </div>
-      </div>
       <BeeCallout />
       {celebrating && <Confetti burst={burst} />}
     </ThemeContext.Provider>
