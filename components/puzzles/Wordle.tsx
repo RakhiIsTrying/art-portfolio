@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { CENTERED, INK, Rules, SolvedBanner, useDailyState } from './shared'
 
 type Mark = 'hit' | 'near' | 'miss'
-const COLORS: Record<Mark, string> = { hit: '#4a3a7a', near: '#c9a23a', miss: '#8a8486' }
+const COLORS: Record<Mark, string> = { hit: '#3f8f4f', near: '#d9a521', miss: '#b8433b' }
 const ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
 
 /** Wordle colouring, handling repeated letters correctly. */
@@ -76,7 +76,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
 
   return (
     <div style={CENTERED}>
-      <Rules>Guess the five-letter word in six tries. <b style={{ color: COLORS.hit }}>Purple</b> is the right letter in the right spot, <b style={{ color: COLORS.near }}>honey</b> is in the word but somewhere else.</Rules>
+      <Rules>Guess the five-letter word in six tries. <b style={{ color: COLORS.hit }}>Green</b> is the right letter in the right spot, <b style={{ color: COLORS.near }}>yellow</b> is in the word but somewhere else, <b style={{ color: COLORS.miss }}>red</b> is not in the word.</Rules>
 
       <div style={{ position: 'relative', display: 'grid', gap: 5, width: 'min(100%, 330px)' }}>
         {message && (

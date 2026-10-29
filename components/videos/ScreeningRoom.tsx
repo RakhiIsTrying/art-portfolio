@@ -36,13 +36,26 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
   }
   const close = useCallback(() => setOpen(null), [])
 
-  // The hero reel loops silently — unless the viewer prefers reduced motion,
-  // and paused while the theater is open
+  // The hero reel autoplays with sound. Browsers block sound until the visitor has
+  // interacted with the page, so if that happens it plays muted and the sound comes
+  // on at the first click, tap or key press. Paused while the theater is open.
+  const [needsTap, setNeedsTap] = useState(false)
   useEffect(() => {
     const v = featuredRef.current
     if (!v) return
-    if (open !== null || window.matchMedia('(prefers-reduced-motion: reduce)').matches) v.pause()
-    else v.play().catch(() => {})
+    if (open !== null || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.pause(); return }
+    v.muted = false
+    let undo = () => {}
+    v.play().catch(() => {
+      v.muted = true
+      v.play().catch(() => {})
+      setNeedsTap(true)
+      const unmute = () => { v.muted = false; setNeedsTap(false); undo() }
+      const events = ['pointerdown', 'keydown', 'touchstart'] as const
+      events.forEach(e => window.addEventListener(e, unmute, { once: true }))
+      undo = () => events.forEach(e => window.removeEventListener(e, unmute))
+    })
+    return () => undo()
   }, [open])
 
   return (
@@ -98,17 +111,6 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
                     {featured.description}
                   </p>
                 )}
-                <button
-                  onClick={openFeatured}
-                  className="hover:[background:#fff] hover:[color:#1a1014]"
-                  style={{
-                    fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500,
-                    color: '#fff', background: 'transparent', border: '1px solid rgba(255,255,255,.6)',
-                    padding: '12px 20px', cursor: 'pointer', fontFamily: 'inherit', transition: 'background .25s, color .25s',
-                  }}
-                >
-                  ▶&nbsp;&nbsp;Watch with sound
-                </button>
                 {featured.instagram_url && (
                   <div style={{ marginTop: 20 }}><InstagramLink href={featured.instagram_url} /></div>
                 )}
@@ -131,11 +133,17 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
                   ref={featuredRef}
                   src={featured.video_url}
                   poster={featured.thumbnail_url ?? undefined}
-                  muted loop playsInline preload="auto"
+                  loop playsInline preload="auto"
                   style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
                 />
               ) : featured.thumbnail_url && (
                 <Image src={featured.thumbnail_url} alt="" fill priority unoptimized className="object-contain" />
+              )}
+              {needsTap && (
+                <span style={{ position: 'absolute', left: '50%', bottom: 14, transform: 'translateX(-50%)', zIndex: 1, whiteSpace: 'nowrap',
+                               fontSize: 9, letterSpacing: '.3em', textTransform: 'uppercase', color: '#fff', background: 'rgba(14,10,12,.6)', padding: '6px 10px', pointerEvents: 'none' }}>
+                  🔇 Tap anywhere for sound
+                </span>
               )}
               <div className="vgb-motion opacity-0 group-hover:opacity-100" style={{
                 position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
