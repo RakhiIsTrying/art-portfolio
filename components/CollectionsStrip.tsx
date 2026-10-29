@@ -8,6 +8,7 @@ const categoryColors: Record<string, string> = {
   comics:   '#1a6060',
   'bee-ben':'#4a3a7a',
   paper:    '#7a5020',
+  sketchbook: '#3d4f45',
 }
 
 const categoryDesc: Record<string, string> = {
@@ -16,6 +17,7 @@ const categoryDesc: Record<string, string> = {
   comics:   'Manga, anime & panels',
   'bee-ben':'Original characters',
   paper:    'Cuts, folds & textures',
+  sketchbook: 'Pencil, watercolor & still life',
 }
 
 export default function CollectionsStrip() {

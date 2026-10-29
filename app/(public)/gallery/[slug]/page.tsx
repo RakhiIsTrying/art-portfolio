@@ -11,6 +11,7 @@ const categoryColors: Record<string, string> = {
   comics:   '#1a6060',
   'bee-ben':'#4a3a7a',
   paper:    '#7a5020',
+  sketchbook: '#3d4f45',
 }
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ art?: string }> }
