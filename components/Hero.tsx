@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import type { Artwork } from '@/lib/types'
+import ArtFill from '@/components/ArtFill'
 
 const categories = [
   { label: 'Music',   color: '#7a3040', href: '/gallery?cat=music'   },
@@ -66,13 +66,7 @@ export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwo
 
         {latest && (
           <Link href={`/gallery/${latest.collection_slug}`} aria-label={`${latest.title} — view collection`} className="group" style={{ position: 'absolute', inset: 0, display: 'block' }}>
-            <Image
-              src={latest.image_url}
-              alt={latest.title}
-              fill priority
-              className="object-contain"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
+            <ArtFill src={latest.image_url} alt={latest.title} priority sizes="(max-width: 768px) 100vw, 50vw" fallback="transparent" />
             {/* Scrims keep the labels legible over any artwork */}
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(20,16,16,.55) 0%, transparent 22%, transparent 70%, rgba(20,16,16,.75) 100%)' }} />
             <p style={{

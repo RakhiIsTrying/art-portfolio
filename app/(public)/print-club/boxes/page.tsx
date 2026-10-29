@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { monthLabel } from '@/lib/printClubExport'
 import { CATEGORY_COLORS } from '@/components/shop/ShopCard'
 import BoxMedia from '@/components/club/BoxMedia'
 import type { Artwork, ClubBox } from '@/lib/types'
+import ArtFill from '@/components/ArtFill'
 
 export const metadata: Metadata = {
   title: 'Club Boxes — Van Gone Broke Print Club',
@@ -103,7 +103,7 @@ export default async function ClubBoxesPage() {
                         <Link href={`/gallery/${art.collection_slug}?art=${art.id}`} className="group"
                               style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #ebebeb', textDecoration: 'none' }}>
                           <span style={{ position: 'relative', width: 44, height: 44, flexShrink: 0, background: '#fff', borderLeft: `3px solid ${CATEGORY_COLORS[art.collection_slug] ?? '#1a1014'}` }}>
-                            <Image src={art.image_url} alt="" fill sizes="44px" className="object-contain" />
+                            <ArtFill src={art.image_url} sizes="44px" />
                           </span>
                           <span style={{ flex: 1, fontSize: 13, color: '#1a1014' }}>{art.title}</span>
                           <span className="transition-transform group-hover:translate-x-1" style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>

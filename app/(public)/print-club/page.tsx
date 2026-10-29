@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import PrintClubForm from '@/components/PrintClubForm'
 import { PLANS, type PlanId } from '@/lib/printClub'
 import { planForVisitor } from '@/lib/printClubServer'
 import type { Artwork } from '@/lib/types'
+import ArtFill from '@/components/ArtFill'
 
 export const metadata: Metadata = {
   title: 'Print Club — Van Gone Broke',
@@ -110,7 +110,7 @@ export default async function PrintClubPage() {
                 boxShadow: '0 22px 50px rgba(26,16,20,.22), 0 3px 10px rgba(26,16,20,.12)',
               }}>
                 <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                  <Image src={art.image_url} alt="" fill className="object-contain" sizes="(max-width: 768px) 50vw, 300px" priority={i === pieces.length - 1} />
+                  <ArtFill src={art.image_url} sizes="(max-width: 768px) 50vw, 300px" priority={i === pieces.length - 1} />
                 </div>
               </div>
             )

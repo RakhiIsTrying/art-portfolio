@@ -1,7 +1,7 @@
 'use client'
-import Image from 'next/image'
 import Link from 'next/link'
 import type { Artwork } from '@/lib/types'
+import ArtFill from '@/components/ArtFill'
 
 const categoryColors: Record<string, string> = {
   music:    '#7a3040',
@@ -30,13 +30,7 @@ export default function Lightbox({ artwork, onClose }: Props) {
       >
         {/* Image */}
         <div style={{ position: 'relative', aspectRatio: '1', width: '100%' }}>
-          <Image
-            src={artwork.image_url}
-            alt={artwork.title}
-            fill
-            className="object-contain"
-            sizes="600px"
-          />
+          <ArtFill src={artwork.image_url} alt={artwork.title} sizes="600px" />
           {/* Category color stripe */}
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: color }} />
         </div>

@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 import type { Video } from '@/lib/types'
 import { PLAYFAIR } from './VideoTile'
 import InstagramLink from './InstagramLink'
+import { useEdge } from '@/lib/useAspects'
 
 type Props = {
   videos: Video[]
@@ -22,6 +23,7 @@ const navButton: React.CSSProperties = {
 
 export default function VideoTheater({ videos, index, onClose, onNavigate, onSelect }: Props) {
   const video = videos[index]
+  const edge = useEdge(video?.thumbnail_url) ?? '#000'
   const touchX = useRef<number | null>(null)
   const activeThumb = useRef<HTMLButtonElement>(null)
 
@@ -96,10 +98,10 @@ export default function VideoTheater({ videos, index, onClose, onNavigate, onSel
               poster={video.thumbnail_url ?? undefined}
               controls autoPlay playsInline
               className="h-[58svh] md:h-[calc(100svh-200px)]"
-              style={{ display: 'block', aspectRatio: '9/16', maxWidth: '100%', background: '#000', boxShadow: '0 40px 100px rgba(0,0,0,.65)' }}
+              style={{ display: 'block', aspectRatio: '9/16', maxWidth: '100%', background: edge, boxShadow: '0 40px 100px rgba(0,0,0,.65)' }}
             />
           ) : (
-            <div style={{ width: 'min(860px, 90vw)', aspectRatio: '16/9', background: '#000', boxShadow: '0 40px 100px rgba(0,0,0,.65)' }}>
+            <div style={{ width: 'min(860px, 90vw)', aspectRatio: '16/9', background: edge, boxShadow: '0 40px 100px rgba(0,0,0,.65)' }}>
               {youtubeId && (
                 <iframe
                   src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}

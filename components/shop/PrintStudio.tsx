@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { PRINT_SIZES, SAMPLE_GREETINGS, formatPrice, type Currency, type PrintSize } from '@/lib/prints'
 import type { Artwork } from '@/lib/types'
 import ShopGrid from './ShopGrid'
-import { useAspect } from '@/lib/useAspects'
+import { useAspect, useEdge } from '@/lib/useAspects'
 import SizePicker, { orderPayload, type Quantities } from './SizePicker'
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -14,11 +14,13 @@ const CARD_PX_PER_INCH = 30     // the larger greeting-card mockup
 const label: React.CSSProperties = { display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: INK, marginBottom: 8 }
 const input: React.CSSProperties = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #d0d0d0', padding: '7px 0', fontSize: 13, fontWeight: 300, color: INK, outline: 'none', fontFamily: 'inherit' }
 
-/** A print on paper: the art sits inside a thin white border. */
+/** A print on paper: the whole art, with any spare paper in its own border colour. */
 function Paper({ art, w, h, ppi, highlight }: { art: Artwork; w: number; h: number; ppi: number; highlight?: boolean }) {
+  // Any paper around the art is printed in the art's own border colour
+  const edge = useEdge(art.image_url) ?? '#fff'
   return (
     <div style={{
-      width: w * ppi, height: h * ppi, background: '#fff', padding: Math.max(3, .22 * ppi), flexShrink: 0,
+      width: w * ppi, height: h * ppi, background: edge, padding: Math.max(3, .22 * ppi), flexShrink: 0,
       boxShadow: highlight ? '0 0 0 2px #4a3a7a, 0 12px 26px rgba(26,16,20,.22)' : '0 8px 20px rgba(26,16,20,.16), 0 1px 3px rgba(26,16,20,.12)',
       transition: 'box-shadow .2s',
     }}>
@@ -78,6 +80,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
   const card = PRINT_SIZES.find(s => s.card) as PrintSize
   // Wide pieces print on landscape paper (and a sideways card) so the art fits properly
   const aspect = useAspect(art.image_url)
+  const edge = useEdge(art.image_url)
   const landscape = (aspect ?? 0) > 1.05
   const fit = (s: PrintSize) => (landscape ? { w: s.h, h: s.w } : { w: s.w, h: s.h })
   const dims = (s: PrintSize) => { const { w, h } = fit(s); return `${w}" × ${h}"` }
@@ -109,7 +112,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                 <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a3040', marginBottom: 12 }}>Your order</p>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0, border: '1px solid #ebebeb', background: '#fff' }} />
+                  <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0, border: '1px solid #ebebeb', background: edge ?? '#fff' }} />
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 19, color: INK, lineHeight: 1.15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{art.title}</p>
                     <a href="#choose-piece" style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>Change piece ↓</a>

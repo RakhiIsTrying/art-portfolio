@@ -6,6 +6,7 @@ import type { Video } from '@/lib/types'
 import VideoTile, { PLAYFAIR } from './VideoTile'
 import VideoTheater from './VideoTheater'
 import InstagramLink from './InstagramLink'
+import { useEdge } from '@/lib/useAspects'
 
 // Filter tabs, in display order — colours match the site's category stripes
 const FILTERS = [
@@ -19,7 +20,10 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
   const [filter, setFilter] = useState('all')
   const [open, setOpen] = useState<number | null>(null)
   const featuredRef = useRef<HTMLVideoElement>(null)
-  const featured = all[0]
+  const topRef = useRef<HTMLElement>(null)
+  const [featuredId, setFeaturedId] = useState(all[0]?.id)
+  const featured = all.find(v => v.id === featuredId) ?? all[0]
+  const featuredEdge = useEdge(featured?.thumbnail_url)
 
   const tabs = FILTERS
     .map(f => ({ ...f, count: all.filter(v => v.category === f.slug).length }))
@@ -32,31 +36,32 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
 
   const openFeatured = () => {
     setFilter('all')
-    setOpen(0)
+    setOpen(all.indexOf(featured))
   }
   const close = useCallback(() => setOpen(null), [])
 
-  // The hero reel autoplays with sound. Browsers block sound until the visitor has
-  // interacted with the page, so if that happens it plays muted and the sound comes
-  // on at the first click, tap or key press. Paused while the theater is open.
-  const [needsTap, setNeedsTap] = useState(false)
+  // The top reel plays silently on its own; it gets sound while hovered, or once a
+  // reel has been clicked to play here. Paused while the theater is open.
+  const playWithSound = useRef(false)
+  const setSound = (on: boolean) => {
+    const v = featuredRef.current
+    if (!v) return
+    v.muted = !on
+    // Without a click first, some browsers pause a video that is unmuted: fall back to silent
+    v.play().catch(() => { v.muted = true; v.play().catch(() => {}) })
+  }
   useEffect(() => {
     const v = featuredRef.current
     if (!v) return
     if (open !== null || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.pause(); return }
-    v.muted = false
-    let undo = () => {}
-    v.play().catch(() => {
-      v.muted = true
-      v.play().catch(() => {})
-      setNeedsTap(true)
-      const unmute = () => { v.muted = false; setNeedsTap(false); undo() }
-      const events = ['pointerdown', 'keydown', 'touchstart'] as const
-      events.forEach(e => window.addEventListener(e, unmute, { once: true }))
-      undo = () => events.forEach(e => window.removeEventListener(e, unmute))
-    })
-    return () => undo()
-  }, [open])
+    setSound(playWithSound.current)
+  }, [open, featured?.id])
+
+  const showAtTop = (v: Video) => {
+    playWithSound.current = true
+    setFeaturedId(v.id)
+    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <div style={{
@@ -75,7 +80,7 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
 
         {/* ── Now showing ── */}
         {featured && (
-          <section className="grid md:grid-cols-[1fr_auto] items-center gap-10 md:gap-16" style={{ marginBottom: 72 }}>
+          <section ref={topRef} className="grid md:grid-cols-[1fr_auto] items-center gap-10 md:gap-16" style={{ marginBottom: 72, scrollMarginTop: 60 }}>
             <div className="vgb-motion" style={{ animation: 'vgb-rise .9s cubic-bezier(.2,.7,.2,1) both' }}>
               <p style={{ fontSize: 10, letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 400, color: '#b07880', marginBottom: 18 }}>
                 ✦ Watch · {String(all.length).padStart(2, '0')} reels
@@ -119,10 +124,12 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
 
             <button
               onClick={openFeatured}
+              onMouseEnter={() => setSound(true)}
+              onMouseLeave={() => { if (!playWithSound.current) setSound(false) }}
               aria-label={`Play ${featured.title}`}
               className="group vgb-motion justify-self-center"
               style={{
-                position: 'relative', padding: 0, border: 'none', cursor: 'pointer', background: '#000',
+                position: 'relative', padding: 0, border: 'none', cursor: 'pointer', background: featuredEdge ?? '#000', transition: 'background .4s',
                 height: 'clamp(380px, 68svh, 620px)', aspectRatio: '9/16', overflow: 'hidden',
                 boxShadow: '0 50px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08)',
                 animation: 'vgb-rise 1s .15s cubic-bezier(.2,.7,.2,1) both',
@@ -130,6 +137,7 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
             >
               {featured.video_url ? (
                 <video
+                  key={featured.id}
                   ref={featuredRef}
                   src={featured.video_url}
                   poster={featured.thumbnail_url ?? undefined}
@@ -138,12 +146,6 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
                 />
               ) : featured.thumbnail_url && (
                 <Image src={featured.thumbnail_url} alt="" fill priority unoptimized className="object-contain" />
-              )}
-              {needsTap && (
-                <span style={{ position: 'absolute', left: '50%', bottom: 14, transform: 'translateX(-50%)', zIndex: 1, whiteSpace: 'nowrap',
-                               fontSize: 9, letterSpacing: '.3em', textTransform: 'uppercase', color: '#fff', background: 'rgba(14,10,12,.6)', padding: '6px 10px', pointerEvents: 'none' }}>
-                  🔇 Tap anywhere for sound
-                </span>
               )}
               <div className="vgb-motion opacity-0 group-hover:opacity-100" style={{
                 position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -191,13 +193,13 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
             })}
           </div>
           <span className="hidden lg:inline" style={{ flexShrink: 0, paddingBottom: 14, fontSize: 10, fontWeight: 300, letterSpacing: '.25em', color: 'rgba(255,255,255,.4)' }}>
-            Hover to preview · click to watch
+            Hover for sound · click to play at the top
           </span>
         </div>
 
         <div key={filter} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
           {videos.map((v, i) => (
-            <VideoTile key={v.id} video={v} index={i} onOpen={() => setOpen(i)} />
+            <VideoTile key={v.id} video={v} index={i} onOpen={() => showAtTop(v)} active={v.id === featured?.id} />
           ))}
         </div>
       </div>

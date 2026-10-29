@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
-import Image from 'next/image'
 import { CENTERED, BEE_BEN, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import ArtFill from '@/components/ArtFill'
 
 type Props = {
   date: string
@@ -55,8 +55,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
 
       <div style={{ position: 'relative', width: 'min(100%, 420px)', aspectRatio: '1', background: '#fff', border: `2px solid ${INK}` }}>
         {art && (
-          <Image src={art.image_url} alt={solved ? art.title : ''} fill sizes="420px" className="object-contain"
-                 style={{ opacity: solved ? 1 : .35, transition: 'opacity 1.2s ease' }} />
+          <ArtFill src={art.image_url} alt={solved ? art.title : ''} sizes="420px" style={{ opacity: solved ? 1 : .35, transition: 'opacity 1.2s ease, background .4s' }} />
         )}
         <div style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gridTemplateRows: 'repeat(6, 1fr)' }}>
           {grid.map((row, r) => row.map((v, c) => {

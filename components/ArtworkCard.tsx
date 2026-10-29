@@ -1,6 +1,6 @@
 'use client'
-import Image from 'next/image'
 import type { Artwork } from '@/lib/types'
+import ArtFill from '@/components/ArtFill'
 
 const categoryColors: Record<string, string> = {
   music:    '#7a3040',
@@ -25,13 +25,7 @@ export default function ArtworkCard({ artwork, onClick, size = 'medium' }: Props
       onClick={() => onClick(artwork)}
       className="group"
     >
-      <Image
-        src={artwork.image_url}
-        alt={artwork.title}
-        fill
-        className="object-contain"
-        sizes="(max-width: 768px) 50vw, 33vw"
-      />
+      <ArtFill src={artwork.image_url} alt={artwork.title} sizes="(max-width: 768px) 50vw, 33vw" />
 
       {/* Dark overlay on hover */}
       <div

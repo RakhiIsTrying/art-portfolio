@@ -3,21 +3,28 @@
 import Image from 'next/image'
 import { useRef, useState } from 'react'
 import type { Video } from '@/lib/types'
+import { useEdge } from '@/lib/useAspects'
 
 export const PLAYFAIR = 'var(--font-playfair), "Playfair Display", Georgia, serif'
 
-type Props = { video: Video; index: number; onOpen: () => void }
+type Props = { video: Video; index: number; onOpen: () => void; active?: boolean }
 
-export default function VideoTile({ video, index, onOpen }: Props) {
+export default function VideoTile({ video, index, onOpen, active }: Props) {
+  const edge = useEdge(video.thumbnail_url)
   const ref = useRef<HTMLVideoElement>(null)
   const [previewing, setPreviewing] = useState(false)
 
-  // Silent preview on hover — only on devices with a real pointer
+  // Preview with sound on hover — only on devices with a real pointer. If the
+  // browser won't allow sound yet (no click on the page so far), preview silently.
   const startPreview = () => {
     const v = ref.current
     if (!v || !window.matchMedia('(hover: hover)').matches) return
     v.currentTime = 0
-    v.play().then(() => setPreviewing(true)).catch(() => {})
+    v.muted = false
+    v.play().then(() => setPreviewing(true)).catch(() => {
+      v.muted = true
+      v.play().then(() => setPreviewing(true)).catch(() => {})
+    })
   }
   const stopPreview = () => {
     ref.current?.pause()
@@ -37,7 +44,8 @@ export default function VideoTile({ video, index, onOpen }: Props) {
       style={{
         position: 'relative', display: 'block', width: '100%', aspectRatio: '9/16',
         overflow: 'hidden', padding: 0, border: 'none', cursor: 'pointer', textAlign: 'left',
-        background: '#1a1014', fontFamily: 'inherit',
+        background: edge ?? '#1a1014', fontFamily: 'inherit', transition: 'background .4s',
+        outline: active ? '2px solid #b07880' : undefined, outlineOffset: 2,
         animation: 'vgb-rise .8s cubic-bezier(.2,.7,.2,1) both',
         animationDelay: `${Math.min(index, 12) * 55}ms`,
       }}
