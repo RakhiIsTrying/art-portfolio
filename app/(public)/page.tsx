@@ -3,9 +3,13 @@ import Ticker from '@/components/Ticker'
 import Hero from '@/components/Hero'
 import FeaturedGrid from '@/components/FeaturedGrid'
 import CollectionsStrip from '@/components/CollectionsStrip'
+import { COLLECTIONS } from '@/lib/collections'
 import type { Artwork } from '@/lib/types'
 
 const TOP_TICKER    = '✦ POP ART  ·  DIGITAL ART  ·  PAPER ART  ·  MUSIC ICONS  ·  MOVIE ART  ·  COMICS  ·  BEE BEN & DUG-DUG  ·  STICKERS  ·  CHIBI  ·  ORIGINALS'
+// Piece pinned to the hero; set to null to show the latest upload instead
+const HERO_TITLE: string | null = 'KATSEYE'
+
 const BOTTOM_TICKER = '✦ AVAILABLE FOR COMMISSIONS  ·  INQUIRE FOR PRICING  ·  ORIGINAL ART & PRINTS  ·  BEE BEN & DUG-DUG  ·  STICKERS & PAPER CUTS  ·  FAN ART & ORIGINALS'
 
 export default async function HomePage() {
@@ -19,17 +23,18 @@ export default async function HomePage() {
 
   const works = (artworks ?? []) as Artwork[]
 
-  const { data: latest } = await supabase
-    .from('artworks')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+  const { data: pinned } = HERO_TITLE
+    ? await supabase.from('artworks').select('*').eq('title', HERO_TITLE).limit(1).maybeSingle()
+    : { data: null }
+  const { data: latest } = pinned
+    ? { data: null }
+    : await supabase.from('artworks').select('*').order('created_at', { ascending: false }).limit(1).maybeSingle()
+  const hero = (pinned ?? latest) as Artwork | null
 
   return (
     <>
       <Ticker text={TOP_TICKER} direction="left" variant="rust" />
-      <Hero latest={(latest as Artwork | null) ?? undefined} />
+      <Hero latest={hero ?? undefined} label={pinned ? 'Featured Work' : 'Latest Work'} />
       <Ticker text={BOTTOM_TICKER} direction="right" variant="blush" />
 
       {/* ── Featured Work header ── */}
@@ -77,7 +82,7 @@ export default async function HomePage() {
             Browse Collections
           </h2>
           <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
-            05 categories
+            {String(COLLECTIONS.length).padStart(2, '0')} categories
           </span>
         </div>
       </div>

@@ -11,7 +11,7 @@ const categories = [
   { label: 'Paper',   color: '#7a5020', href: '/gallery?cat=paper'   },
 ]
 
-export default function Hero({ latest }: { latest?: Artwork }) {
+export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwork; label?: string }) {
   return (
     <section style={{
       display: 'grid',
@@ -90,7 +90,7 @@ export default function Hero({ latest }: { latest?: Artwork }) {
           fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
           color: latest ? 'rgba(255,255,255,.75)' : 'rgba(255,255,255,.28)',
         }}>
-          Latest Work
+          {label}
         </span>
 
         {/* Glowing rose dot */}
