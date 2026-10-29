@@ -73,6 +73,9 @@ export function SmallButton({ onClick, children, dark }: { onClick: () => void; 
 
 const HINT_COOLDOWN = 10 // seconds the hint button stays locked after each hint
 const HINT_LOCK_KEY = 'vgb-puzzle:hint-locked-until'
+const BEN = '/puzzles/ben.png'   // Ben's cut-out, from his Cozy Portrait
+const AUTUMN = '#a0521d'
+const AUTUMN_DARK = '#7a3b16'
 
 /**
  * "Ask Ben" — gives a hint, then locks for 10 seconds.
@@ -81,6 +84,7 @@ const HINT_LOCK_KEY = 'vgb-puzzle:hint-locked-until'
 export function HintButton({ getHint, disabled }: { getHint: () => string | null; disabled?: boolean }) {
   const [message, setMessage] = useState<string | null>(null)
   const [wait, setWait] = useState(0)
+  const [count, setCount] = useState(0)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // The lock is shared by every puzzle and survives switching games or reloading
@@ -105,18 +109,26 @@ export function HintButton({ getHint, disabled }: { getHint: () => string | null
   function ask() {
     if (tick() > 0 || disabled) return
     setMessage(getHint() ?? 'Hmm, nothing left to tell you — you’ve got this!')
+    setCount(c => c + 1)
     try { localStorage.setItem(HINT_LOCK_KEY, String(Date.now() + HINT_COOLDOWN * 1000)) } catch {}
     setWait(HINT_COOLDOWN)
     startTicking()
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 16, width: 'min(100%, 420px)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 18, width: 'min(100%, 420px)' }}>
       {message && (
-        <div role="status" style={{ position: 'relative', alignSelf: 'stretch', background: '#fff', border: `1px solid ${BEE_BEN}`, padding: '10px 14px', fontSize: 13, color: INK, lineHeight: 1.5, textAlign: 'left' }}>
-          <span style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: BEE_BEN, display: 'block', marginBottom: 3 }}>Ben says</span>
-          {message}
-          <span aria-hidden style={{ position: 'absolute', bottom: -7, left: '50%', width: 12, height: 12, background: '#fff', borderRight: `1px solid ${BEE_BEN}`, borderBottom: `1px solid ${BEE_BEN}`, transform: 'translateX(-50%) rotate(45deg)' }} />
+        // Pops out each time Ben speaks (the key restarts the animation)
+        <div key={count} role="status" className="vgb-motion"
+             style={{ position: 'relative', alignSelf: 'stretch', marginTop: 34, padding: '14px 16px 14px 96px', textAlign: 'left',
+                      background: `linear-gradient(135deg, ${AUTUMN} 0%, ${AUTUMN_DARK} 100%)`, color: '#fbf1e4',
+                      boxShadow: '0 14px 30px rgba(122,59,22,.35)', borderRadius: 4,
+                      transformOrigin: '50% 100%', animation: 'vgb-pop .45s cubic-bezier(.2,1.4,.4,1) both' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={BEN} alt="Ben" style={{ position: 'absolute', left: 6, bottom: 0, height: 108, filter: 'drop-shadow(0 0 2px #fbf1e4) drop-shadow(0 6px 10px rgba(0,0,0,.25))' }} />
+          <span style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: '#f3c98b', display: 'block', marginBottom: 4 }}>Ben says</span>
+          <span style={{ fontSize: 13, lineHeight: 1.55 }}>{message}</span>
+          <span aria-hidden style={{ position: 'absolute', bottom: -7, left: '50%', width: 14, height: 14, background: AUTUMN_DARK, transform: 'translateX(-50%) rotate(45deg)' }} />
         </div>
       )}
       {disabled ? (
@@ -124,10 +136,15 @@ export function HintButton({ getHint, disabled }: { getHint: () => string | null
           ✓ Solved — no hints needed
         </span>
       ) : (
-        <button type="button" onClick={ask} disabled={wait > 0}
-          style={{ padding: '9px 16px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit',
-                   cursor: wait > 0 ? 'not-allowed' : 'pointer', border: `1px solid ${HONEY}`, background: wait > 0 ? '#f4efe0' : HONEY, color: INK, opacity: wait > 0 ? .7 : 1 }}>
-          {wait > 0 ? `Ben is thinking… ${wait}s` : '💡 Ask Ben for a hint'}
+        <button type="button" onClick={ask} disabled={wait > 0} className="hover:-translate-y-0.5"
+          style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 18px 6px 8px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit',
+                   cursor: wait > 0 ? 'not-allowed' : 'pointer', border: 'none', borderRadius: 999,
+                   background: wait > 0 ? '#ead9c6' : AUTUMN, color: wait > 0 ? AUTUMN_DARK : '#fbf1e4', boxShadow: wait > 0 ? 'none' : '0 6px 16px rgba(122,59,22,.3)', transition: 'transform .15s, background .3s' }}>
+          <span style={{ width: 34, height: 34, borderRadius: '50%', background: '#fbf1e4', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', flexShrink: 0 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={BEN} alt="" style={{ height: 40, marginBottom: -4, filter: wait > 0 ? 'grayscale(1)' : 'none' }} />
+          </span>
+          {wait > 0 ? `Ben is thinking… ${wait}s` : 'Ask Ben for a hint'}
         </button>
       )}
     </div>
