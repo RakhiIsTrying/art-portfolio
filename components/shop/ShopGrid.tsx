@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import { COLLECTIONS } from '@/lib/collections'
 import type { Artwork } from '@/lib/types'
+import type { Currency } from '@/lib/prints'
 import ShopCard, { CATEGORY_COLORS } from './ShopCard'
 
-type Props = { artworks: Artwork[]; kind: 'print' | 'original'; showFilters?: boolean }
+type Props = { artworks: Artwork[]; kind: 'print' | 'original'; currency: Currency; showFilters?: boolean }
 
-export default function ShopGrid({ artworks, kind, showFilters = true }: Props) {
+export default function ShopGrid({ artworks, kind, currency, showFilters = true }: Props) {
   const [filter, setFilter] = useState('all')
 
   const tabs = COLLECTIONS
@@ -49,7 +50,7 @@ export default function ShopGrid({ artworks, kind, showFilters = true }: Props) 
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
         {shown.map(a => (
-          <ShopCard key={a.id} artwork={a} kind={kind} collectionName={nameOf(a.collection_slug)} />
+          <ShopCard key={a.id} artwork={a} kind={kind} currency={currency} collectionName={nameOf(a.collection_slug)} />
         ))}
       </div>
     </>

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import ShopGrid from '@/components/shop/ShopGrid'
-import { PRINT_SIZES } from '@/components/shop/ShopCard'
+import { PRINT_SIZES, formatPrice, type Currency } from '@/lib/prints'
 import type { Artwork } from '@/lib/types'
 import { PLANS } from '@/lib/printClub'
 import { planForVisitor } from '@/lib/printClubServer'
@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 
 const STEPS = [
-  { n: '01', title: 'Pick a piece',  body: 'Browse prints below, or ask about an original.' },
-  { n: '02', title: 'Send a request', body: 'Tell me the size and where it’s headed.' },
-  { n: '03', title: 'Get a quote',   body: 'I’ll reply with pricing, shipping and timing.' },
+  { n: '01', title: 'Pick a piece',   body: 'Browse prints below, or ask about an original.' },
+  { n: '02', title: 'Choose sizes',   body: 'Pick sizes and quantities on the order form.' },
+  { n: '03', title: 'Confirm & pay', body: 'I’ll confirm the total, shipping and timing.' },
 ]
 
 export default async function ShopPage() {
@@ -30,7 +30,11 @@ export default async function ShopPage() {
   // Columns may not exist yet on older databases: default to prints on, originals off
   const prints    = artworks.filter(a => a.prints_available !== false)
   const originals = artworks.filter(a => a.original_available === true)
-  const clubPrice = PLANS[await planForVisitor()].price
+  const plan = await planForVisitor()
+  const clubPrice = PLANS[plan].price
+  // Prices show in rupees for visitors in India, dollars elsewhere
+  const currency: Currency = plan === 'india' ? 'inr' : 'usd'
+  const other: Currency = currency === 'inr' ? 'usd' : 'inr'
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto' }} className="px-5 md:px-9 pt-9 pb-16">
@@ -92,11 +96,31 @@ export default async function ShopPage() {
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 6 }}>
           <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Prints</h2>
           <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
-            {PRINT_SIZES.join(' · ')}
+            {PRINT_SIZES.length} sizes
           </span>
         </div>
+
+        {/* Sizes & prices */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" style={{ gap: 1, background: '#d0d0d0', border: '1px solid #d0d0d0', margin: '14px 0 10px' }}>
+          {PRINT_SIZES.map(s => (
+            <div key={s.id} style={{ background: '#fff', padding: '14px 16px' }}>
+              <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 2 }}>{s.name}</p>
+              <p style={{ fontSize: 11, fontWeight: 300, color: '#787878', marginBottom: 10 }}>{s.dims}</p>
+              <p style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                <span style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>{formatPrice(s[currency], currency)}</span>
+                <span style={{ fontSize: 11, fontWeight: 300, color: '#a0a0a0' }}>{formatPrice(s[other], other)}</span>
+              </p>
+              <p style={{ fontSize: 9, letterSpacing: '.2em', textTransform: 'uppercase', marginTop: 10, color: s.min ? '#7a3040' : '#1a6060' }}>
+                {s.min ? `Free shipping on ${s.min}+` : 'Free shipping'}
+              </p>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: 11, fontWeight: 300, color: '#787878', marginBottom: 22 }}>
+          Prices are per print. Orders under the minimum are welcome; shipping is added on top.
+        </p>
         {prints.length > 0 ? (
-          <ShopGrid artworks={prints} kind="print" />
+          <ShopGrid artworks={prints} kind="print" currency={currency} />
         ) : (
           <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
             Prints coming soon.
@@ -109,11 +133,11 @@ export default async function ShopPage() {
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 18, paddingBottom: 12, borderBottom: '1px solid #d0d0d0' }}>
           <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Originals</h2>
           <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
-            One of one
+            One of one · price on request
           </span>
         </div>
 
-        {originals.length > 0 && <ShopGrid artworks={originals} kind="original" showFilters={false} />}
+        {originals.length > 0 && <ShopGrid artworks={originals} kind="original" currency={currency} showFilters={false} />}
 
         {/* Commission card — always offered */}
         <div className="grid md:grid-cols-[1fr_auto] gap-6 items-center" style={{ marginTop: originals.length ? 24 : 0, background: '#1a1014', padding: '28px 30px', position: 'relative', overflow: 'hidden' }}>

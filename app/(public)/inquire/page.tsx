@@ -1,7 +1,10 @@
 import { Suspense } from 'react'
 import InquireForm from '@/components/InquireForm'
+import { planForVisitor } from '@/lib/printClubServer'
 
-export default function InquirePage() {
+export default async function InquirePage() {
+  const currency = (await planForVisitor()) === 'india' ? 'inr' : 'usd'
+
   return (
     <div style={{ maxWidth: 640, margin: '0 auto', padding: '36px 36px 60px' }}>
 
@@ -18,7 +21,7 @@ export default function InquirePage() {
       </div>
 
       <Suspense fallback={null}>
-        <InquireForm />
+        <InquireForm currency={currency} />
       </Suspense>
 
     </div>

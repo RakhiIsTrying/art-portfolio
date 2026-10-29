@@ -1,9 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Artwork } from '@/lib/types'
-
-// Sizes offered for prints — edit here to change what the shop lists
-export const PRINT_SIZES = ['A5', 'A4', 'A3', 'A2']
+import { formatPrice, lowestPrice, type Currency } from '@/lib/prints'
 
 export const CATEGORY_COLORS: Record<string, string> = {
   music:     '#7a3040',
@@ -18,9 +16,9 @@ export function inquireHref(artwork: Artwork, kind: 'print' | 'original') {
   return `/inquire?piece=${encodeURIComponent(piece)}`
 }
 
-type Props = { artwork: Artwork; kind: 'print' | 'original'; collectionName: string }
+type Props = { artwork: Artwork; kind: 'print' | 'original'; currency: Currency; collectionName: string }
 
-export default function ShopCard({ artwork, kind, collectionName }: Props) {
+export default function ShopCard({ artwork, kind, currency, collectionName }: Props) {
   const color = CATEGORY_COLORS[artwork.collection_slug] ?? '#1a1014'
 
   return (
@@ -45,8 +43,11 @@ export default function ShopCard({ artwork, kind, collectionName }: Props) {
       </div>
 
       <div style={{ padding: '12px 14px 14px', borderTop: `2px solid ${color}` }}>
-        <p style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 5 }}>
-          {collectionName}
+        <p style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 5 }}>
+          <span>{collectionName}</span>
+          <span style={{ color: '#787878', letterSpacing: '.15em', whiteSpace: 'nowrap' }}>
+            {kind === 'original' ? 'Price on request' : `From ${formatPrice(lowestPrice(currency), currency)}`}
+          </span>
         </p>
         <p style={{
           fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontStyle: 'italic', fontSize: 18,
@@ -61,7 +62,7 @@ export default function ShopCard({ artwork, kind, collectionName }: Props) {
             borderBottom: '1px solid #1a1014', paddingBottom: 1, transition: 'color .2s, border-color .2s',
           }}
         >
-          {kind === 'original' ? 'Inquire about original →' : 'Request a print →'}
+          {kind === 'original' ? 'Ask for the price →' : 'Order a print →'}
         </span>
       </div>
     </Link>
