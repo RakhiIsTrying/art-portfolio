@@ -77,32 +77,28 @@ type HubProps = { daily: Daily; art: { title: string; image_url: string } | null
 
 export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps) {
   const isToday = daily.date === today
-  const [active, setActive] = useState<GameId>('sudoku')
+  // Remember which puzzle was open, so a refresh comes back to it
+  const [active, setActive] = useDailyState<GameId>(daily.date, 'open-tab', 'sudoku')
   const [solved, setSolved, solvedLoaded] = useDailyState<Partial<Record<GameId, boolean>>>(daily.date, 'solved', {})
   // Confetti only for a fresh win — not when reopening a puzzle solved earlier today
   const [burst, setBurst] = useState(0)
   const [celebrating, setCelebrating] = useState(false)
   const countdown = useCountdown(isToday)
-  // Confetti only once all five of the day's puzzles are solved
-  const allSolved = (s: Partial<Record<GameId, boolean>>) => GAMES.every(g => s[g.id])
+  // Confetti for each puzzle: when it's solved, and whenever a solved puzzle is opened (or the page refreshed on it)
+  const celebrate = useCallback(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    setBurst(b => b + 1)
+    setCelebrating(true)
+  }, [])
   const markSolved = useCallback((g: GameId) => {
-    const next = { ...solved, [g]: true }
-    if (solvedLoaded && !solved[g] && allSolved(next) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setBurst(b => b + 1)
-      setCelebrating(true)
-    }
+    if (solvedLoaded && !solved[g]) celebrate()
     setSolved(s => (s[g] ? s : { ...s, [g]: true }))
-  }, [setSolved, solved, solvedLoaded])
-  // Coming back (or refreshing) after solving all five celebrates again, once per page load
-  const greeted = useRef(false)
+  }, [setSolved, solved, solvedLoaded, celebrate])
   useEffect(() => {
-    if (!solvedLoaded || greeted.current) return
-    greeted.current = true
-    if (allSolved(solved) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setBurst(b => b + 1)
-      setCelebrating(true)
-    }
-  }, [solvedLoaded, solved])
+    if (solvedLoaded && solved[active]) celebrate()
+    // Only when a puzzle is opened, not every time progress changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, solvedLoaded])
 
   useEffect(() => {
     if (!celebrating) return
