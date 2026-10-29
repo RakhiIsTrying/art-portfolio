@@ -6,6 +6,7 @@ import Wordle from './Wordle'
 import Queens from './Queens'
 import Wend from './Wend'
 import Bee from './Bee'
+import Confetti from './Confetti'
 import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
 
 const GAMES = [
@@ -37,9 +38,23 @@ function useCountdown() {
 
 export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { title: string; image_url: string } | null; theme: Theme }) {
   const [active, setActive] = useState<GameId>('sudoku')
-  const [solved, setSolved] = useDailyState<Partial<Record<GameId, boolean>>>(daily.date, 'solved', {})
+  const [solved, setSolved, solvedLoaded] = useDailyState<Partial<Record<GameId, boolean>>>(daily.date, 'solved', {})
+  // Confetti only for a fresh win — not when reopening a puzzle solved earlier today
+  const [burst, setBurst] = useState(0)
+  const [celebrating, setCelebrating] = useState(false)
   const countdown = useCountdown()
-  const markSolved = useCallback((g: GameId) => setSolved(s => (s[g] ? s : { ...s, [g]: true })), [setSolved])
+  const markSolved = useCallback((g: GameId) => {
+    if (solvedLoaded && !solved[g] && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setBurst(b => b + 1)
+      setCelebrating(true)
+    }
+    setSolved(s => (s[g] ? s : { ...s, [g]: true }))
+  }, [setSolved, solved, solvedLoaded])
+  useEffect(() => {
+    if (!celebrating) return
+    const t = setTimeout(() => setCelebrating(false), 5000)
+    return () => clearTimeout(t)
+  }, [celebrating, burst])
   const done = (g: GameId) => () => markSolved(g)
 
   const pretty = new Date(daily.date + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })
@@ -82,6 +97,7 @@ export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { 
       {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} solution={daily.wend.solution} onSolved={done('wend')} />}
       {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} onSolved={done('bee')} />}
       <BeeCallout />
+      {celebrating && <Confetti burst={burst} />}
     </ThemeContext.Provider>
   )
 }

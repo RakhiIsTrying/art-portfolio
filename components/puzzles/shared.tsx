@@ -76,6 +76,7 @@ export function SmallButton({ onClick, children, dark, bee }: { onClick: () => v
 const HINT_COOLDOWN = 10 // seconds the hint button stays locked after each hint
 const HINT_LOCK_KEY = 'vgb-puzzle:hint-locked-until'
 const BEN = '/puzzles/ben.png'   // Ben's cut-out, from his Cozy Portrait
+export const BEN_IMG = BEN
 const AUTUMN = '#a0521d'
 const AUTUMN_DARK = '#7a3b16'
 
