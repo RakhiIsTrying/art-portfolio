@@ -11,14 +11,16 @@ type Props = {
   /** Shown until the art's edge colour is known */
   fallback?: string
   style?: React.CSSProperties
+  /** Plain white around the art instead of its border colour (used in the print shop) */
+  plain?: boolean
 }
 
 /**
  * Fills its (positioned) parent with the whole artwork — never cropped — and paints
  * any space around it in the art's own border colour so it blends in.
  */
-export default function ArtFill({ src, alt = '', sizes, priority, unoptimized, fallback = '#fff', style }: Props) {
-  const edge = useEdge(src)
+export default function ArtFill({ src, alt = '', sizes, priority, unoptimized, fallback = '#fff', style, plain }: Props) {
+  const edge = useEdge(plain ? undefined : src)
   return (
     <div style={{ position: 'absolute', inset: 0, background: edge ?? fallback, transition: 'background .4s', ...style }}>
       <Image src={src} alt={alt} fill sizes={sizes} priority={priority} unoptimized={unoptimized} className="object-contain" />

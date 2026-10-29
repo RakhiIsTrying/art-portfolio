@@ -4,7 +4,7 @@ import { PRINT_SIZES, SAMPLE_GREETINGS, formatPrice, type Currency, type PrintSi
 import type { Artwork } from '@/lib/types'
 import ShopGrid from './ShopGrid'
 import ArtViewer from '@/components/ArtViewer'
-import { useAspect, useEdge } from '@/lib/useAspects'
+import { useAspect } from '@/lib/useAspects'
 import SizePicker, { orderPayload, type Quantities } from './SizePicker'
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -16,10 +16,9 @@ const MARGIN_INCHES = .25       // white margin printed around the art
 const label: React.CSSProperties = { display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: INK, marginBottom: 8 }
 const input: React.CSSProperties = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #d0d0d0', padding: '7px 0', fontSize: 13, fontWeight: 300, color: INK, outline: 'none', fontFamily: 'inherit' }
 
-/** A print on paper: the whole art, with any spare paper in its own border colour. */
+/** A print on paper: the whole art, as big as fits inside a small white margin. */
 function Paper({ art, w, h, ppi, highlight, onView }: { art: Artwork; w: number; h: number; ppi: number; highlight?: boolean; onView?: () => void }) {
-  // A small white margin all round; inside it, any spare space takes the art's own border colour
-  const edge = useEdge(art.image_url) ?? '#fff'
+  // White paper with a small margin all round; the art is as large as it can be inside it, never cropped
   return (
     <div onClick={onView} role={onView ? 'button' : undefined} aria-label={onView ? `View ${art.title} full size` : undefined} title={onView ? 'View full size' : undefined}
       style={{
@@ -28,7 +27,7 @@ function Paper({ art, w, h, ppi, highlight, onView }: { art: Artwork; w: number;
       boxShadow: highlight ? '0 0 0 2px #4a3a7a, 0 12px 26px rgba(26,16,20,.22)' : '0 8px 20px rgba(26,16,20,.16), 0 1px 3px rgba(26,16,20,.12)',
       transition: 'box-shadow .2s',
     }}>
-      <div style={{ width: '100%', height: '100%', background: edge }}>
+      <div style={{ width: '100%', height: '100%' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={art.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
       </div>
@@ -90,7 +89,6 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
   const card = PRINT_SIZES.find(s => s.card) as PrintSize
   // Wide pieces suit landscape paper (and a sideways card); the buyer has the final say
   const aspect = useAspect(art.image_url)
-  const edge = useEdge(art.image_url)
   const suggested = (aspect ?? 0) > 1.05 ? 'landscape' : 'portrait'
   const landscape = (orientation ?? suggested) === 'landscape'
   const fit = (s: PrintSize) => (landscape ? { w: s.h, h: s.w } : { w: s.w, h: s.h })
@@ -125,7 +123,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <button type="button" onClick={() => setViewing(art)} title="View full size" aria-label={`View ${art.title} full size`}
                           style={{ padding: 0, border: 'none', background: 'none', cursor: 'zoom-in', flexShrink: 0 }}>
-                    <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'contain', display: 'block', border: '1px solid #ebebeb', background: edge ?? '#fff' }} />
+                    <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'contain', display: 'block', border: '1px solid #ebebeb', background: '#fff' }} />
                   </button>
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 19, color: INK, lineHeight: 1.15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{art.title}</p>
@@ -207,7 +205,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>See it to scale</p>
           <h3 style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: INK, marginBottom: 18 }}>{art.title}, every size</h3>
           <p style={{ fontSize: 11, fontWeight: 300, color: '#787878', margin: '-12px 0 18px' }}>
-            {landscape ? '▭ Landscape' : '▯ Portrait'} — switch it in your order. Every size shows the whole artwork with a small white margin.
+            {landscape ? '▭ Landscape' : '▯ Portrait'} — switch it in your order. Every size shows the whole artwork as large as it fits, with a small white margin.
           </p>
 
           <div ref={rowRef} className="no-scrollbar" style={{ overflowX: 'auto', paddingBottom: 6 }}>

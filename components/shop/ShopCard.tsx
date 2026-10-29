@@ -30,9 +30,9 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
 
   const inner = (
     <>
-      {/* The whole piece, with any spare space in its own border colour */}
+      {/* The whole piece on white, like the print */}
       <div style={{ position: 'relative', aspectRatio: '4/5', overflow: 'hidden' }}>
-        <ArtFill src={artwork.image_url} alt={artwork.title} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px" />
+        <ArtFill plain src={artwork.image_url} alt={artwork.title} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px" />
         <span style={{
           position: 'absolute', top: 10, left: 10, fontSize: 8, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
           color: '#fff', background: kind === 'original' ? '#1a1014' : color, padding: '4px 7px',
