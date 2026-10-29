@@ -4,7 +4,7 @@ import { PRINT_SIZES, SAMPLE_GREETINGS, formatPrice, type Currency, type PrintSi
 import type { Artwork } from '@/lib/types'
 import ShopGrid from './ShopGrid'
 import ArtViewer from '@/components/ArtViewer'
-import { useAspect } from '@/lib/useAspects'
+import { useAspect, useEdge } from '@/lib/useAspects'
 import SizePicker, { orderPayload, type Quantities } from './SizePicker'
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -18,7 +18,9 @@ const input: React.CSSProperties = { width: '100%', background: 'transparent', b
 
 /** A print on paper: the whole art, as big as fits inside a small white margin. */
 function Paper({ art, w, h, ppi, highlight, onView }: { art: Artwork; w: number; h: number; ppi: number; highlight?: boolean; onView?: () => void }) {
-  // White paper with a small margin all round; the art is as large as it can be inside it, never cropped
+  // White paper with a small margin all round; the art is as large as it can be inside it, never cropped.
+  // If the art's corners are one flat colour, the spare space inside the margin takes that colour.
+  const edge = useEdge(art.image_url)
   return (
     <div onClick={onView} role={onView ? 'button' : undefined} aria-label={onView ? `View ${art.title} full size` : undefined} title={onView ? 'View full size' : undefined}
       style={{
@@ -27,7 +29,7 @@ function Paper({ art, w, h, ppi, highlight, onView }: { art: Artwork; w: number;
       boxShadow: highlight ? '0 0 0 2px #4a3a7a, 0 12px 26px rgba(26,16,20,.22)' : '0 8px 20px rgba(26,16,20,.16), 0 1px 3px rgba(26,16,20,.12)',
       transition: 'box-shadow .2s',
     }}>
-      <div style={{ width: '100%', height: '100%' }}>
+      <div style={{ width: '100%', height: '100%', background: edge ?? '#fff' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={art.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
       </div>
