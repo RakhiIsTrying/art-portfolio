@@ -25,13 +25,15 @@ const categoryDesc: Record<string, string> = {
 export default async function GalleryPage() {
   const supabase = await getSupabaseServerClient()
   const previews: Record<string, Artwork[]> = {}
+  const totals: Record<string, number> = {}
   await Promise.all(
     COLLECTIONS.map(async col => {
-      const { data } = await supabase
-        .from('artworks').select('*')
+      const { data, count } = await supabase
+        .from('artworks').select('*', { count: 'exact' })
         .eq('collection_slug', col.slug)
         .order('created_at', { ascending: false }).limit(3)
       previews[col.slug] = (data ?? []) as Artwork[]
+      totals[col.slug] = count ?? 0
     })
   )
 
@@ -62,7 +64,7 @@ export default async function GalleryPage() {
                   {col.name}
                 </h2>
                 <p style={{ fontSize: 11, fontWeight: 300, color: '#a0a0a0', letterSpacing: '.05em' }}>
-                  {desc} · {previews[col.slug]?.length ?? 0} pieces shown
+                  {desc} · {totals[col.slug]} {totals[col.slug] === 1 ? 'piece' : 'pieces'}
                 </p>
               </div>
               <div style={{ display: 'flex', gap: 1, padding: '12px 16px', flexShrink: 0 }}>
