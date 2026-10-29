@@ -10,6 +10,7 @@ const navItems = [
   { href: '/about',    label: 'About',   color: '#7a5020' },
   { href: '/inquire',  label: 'Inquire', color: '#4a3a7a' },
   { href: '/shop',     label: 'Shop',    color: '#1a1014' },
+  { href: '/print-club', label: 'Print Club', color: '#9a5a64' },
 ]
 
 export default function Nav() {
@@ -33,7 +34,7 @@ export default function Nav() {
         VGB
       </Link>
 
-      <div style={{ display: 'flex', flex: 1 }}>
+      <div className="no-scrollbar" style={{ display: 'flex', flex: 1, overflowX: 'auto' }}>
         {navItems.map(({ href, label, color }) => {
           const active = pathname === href || pathname.startsWith(href + '/')
           return (
@@ -41,7 +42,7 @@ export default function Nav() {
               key={href}
               href={href}
               style={{
-                flex: 1,
+                flex: '1 0 auto', padding: '0 14px', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase',
                 fontWeight: active ? 500 : 300,
@@ -60,12 +61,12 @@ export default function Nav() {
         })}
       </div>
 
-      <div style={{
+      <div className="hidden md:flex" style={{
         padding: '0 24px',
         fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
         color: '#a0a0a0',
         borderLeft: '1px solid #d0d0d0',
-        display: 'flex', alignItems: 'center',
+        alignItems: 'center',
         background: '#e6e6e6',
         flexShrink: 0,
       }}>
