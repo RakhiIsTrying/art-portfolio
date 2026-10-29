@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { PRINT_SIZES, SAMPLE_GREETINGS, formatPrice, type Currency, type PrintSize } from '@/lib/prints'
 import type { Artwork } from '@/lib/types'
 import ShopGrid from './ShopGrid'
+import ArtViewer from '@/components/ArtViewer'
 import { useAspect, useEdge } from '@/lib/useAspects'
 import SizePicker, { orderPayload, type Quantities } from './SizePicker'
 
@@ -16,11 +17,13 @@ const label: React.CSSProperties = { display: 'block', fontSize: 10, letterSpaci
 const input: React.CSSProperties = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #d0d0d0', padding: '7px 0', fontSize: 13, fontWeight: 300, color: INK, outline: 'none', fontFamily: 'inherit' }
 
 /** A print on paper: the whole art, with any spare paper in its own border colour. */
-function Paper({ art, w, h, ppi, highlight }: { art: Artwork; w: number; h: number; ppi: number; highlight?: boolean }) {
+function Paper({ art, w, h, ppi, highlight, onView }: { art: Artwork; w: number; h: number; ppi: number; highlight?: boolean; onView?: () => void }) {
   // A small white margin all round; inside it, any spare space takes the art's own border colour
   const edge = useEdge(art.image_url) ?? '#fff'
   return (
-    <div style={{
+    <div onClick={onView} role={onView ? 'button' : undefined} aria-label={onView ? `View ${art.title} full size` : undefined} title={onView ? 'View full size' : undefined}
+      style={{
+      cursor: onView ? 'zoom-in' : undefined,
       width: w * ppi, height: h * ppi, background: '#fff', padding: Math.max(4, MARGIN_INCHES * ppi), flexShrink: 0,
       boxShadow: highlight ? '0 0 0 2px #4a3a7a, 0 12px 26px rgba(26,16,20,.22)' : '0 8px 20px rgba(26,16,20,.16), 0 1px 3px rgba(26,16,20,.12)',
       transition: 'box-shadow .2s',
@@ -39,6 +42,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
   const [art, setArt] = useState<Artwork>(() => artworks.find(a => a.title === initialTitle) ?? artworks[0])
   // The buyer picks portrait or landscape; until they do, we suggest one from the art's shape
   const [orientation, setOrientation] = useState<'portrait' | 'landscape' | null>(null)
+  const [viewing, setViewing] = useState<Artwork | null>(null)
   const [qty, setQty] = useState<Quantities>({})
   const [currency, setCurrency] = useState<Currency>(initialCurrency)
   const [greetingMode, setGreetingMode] = useState<'random' | 'custom'>('random')
@@ -119,10 +123,16 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                 <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a3040', marginBottom: 12 }}>Your order</p>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0, border: '1px solid #ebebeb', background: edge ?? '#fff' }} />
+                  <button type="button" onClick={() => setViewing(art)} title="View full size" aria-label={`View ${art.title} full size`}
+                          style={{ padding: 0, border: 'none', background: 'none', cursor: 'zoom-in', flexShrink: 0 }}>
+                    <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'contain', display: 'block', border: '1px solid #ebebeb', background: edge ?? '#fff' }} />
+                  </button>
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 19, color: INK, lineHeight: 1.15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{art.title}</p>
-                    <a href="#choose-piece" style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>Change piece ↓</a>
+                    <span style={{ display: 'flex', gap: 14 }}>
+                      <button type="button" onClick={() => setViewing(art)} style={{ padding: 0, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>⤢ Full size</button>
+                      <a href="#choose-piece" style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>Change piece ↓</a>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -207,13 +217,13 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                   {s.card ? (
                     // Folded card, standing: art on the front flap only
                     <div style={{ position: 'relative' }}>
-                      <Paper art={art} {...fit(s)} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} />
+                      <Paper art={art} {...fit(s)} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} onView={() => setViewing(art)} />
                       <div style={landscape
                         ? { position: 'absolute', left: 0, right: 0, top: 0, height: 5, background: 'linear-gradient(180deg, rgba(26,16,20,.18), transparent)' }
                         : { position: 'absolute', left: 0, top: 0, bottom: 0, width: 5, background: 'linear-gradient(90deg, rgba(26,16,20,.18), transparent)' }} />
                     </div>
                   ) : (
-                    <Paper art={art} {...fit(s)} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} />
+                    <Paper art={art} {...fit(s)} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} onView={() => setViewing(art)} />
                   )}
                   <p style={{ marginTop: 10, fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: INK }}>
                     {s.card ? 'Card' : s.name}{(qty[s.id] ?? 0) > 0 && <span style={{ color: '#4a3a7a' }}> ×{qty[s.id]}</span>}
@@ -234,7 +244,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
               {/* Closed */}
               <div style={{ textAlign: 'center' }}>
                 <div style={{ position: 'relative', transform: 'rotate(-2deg)' }}>
-                  <Paper art={art} {...fit(card)} ppi={CARD_PX_PER_INCH} />
+                  <Paper art={art} {...fit(card)} ppi={CARD_PX_PER_INCH} onView={() => setViewing(art)} />
                   <div style={landscape
                     ? { position: 'absolute', left: 0, right: 0, top: 0, height: 8, background: 'linear-gradient(180deg, rgba(26,16,20,.2), transparent)' }
                     : { position: 'absolute', left: 0, top: 0, bottom: 0, width: 8, background: 'linear-gradient(90deg, rgba(26,16,20,.2), transparent)' }} />
@@ -279,8 +289,10 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
       {/* ── Pick a piece ── */}
       <div id="choose-piece" style={{ marginTop: 48, scrollMarginTop: 60 }}>
         <h3 style={{ fontFamily: PLAYFAIR, fontSize: 22, fontWeight: 700, color: INK, marginBottom: 4 }}>Choose a piece</h3>
-        <ShopGrid artworks={artworks} kind="print" currency={currency} onSelect={pick} selectedId={art.id} />
+        <ShopGrid artworks={artworks} kind="print" currency={currency} onSelect={pick} selectedId={art.id} onExpand={setViewing} />
       </div>
+
+      {viewing && <ArtViewer src={viewing.image_url} title={viewing.title} onClose={() => setViewing(null)} />}
     </div>
   )
 }

@@ -21,9 +21,11 @@ type Props = {
   /** When set, the card picks this piece instead of linking to the inquiry form */
   onSelect?: (a: Artwork) => void
   selected?: boolean
+  /** Shows a ⤢ button that opens the piece full size */
+  onExpand?: (a: Artwork) => void
 }
 
-export default function ShopCard({ artwork, kind, currency, collectionName, onSelect, selected }: Props) {
+export default function ShopCard({ artwork, kind, currency, collectionName, onSelect, selected, onExpand }: Props) {
   const color = CATEGORY_COLORS[artwork.collection_slug] ?? '#1a1014'
 
   const inner = (
@@ -67,7 +69,16 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
 
   const box: React.CSSProperties = { display: 'block', width: '100%', background: '#fff', textDecoration: 'none', textAlign: 'left', padding: 0, border: 'none', fontFamily: 'inherit', cursor: 'pointer',
                                      outline: selected ? '3px solid #4a3a7a' : 'none', outlineOffset: -3 }
-  return onSelect
+  const card = onSelect
     ? <button type="button" className="group" onClick={() => onSelect(artwork)} aria-pressed={selected} style={box}>{inner}</button>
     : <Link href={inquireHref(artwork, kind)} className="group" style={box}>{inner}</Link>
+  if (!onExpand) return card
+  return (
+    <div style={{ position: 'relative' }}>
+      {card}
+      <button type="button" onClick={() => onExpand(artwork)} aria-label={`View ${artwork.title} full size`} title="View full size"
+              style={{ position: 'absolute', top: 8, right: 8, width: 30, height: 30, border: 'none', cursor: 'zoom-in', fontSize: 15, lineHeight: '30px',
+                       background: 'rgba(255,255,255,.88)', color: '#1a1014', boxShadow: '0 2px 8px rgba(26,16,20,.2)' }}>⤢</button>
+    </div>
+  )
 }

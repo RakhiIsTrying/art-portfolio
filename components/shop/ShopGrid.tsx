@@ -8,10 +8,10 @@ import ShopCard, { CATEGORY_COLORS } from './ShopCard'
 
 type Props = {
   artworks: Artwork[]; kind: 'print' | 'original'; currency: Currency; showFilters?: boolean
-  onSelect?: (a: Artwork) => void; selectedId?: string; columns?: string
+  onSelect?: (a: Artwork) => void; selectedId?: string; columns?: string; onExpand?: (a: Artwork) => void
 }
 
-export default function ShopGrid({ artworks, kind, currency, showFilters = true, onSelect, selectedId, columns }: Props) {
+export default function ShopGrid({ artworks, kind, currency, showFilters = true, onSelect, selectedId, columns, onExpand }: Props) {
   const [filter, setFilter] = useState('all')
 
   const tabs = COLLECTIONS
@@ -53,7 +53,7 @@ export default function ShopGrid({ artworks, kind, currency, showFilters = true,
 
       <div className={`grid ${columns ?? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'} gap-3 md:gap-5`}>
         {shown.map(a => (
-          <ShopCard key={a.id} artwork={a} kind={kind} currency={currency} collectionName={nameOf(a.collection_slug)} onSelect={onSelect} selected={a.id === selectedId} />
+          <ShopCard key={a.id} artwork={a} kind={kind} currency={currency} collectionName={nameOf(a.collection_slug)} onSelect={onSelect} selected={a.id === selectedId} onExpand={onExpand} />
         ))}
       </div>
     </>
