@@ -93,7 +93,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
         </div>
       )}
 
-      {!solved && <HintButton getHint={() => {
+      <HintButton disabled={solved} getHint={() => {
         // Fix a wrong number first; otherwise fill in an empty square
         const cells = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).filter(({ r, c }) => !puzzle[r][c])
         const wrong = cells.find(({ r, c, v }) => v && v !== solution[r][c])
@@ -106,7 +106,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
         return wrong
           ? `Row ${r + 1}, column ${c + 1} should be ${solution[r][c]}, not ${wrong.v}. I fixed it for you.`
           : `Row ${r + 1}, column ${c + 1} is a ${solution[r][c]}. I’ve filled it in.`
-      }} />}
+      }} />
 
       {solved && <SolvedBanner title="Solved! Dug-Dug is wagging 🐾" detail={art ? `Today’s drawing: ${art.title}` : undefined} artIndex={1} />}
     </div>

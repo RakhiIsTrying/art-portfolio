@@ -64,14 +64,14 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
           <SmallButton onClick={() => setBoard(empty())}>Clear</SmallButton>
         </div>
       )}
-      {!solved && <HintButton getHint={() => {
+      <HintButton disabled={solved} getHint={() => {
         // Put Dug-Dug in the first row that doesn't have him in the right square
         const r = solution.findIndex((c, row) => board[row][c] !== 2 || board[row].filter(v => v === 2).length > 1)
         if (r === -1) return null
         const c = solution[r]
         setBoard(b => b.map((row, i) => row.map((v, j) => (i === r ? (j === c ? 2 : v === 2 ? 0 : v) : v))))
         return `Dug-Dug belongs in row ${r + 1}, column ${c + 1}. I’ve put him there.`
-      }} />}
+      }} />
 
       {solved && <SolvedBanner title="Every pup in place! 🐾" artIndex={4} />}
     </div>

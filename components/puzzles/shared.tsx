@@ -110,7 +110,6 @@ export function HintButton({ getHint, disabled }: { getHint: () => string | null
     startTicking()
   }
 
-  if (disabled && !message) return null
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 16, width: 'min(100%, 420px)' }}>
       {message && (
@@ -120,7 +119,11 @@ export function HintButton({ getHint, disabled }: { getHint: () => string | null
           <span aria-hidden style={{ position: 'absolute', bottom: -7, left: '50%', width: 12, height: 12, background: '#fff', borderRight: `1px solid ${BEE_BEN}`, borderBottom: `1px solid ${BEE_BEN}`, transform: 'translateX(-50%) rotate(45deg)' }} />
         </div>
       )}
-      {!disabled && (
+      {disabled ? (
+        <span style={{ padding: '9px 16px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', border: '1px solid #d0d0d0', color: '#787878', background: '#fff' }}>
+          ✓ Solved — no hints needed
+        </span>
+      ) : (
         <button type="button" onClick={ask} disabled={wait > 0}
           style={{ padding: '9px 16px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit',
                    cursor: wait > 0 ? 'not-allowed' : 'pointer', border: `1px solid ${HONEY}`, background: wait > 0 ? '#f4efe0' : HONEY, color: INK, opacity: wait > 0 ? .7 : 1 }}>

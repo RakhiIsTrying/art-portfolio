@@ -112,7 +112,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           </span>
         </div>
       )}
-      {!solved && <HintButton getHint={() => {
+      <HintButton disabled={solved} getHint={() => {
         // Keep the part of the walk that matches Ben's route, then walk three more squares
         let same = 0
         while (same < path.length && path[same] === solution[same]) same++
@@ -121,7 +121,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
         return backedUp
           ? `That turn after square ${same} leads to a dead end. I backed Dug-Dug up and walked him 3 squares the right way.`
           : 'Here’s the way I’d go: I walked Dug-Dug 3 more squares.'
-      }} />}
+      }} />
 
       {solved && <SolvedBanner title="Walkies complete! 🐾" detail="Dug-Dug is happily tired." artIndex={5} />}
     </div>
