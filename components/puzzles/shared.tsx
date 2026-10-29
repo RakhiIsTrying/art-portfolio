@@ -28,15 +28,17 @@ export function useDailyState<T>(date: string, game: string, initial: T) {
   return [value, setValue, loaded] as const
 }
 
-/** Dug-Dug's face in a circle (falls back to a paw). */
+export const DUG_DUG = '/puzzles/dugdug.png'   // Dug-Dug's cut-out, from Happy Pupper Dug-Dug
+
+/** Dug-Dug's cut-out. `ring` outlines him (e.g. red when two pups clash). */
 export function DugDug({ size, ring }: { size: number | string; ring?: string }) {
-  const { mascot } = useTheme()
-  return mascot ? (
+  const outline = ring ?? '#fff'
+  return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={mascot} alt="Dug-Dug" draggable={false}
-         style={{ width: size, height: size, borderRadius: '50%', objectFit: 'contain', padding: '13%', boxSizing: 'border-box',
-                  background: '#fff', boxShadow: `0 0 0 2px ${ring ?? '#fff'}`, display: 'block', pointerEvents: 'none' }} />
-  ) : <span style={{ fontSize: typeof size === 'number' ? size * .7 : size }}>🐾</span>
+    <img src={DUG_DUG} alt="Dug-Dug" draggable={false}
+         style={{ width: size, height: size, objectFit: 'contain', display: 'block', pointerEvents: 'none',
+                  filter: `drop-shadow(1px 0 0 ${outline}) drop-shadow(-1px 0 0 ${outline}) drop-shadow(0 1px 0 ${outline}) drop-shadow(0 -1px 0 ${outline}) drop-shadow(0 3px 4px rgba(26,16,20,.3))` }} />
+  )
 }
 
 export function SolvedBanner({ title, detail, artIndex = 0 }: { title: string; detail?: string; artIndex?: number }) {

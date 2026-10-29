@@ -29,10 +29,8 @@ export default async function PuzzlesPage() {
   return (
     <div style={{ maxWidth: 1000, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
       <div style={{ paddingBottom: 22, borderBottom: '1px solid #d0d0d0', marginBottom: 22, textAlign: 'center' }}>
-        {mascot && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={mascot} alt="Dug-Dug" style={{ width: 84, height: 84, borderRadius: '50%', objectFit: 'contain', padding: 11, boxSizing: 'border-box', margin: '0 auto 14px', display: 'block', background: '#fff', boxShadow: '0 0 0 3px #4a3a7a, 0 8px 20px rgba(26,16,20,.15)' }} />
-        )}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/puzzles/dugdug.png" alt="Dug-Dug" style={{ height: 96, margin: '0 auto 12px', display: 'block', filter: 'drop-shadow(0 8px 12px rgba(26,16,20,.2))' }} />
         <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#4a3a7a', marginBottom: 14 }}>
           ✦ Play with Bee, Ben &amp; Dug-Dug
         </p>

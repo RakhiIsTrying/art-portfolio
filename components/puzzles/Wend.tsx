@@ -97,7 +97,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           const [x, y] = centre(path[path.length - 1])
           return (
             <div style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: `${100 / size * .78}%`, pointerEvents: 'none', transition: 'left .12s, top .12s' }}>
-              <DugDug size="100%" ring={BEE_BEN} />
+              <DugDug size="100%" />
             </div>
           )
         })()}

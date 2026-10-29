@@ -54,7 +54,7 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
               fontSize: 'clamp(18px, 5vw, 28px)', lineHeight: 1,
               color: v === 2 && clashes.has(`${r},${c}`) ? '#b3261e' : INK,
             }}>
-            {v === 2 ? <span style={{ position: 'absolute', inset: '14%' }}><DugDug size="100%" ring={clashes.has(`${r},${c}`) ? '#b3261e' : INK} /></span> : v === 1 ? <span style={{ fontSize: '.55em', opacity: .45 }}>✕</span> : ''}
+            {v === 2 ? <span style={{ position: 'absolute', inset: '7%' }}><DugDug size="100%" ring={clashes.has(`${r},${c}`) ? '#b3261e' : undefined} /></span> : v === 1 ? <span style={{ fontSize: '.55em', opacity: .45 }}>✕</span> : ''}
           </button>
         )))}
       </div>
