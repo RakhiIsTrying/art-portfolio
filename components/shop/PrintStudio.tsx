@@ -1,0 +1,228 @@
+'use client'
+import { useRef, useState } from 'react'
+import { PRINT_SIZES, SAMPLE_GREETINGS, formatPrice, type Currency, type PrintSize } from '@/lib/prints'
+import type { Artwork } from '@/lib/types'
+import ShopGrid from './ShopGrid'
+import SizePicker, { orderPayload, type Quantities } from './SizePicker'
+
+const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
+const INK = '#1a1014'
+const PX_PER_INCH = 17          // scale for the side-by-side size comparison
+const CARD_PX_PER_INCH = 30     // the larger greeting-card mockup
+
+const label: React.CSSProperties = { display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: INK, marginBottom: 8 }
+const input: React.CSSProperties = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #d0d0d0', padding: '7px 0', fontSize: 13, fontWeight: 300, color: INK, outline: 'none', fontFamily: 'inherit' }
+
+/** A print on paper: the art sits inside a thin white border. */
+function Paper({ art, w, h, ppi, highlight }: { art: Artwork; w: number; h: number; ppi: number; highlight?: boolean }) {
+  return (
+    <div style={{
+      width: w * ppi, height: h * ppi, background: '#fff', padding: Math.max(3, .22 * ppi), flexShrink: 0,
+      boxShadow: highlight ? '0 0 0 2px #4a3a7a, 0 12px 26px rgba(26,16,20,.22)' : '0 8px 20px rgba(26,16,20,.16), 0 1px 3px rgba(26,16,20,.12)',
+      transition: 'box-shadow .2s',
+    }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={art.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+    </div>
+  )
+}
+
+type Props = { artworks: Artwork[]; currency: Currency; initialTitle?: string }
+
+export default function PrintStudio({ artworks, currency: initialCurrency, initialTitle }: Props) {
+  const [art, setArt] = useState<Artwork>(() => artworks.find(a => a.title === initialTitle) ?? artworks[0])
+  const [qty, setQty] = useState<Quantities>({})
+  const [currency, setCurrency] = useState<Currency>(initialCurrency)
+  const [greetingMode, setGreetingMode] = useState<'random' | 'custom'>('random')
+  const [greeting, setGreeting] = useState('')
+  const [sample, setSample] = useState(0)
+  const [contact, setContact] = useState({ name: '', email: '', note: '' })
+  const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const topRef = useRef<HTMLDivElement>(null)
+
+  const cards = qty.card ?? 0
+  const greetingText = greetingMode === 'custom' && greeting.trim() ? greeting.trim() : SAMPLE_GREETINGS[sample % SAMPLE_GREETINGS.length]
+  const order = orderPayload(qty, currency, cards ? (greetingMode === 'custom' && greeting.trim() ? greeting.trim() : 'Surprise me (random greeting)') : undefined)
+
+  function pick(a: Artwork) {
+    setArt(a)
+    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!order) return setError('Add at least one print or card.')
+    if (!contact.name.trim()) return setError('Please add your name.')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) return setError('Please add a valid email.')
+    if (cards && greetingMode === 'custom' && !greeting.trim()) return setError('Write your card message, or choose a surprise greeting.')
+    setError(null); setStatus('sending')
+    const res = await fetch('/api/inquire', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: contact.name.trim(), email: contact.email.trim(), piece: `Print — ${art.title}`, message: contact.note.trim(), order }),
+    })
+    setStatus(res.ok ? 'sent' : 'error')
+  }
+
+  const prints = PRINT_SIZES.filter(s => !s.card)
+  const card = PRINT_SIZES.find(s => s.card) as PrintSize
+
+  return (
+    <div ref={topRef} style={{ scrollMarginTop: 60 }}>
+      <div className="grid lg:grid-cols-[380px_1fr] gap-8 lg:gap-10 items-start">
+
+        {/* ── Order window ── */}
+        <aside className="no-scrollbar lg:sticky lg:top-[60px] lg:max-h-[calc(100vh-76px)] lg:overflow-y-auto" style={{ background: '#fff', border: '1px solid #d0d0d0', borderTop: '3px solid #7a3040' }}>
+          {status === 'sent' ? (
+            <div style={{ padding: '36px 24px', textAlign: 'center' }}>
+              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 24, color: INK, marginBottom: 8 }}>Order request sent.</p>
+              <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', lineHeight: 1.7 }}>
+                Thanks, {contact.name.trim().split(' ')[0]}! I’ll email you to confirm the total, shipping and payment.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={submit} noValidate style={{ padding: '20px 20px 22px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div>
+                <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a3040', marginBottom: 12 }}>Your order</p>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'cover', flexShrink: 0, border: '1px solid #ebebeb' }} />
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 19, color: INK, lineHeight: 1.15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{art.title}</p>
+                    <a href="#choose-piece" style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>Change piece ↓</a>
+                  </div>
+                </div>
+              </div>
+
+              <SizePicker qty={qty} onChange={setQty} currency={currency} onCurrency={setCurrency} />
+
+              {cards > 0 && (
+                <div>
+                  <span style={label}>Message inside the card</span>
+                  <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+                    {([['random', 'Surprise me'], ['custom', 'Write my own']] as const).map(([mode, text]) => (
+                      <button key={mode} type="button" onClick={() => setGreetingMode(mode)}
+                        style={{ flex: 1, padding: '8px 10px', fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
+                                 border: `1px solid ${greetingMode === mode ? '#4a3a7a' : '#d0d0d0'}`, background: greetingMode === mode ? '#4a3a7a' : '#fff', color: greetingMode === mode ? '#fff' : INK }}>
+                        {text}
+                      </button>
+                    ))}
+                  </div>
+                  {greetingMode === 'custom' ? (
+                    <textarea rows={3} maxLength={220} value={greeting} onChange={e => setGreeting(e.target.value)}
+                              placeholder="Happy birthday, Maya! Love, Arjun" style={{ ...input, border: '1px solid #d0d0d0', padding: 8, resize: 'vertical' }} />
+                  ) : (
+                    <p style={{ fontSize: 11, fontWeight: 300, color: '#787878' }}>I’ll handwrite a greeting for you, like the one shown in the preview.</p>
+                  )}
+                </div>
+              )}
+
+              {([['name', 'Name', 'text'], ['email', 'Email', 'email']] as const).map(([field, text, type]) => (
+                <div key={field}>
+                  <label htmlFor={`order-${field}`} style={label}>{text}</label>
+                  <input id={`order-${field}`} type={type} value={contact[field]} onChange={e => setContact(c => ({ ...c, [field]: e.target.value }))} style={input} />
+                </div>
+              ))}
+              <div>
+                <label htmlFor="order-note" style={label}>Note <span style={{ fontWeight: 300, color: '#a0a0a0', letterSpacing: '.2em' }}>(optional)</span></label>
+                <textarea id="order-note" rows={2} value={contact.note} onChange={e => setContact(c => ({ ...c, note: e.target.value }))} style={{ ...input, resize: 'vertical' }} />
+              </div>
+
+              {(error || status === 'error') && (
+                <p style={{ fontSize: 11, color: '#7a3040' }}>{error ?? 'Something went wrong — please try again.'}</p>
+              )}
+              <button type="submit" disabled={status === 'sending'} className="hover:[background:#7a3040]"
+                style={{ padding: '14px 18px', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, background: INK, color: '#fff', opacity: status === 'sending' ? .6 : 1, transition: 'background .25s' }}>
+                {status === 'sending' ? 'Sending…' : 'Send order request →'}
+              </button>
+              <p style={{ fontSize: 10, fontWeight: 300, color: '#a0a0a0', lineHeight: 1.6, marginTop: -8 }}>
+                No payment yet. I’ll confirm the total and shipping by email.
+              </p>
+            </form>
+          )}
+        </aside>
+
+        {/* ── Previews ── */}
+        <div style={{ minWidth: 0 }}>
+          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>See it to scale</p>
+          <h3 style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: INK, marginBottom: 18 }}>{art.title}, every size</h3>
+
+          <div className="no-scrollbar" style={{ overflowX: 'auto', paddingBottom: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 22, minWidth: 'max-content', padding: '6px 4px 0' }}>
+              {[...prints, card].map(s => (
+                <div key={s.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {s.card ? (
+                    // Folded card, standing: art on the front flap only
+                    <div style={{ position: 'relative' }}>
+                      <Paper art={art} w={s.w} h={s.h} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} />
+                      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 5, background: 'linear-gradient(90deg, rgba(26,16,20,.18), transparent)' }} />
+                    </div>
+                  ) : (
+                    <Paper art={art} w={s.w} h={s.h} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} />
+                  )}
+                  <p style={{ marginTop: 10, fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: INK }}>
+                    {s.card ? 'Card' : s.name}{(qty[s.id] ?? 0) > 0 && <span style={{ color: '#4a3a7a' }}> ×{qty[s.id]}</span>}
+                  </p>
+                  <p style={{ fontSize: 11, fontWeight: 300, color: '#787878' }}>{s.dims} · {formatPrice(s[currency], currency)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Greeting card, closed and open */}
+          <div style={{ marginTop: 36, paddingTop: 24, borderTop: '1px solid #d0d0d0' }}>
+            <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>Greeting card · {card.dims}</p>
+            <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginBottom: 18, maxWidth: 520 }}>
+              The art is printed on the front flap. Inside, a greeting: a surprise one from me, or your own words.
+            </p>
+            <div className="flex flex-wrap items-end gap-8">
+              {/* Closed */}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ position: 'relative', transform: 'rotate(-2deg)' }}>
+                  <Paper art={art} w={card.w} h={card.h} ppi={CARD_PX_PER_INCH} />
+                  <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 8, background: 'linear-gradient(90deg, rgba(26,16,20,.2), transparent)' }} />
+                </div>
+                <p style={{ marginTop: 12, fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>Front</p>
+              </div>
+
+              {/* Open */}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ display: 'flex', boxShadow: '0 10px 26px rgba(26,16,20,.16)' }}>
+                  <div style={{ width: card.w * CARD_PX_PER_INCH, height: card.h * CARD_PX_PER_INCH, background: '#f7f5f2', borderRight: '1px solid #e3ded8',
+                                display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: 14 }}>
+                    <span style={{ fontSize: 8, letterSpacing: '.35em', textTransform: 'uppercase', color: '#c4bdb5' }}>Van Gone Broke</span>
+                  </div>
+                  <div style={{ width: card.w * CARD_PX_PER_INCH, height: card.h * CARD_PX_PER_INCH, background: '#fff', padding: 22,
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+                    <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 16, lineHeight: 1.5, color: INK, wordBreak: 'break-word' }}>
+                      {greetingText}
+                    </p>
+                    <span style={{ width: 22, height: 1, background: '#b07880', margin: '14px 0 8px' }} />
+                    <span style={{ fontSize: 9, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+                      {greetingMode === 'custom' && greeting.trim() ? 'Your message' : 'Surprise greeting'}
+                    </span>
+                  </div>
+                </div>
+                <p style={{ marginTop: 12, fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+                  Inside
+                  {!(greetingMode === 'custom' && greeting.trim()) && (
+                    <button type="button" onClick={() => setSample(n => n + 1)}
+                            style={{ marginLeft: 10, background: 'none', border: 'none', color: '#1e3a8a', cursor: 'pointer', fontFamily: 'inherit', fontSize: 10, letterSpacing: '.2em' }}>
+                      ⟳ another example
+                    </button>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Pick a piece ── */}
+      <div id="choose-piece" style={{ marginTop: 48, scrollMarginTop: 60 }}>
+        <h3 style={{ fontFamily: PLAYFAIR, fontSize: 22, fontWeight: 700, color: INK, marginBottom: 4 }}>Choose a piece</h3>
+        <ShopGrid artworks={artworks} kind="print" currency={currency} onSelect={pick} selectedId={art.id} />
+      </div>
+    </div>
+  )
+}

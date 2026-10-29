@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, BEE_BEN, DugDug, HONEY, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 type Props = { date: string; size: number; numbers: Record<string, number>; last: number; onSolved: () => void }
 
@@ -60,8 +60,8 @@ export default function Wend({ date, size, numbers, last, onSolved }: Props) {
   const inPath = new Set(path)
 
   return (
-    <div>
-      <Rules>Start at 1 and draw a single path through every square, passing the numbers in order and finishing on {last}. Drag (or tap square by square); go back over the line to undo.</Rules>
+    <div style={CENTERED}>
+      <Rules>Take Dug-Dug for walkies! Start at 1 and draw one path through every square, passing the numbers in order and finishing on {last}. Drag, or tap square by square; go back over the line to undo.</Rules>
 
       <div ref={boardRef} onPointerDown={down} onPointerMove={move} onPointerUp={() => (dragging.current = false)}
         style={{ position: 'relative', width: 'min(100%, 420px)', aspectRatio: '1', border: `2px solid ${INK}`, background: '#fff', touchAction: 'none', userSelect: 'none', cursor: solved ? 'default' : 'pointer' }}>
@@ -70,7 +70,7 @@ export default function Wend({ date, size, numbers, last, onSolved }: Props) {
             <div key={i} style={{
               borderRight: (i % size) < size - 1 ? '1px solid #e2dcdc' : 'none',
               borderBottom: i < N - size ? '1px solid #e2dcdc' : 'none',
-              background: inPath.has(i) ? 'rgba(176,120,128,.16)' : 'transparent', transition: 'background .15s',
+              background: inPath.has(i) ? 'rgba(232,197,90,.22)' : 'transparent', transition: 'background .15s',
             }} />
           ))}
         </div>
@@ -78,23 +78,33 @@ export default function Wend({ date, size, numbers, last, onSolved }: Props) {
         <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
           {path.length > 1 && (
             <polyline points={path.map(i => centre(i).join(',')).join(' ')} fill="none"
-                      stroke={solved ? '#1a6060' : '#b07880'} strokeWidth={100 / size / 2.6} strokeLinecap="round" strokeLinejoin="round" />
+                      stroke={solved ? BEE_BEN : HONEY} strokeWidth={100 / size / 2.6} strokeLinecap="round" strokeLinejoin="round" />
           )}
           {Object.entries(numbers).map(([cell, num]) => {
             const [x, y] = centre(Number(cell))
             const reached = inPath.has(Number(cell))
             return (
               <g key={cell}>
-                <circle cx={x} cy={y} r={100 / size / 3.4} fill={reached ? (solved ? '#1a6060' : '#7a3040') : INK} />
+                <circle cx={x} cy={y} r={100 / size / 3.4} fill={reached ? BEE_BEN : INK} />
                 <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize={100 / size / 3.4} fontWeight={700}>{num}</text>
               </g>
             )
           })}
         </svg>
+
+        {/* Dug-Dug trots along at the end of the path */}
+        {path.length > 0 && (() => {
+          const [x, y] = centre(path[path.length - 1])
+          return (
+            <div style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: `${100 / size * .78}%`, pointerEvents: 'none', transition: 'left .12s, top .12s' }}>
+              <DugDug size="100%" ring={BEE_BEN} />
+            </div>
+          )
+        })()}
       </div>
 
       {!solved && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: 12, marginTop: 14 }}>
           <SmallButton onClick={() => setPath(p => p.slice(0, -1))}>Undo</SmallButton>
           <SmallButton onClick={() => setPath([])}>Clear</SmallButton>
           <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
@@ -102,7 +112,7 @@ export default function Wend({ date, size, numbers, last, onSolved }: Props) {
           </span>
         </div>
       )}
-      {solved && <SolvedBanner title="What a wend!" />}
+      {solved && <SolvedBanner title="Walkies complete! 🐾" detail="Dug-Dug is happily tired." artIndex={5} />}
     </div>
   )
 }

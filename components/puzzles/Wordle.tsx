@@ -1,9 +1,9 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { INK, Rules, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, INK, Rules, SolvedBanner, useDailyState } from './shared'
 
 type Mark = 'hit' | 'near' | 'miss'
-const COLORS: Record<Mark, string> = { hit: '#1a6060', near: '#b8892e', miss: '#787878' }
+const COLORS: Record<Mark, string> = { hit: '#4a3a7a', near: '#c9a23a', miss: '#8a8486' }
 const ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
 
 /** Wordle colouring, handling repeated letters correctly. */
@@ -75,8 +75,8 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
   while (rows.length < 6) rows.push('')
 
   return (
-    <div>
-      <Rules>Guess the five-letter word in six tries. <b style={{ color: COLORS.hit }}>Green</b> is the right letter in the right spot, <b style={{ color: COLORS.near }}>gold</b> is in the word but elsewhere.</Rules>
+    <div style={CENTERED}>
+      <Rules>Guess the five-letter word in six tries. <b style={{ color: COLORS.hit }}>Purple</b> is the right letter in the right spot, <b style={{ color: COLORS.near }}>honey</b> is in the word but somewhere else.</Rules>
 
       <div style={{ position: 'relative', display: 'grid', gap: 5, width: 'min(100%, 330px)' }}>
         {message && (
@@ -118,8 +118,8 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
         </div>
       )}
 
-      {won && <SolvedBanner title="Brilliant!" detail={`Got it in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}.`} />}
-      {lost && <SolvedBanner title={`The word was “${answer.toUpperCase()}”`} detail="Better luck tomorrow." />}
+      {won && <SolvedBanner title="Good human! Dug-Dug approves 🐾" detail={`Got it in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}.`} artIndex={2} />}
+      {lost && <SolvedBanner title={`The word was “${answer.toUpperCase()}”`} detail="Dug-Dug says try again tomorrow." artIndex={3} />}
     </div>
   )
 }

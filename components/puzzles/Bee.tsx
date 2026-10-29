@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { INK, PLAYFAIR, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HONEY, INK, PLAYFAIR, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 type Props = { date: string; letters: string; center: string; answers: string[]; onSolved: () => void }
 
@@ -53,11 +53,11 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
   const HEX = [[0, -1], [.87, -.5], [.87, .5], [0, 1], [-.87, .5], [-.87, -.5]]
 
   return (
-    <div>
-      <Rules>Make words of 4+ letters using the centre letter at least once. Letters can repeat. A pangram uses all seven. Reach Genius to solve.</Rules>
+    <div style={CENTERED}>
+      <Rules>Help Bee fill the hive! Make words of 4+ letters that use the centre letter. Letters can repeat. A pangram uses all seven. Reach Genius to solve.</Rules>
 
       {/* Rank */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, maxWidth: 420 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '0 auto 16px', width: 'min(100%, 420px)' }}>
         <span style={{ fontFamily: PLAYFAIR, fontWeight: 700, fontSize: 16, color: INK, minWidth: 92 }}>{RANKS[rankIndex][0]}</span>
         <div style={{ flex: 1, height: 2, background: '#d0d0d0', position: 'relative' }}>
           <div style={{ position: 'absolute', left: 0, top: 0, height: 2, width: `${Math.min(100, (score / (RANKS.at(-1)![1] * max)) * 100)}%`, background: '#b8892e', transition: 'width .4s' }} />
@@ -65,7 +65,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
         <span style={{ fontSize: 12, fontWeight: 600, color: INK }}>{score}</span>
       </div>
 
-      <div className="grid md:grid-cols-[320px_1fr] gap-8 items-start">
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, width: '100%' }}>
         <div>
           {/* Current word */}
           <div style={{ height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em', position: 'relative' }}>
@@ -85,7 +85,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
                     position: 'absolute', left: 135 + dx * 84 - 46, top: 135 + dy * 84 - 40, width: 92, height: 80,
                     clipPath: 'polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)',
                     border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 26, fontWeight: 700, textTransform: 'uppercase',
-                    background: i === 0 ? '#e8c55a' : '#e6e1e1', color: INK,
+                    background: i === 0 ? HONEY : '#e6e1e1', color: INK,
                   }}>
                   {l}
                 </button>
@@ -101,7 +101,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
         </div>
 
         {/* Found words */}
-        <div style={{ border: '1px solid #d0d0d0', background: '#fff', padding: '14px 16px', minHeight: 200 }}>
+        <div style={{ border: '1px solid #d0d0d0', background: '#fff', padding: '14px 16px', minHeight: 120, width: 'min(100%, 520px)', textAlign: 'left' }}>
           <p style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: '#a0a0a0', marginBottom: 10 }}>
             You found {found.length} of {answers.length} {found.length === 1 ? 'word' : 'words'}
           </p>
@@ -115,7 +115,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
         </div>
       </div>
 
-      {genius && <SolvedBanner title="Genius! 🐝" detail={`${found.length} words, ${score} points. Keep going for Queen Bee.`} />}
+      {genius && <SolvedBanner title="Genius! Bee is buzzing 🐝" detail={`${found.length} words, ${score} points. Keep going to find them all.`} artIndex={6} />}
     </div>
   )
 }

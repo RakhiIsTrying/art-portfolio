@@ -6,9 +6,12 @@ import type { Artwork } from '@/lib/types'
 import type { Currency } from '@/lib/prints'
 import ShopCard, { CATEGORY_COLORS } from './ShopCard'
 
-type Props = { artworks: Artwork[]; kind: 'print' | 'original'; currency: Currency; showFilters?: boolean }
+type Props = {
+  artworks: Artwork[]; kind: 'print' | 'original'; currency: Currency; showFilters?: boolean
+  onSelect?: (a: Artwork) => void; selectedId?: string; columns?: string
+}
 
-export default function ShopGrid({ artworks, kind, currency, showFilters = true }: Props) {
+export default function ShopGrid({ artworks, kind, currency, showFilters = true, onSelect, selectedId, columns }: Props) {
   const [filter, setFilter] = useState('all')
 
   const tabs = COLLECTIONS
@@ -48,9 +51,9 @@ export default function ShopGrid({ artworks, kind, currency, showFilters = true 
         </div>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+      <div className={`grid ${columns ?? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'} gap-3 md:gap-5`}>
         {shown.map(a => (
-          <ShopCard key={a.id} artwork={a} kind={kind} currency={currency} collectionName={nameOf(a.collection_slug)} />
+          <ShopCard key={a.id} artwork={a} kind={kind} currency={currency} collectionName={nameOf(a.collection_slug)} onSelect={onSelect} selected={a.id === selectedId} />
         ))}
       </div>
     </>

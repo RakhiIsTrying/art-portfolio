@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import Image from 'next/image'
-import { INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, BEE_BEN, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 type Props = {
   date: string
@@ -50,8 +50,8 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
   })
 
   return (
-    <div>
-      <Rules>Fill the grid so every row, column and 2×3 box has the numbers 1–6. Solve it to reveal today’s artwork{art ? '' : ''}.</Rules>
+    <div style={CENTERED}>
+      <Rules>Fill the grid so every row, column and 2×3 box has the numbers 1–6. Solve it to uncover today’s Bee, Ben &amp; Dug-Dug drawing.</Rules>
 
       <div style={{ position: 'relative', width: 'min(100%, 420px)', aspectRatio: '1', background: '#fff', border: `2px solid ${INK}` }}>
         {art && (
@@ -69,8 +69,8 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
                   border: 'none', padding: 0, cursor: given || solved ? 'default' : 'pointer', fontFamily: 'inherit',
                   borderRight: c === 5 ? 'none' : `${c === 2 ? 2 : 1}px solid ${c === 2 ? INK : 'rgba(26,16,20,.25)'}`,
                   borderBottom: r === 5 ? 'none' : `${r % 2 === 1 ? 2 : 1}px solid ${r % 2 === 1 ? INK : 'rgba(26,16,20,.25)'}`,
-                  background: solved ? 'transparent' : isSel ? 'rgba(176,120,128,.55)' : peer ? 'rgba(255,255,255,.62)' : 'rgba(255,255,255,.45)',
-                  color: conflict(r, c) ? '#b3261e' : given ? INK : '#1e3a8a',
+                  background: solved ? 'transparent' : isSel ? 'rgba(232,197,90,.7)' : peer ? 'rgba(255,255,255,.62)' : 'rgba(255,255,255,.45)',
+                  color: conflict(r, c) ? '#b3261e' : given ? INK : BEE_BEN,
                   fontSize: 'clamp(18px, 5vw, 26px)', fontWeight: given ? 700 : 400,
                   opacity: solved ? 0 : 1, transition: 'opacity 1s ease, background .15s',
                 }}>
@@ -82,7 +82,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
       </div>
 
       {!solved && (
-        <div style={{ display: 'flex', gap: 6, marginTop: 14, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 6, marginTop: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
           {[1, 2, 3, 4, 5, 6].map(n => (
             <button key={n} type="button" onClick={() => put(n)}
               style={{ width: 48, height: 48, fontSize: 20, fontFamily: 'inherit', cursor: 'pointer', border: `1px solid ${INK}`, background: '#fff', color: INK }}>
@@ -94,7 +94,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
         </div>
       )}
 
-      {solved && <SolvedBanner title="Solved!" detail={art ? `Today’s art: ${art.title}` : undefined} />}
+      {solved && <SolvedBanner title="Solved! Dug-Dug is wagging 🐾" detail={art ? `Today’s drawing: ${art.title}` : undefined} artIndex={1} />}
     </div>
   )
 }

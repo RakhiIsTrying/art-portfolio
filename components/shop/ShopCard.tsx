@@ -16,13 +16,18 @@ export function inquireHref(artwork: Artwork, kind: 'print' | 'original') {
   return `/inquire?piece=${encodeURIComponent(piece)}`
 }
 
-type Props = { artwork: Artwork; kind: 'print' | 'original'; currency: Currency; collectionName: string }
+type Props = {
+  artwork: Artwork; kind: 'print' | 'original'; currency: Currency; collectionName: string
+  /** When set, the card picks this piece instead of linking to the inquiry form */
+  onSelect?: (a: Artwork) => void
+  selected?: boolean
+}
 
-export default function ShopCard({ artwork, kind, currency, collectionName }: Props) {
+export default function ShopCard({ artwork, kind, currency, collectionName, onSelect, selected }: Props) {
   const color = CATEGORY_COLORS[artwork.collection_slug] ?? '#1a1014'
 
-  return (
-    <Link href={inquireHref(artwork, kind)} className="group" style={{ display: 'block', background: '#fff', textDecoration: 'none' }}>
+  const inner = (
+    <>
       {/* Mat — the piece sits on paper like a framed print */}
       <div style={{ position: 'relative', aspectRatio: '4/5', background: '#f4f2ef', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: '9%', boxShadow: '0 10px 28px rgba(26,16,20,.18), 0 2px 6px rgba(26,16,20,.12)' }}>
@@ -62,9 +67,15 @@ export default function ShopCard({ artwork, kind, currency, collectionName }: Pr
             borderBottom: '1px solid #1a1014', paddingBottom: 1, transition: 'color .2s, border-color .2s',
           }}
         >
-          {kind === 'original' ? 'Ask for the price →' : 'Order a print →'}
+          {onSelect ? (selected ? 'Selected ✓' : 'Choose this piece →') : kind === 'original' ? 'Ask for the price →' : 'Order a print →'}
         </span>
       </div>
-    </Link>
+    </>
   )
+
+  const box: React.CSSProperties = { display: 'block', width: '100%', background: '#fff', textDecoration: 'none', textAlign: 'left', padding: 0, border: 'none', fontFamily: 'inherit', cursor: 'pointer',
+                                     outline: selected ? '3px solid #4a3a7a' : 'none', outlineOffset: -3 }
+  return onSelect
+    ? <button type="button" className="group" onClick={() => onSelect(artwork)} aria-pressed={selected} style={box}>{inner}</button>
+    : <Link href={inquireHref(artwork, kind)} className="group" style={box}>{inner}</Link>
 }

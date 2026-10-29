@@ -6,7 +6,7 @@ type InquireBody = {
   email: string
   piece?: string
   message: string
-  order?: { lines: string[]; total: string; shipping: string }
+  order?: { lines: string[]; total: string; shipping: string; greeting?: string }
 }
 
 export async function POST(req: NextRequest) {
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       `Name: ${body.name}`,
       `Email: ${body.email}`,
       body.piece ? `Piece: ${body.piece}` : '',
-      order ? `\nOrder:\n${order.lines.map(l => `  ${String(l).slice(0, 200)}`).join('\n')}\nTotal: ${String(order.total).slice(0, 40)}\n${String(order.shipping).slice(0, 300)}` : '',
+      order ? `\nOrder:\n${order.lines.map(l => `  ${String(l).slice(0, 200)}`).join('\n')}\nTotal: ${String(order.total).slice(0, 40)}\n${String(order.shipping).slice(0, 300)}${order.greeting ? `\nGreeting card message: ${String(order.greeting).slice(0, 400)}` : ''}` : '',
       body.message ? `\n${body.message}` : '',
     ].filter(Boolean).join('\n'),
   })

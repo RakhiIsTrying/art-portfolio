@@ -6,14 +6,14 @@ import Wordle from './Wordle'
 import Queens from './Queens'
 import Wend from './Wend'
 import Bee from './Bee'
-import { INK, PLAYFAIR, useDailyState } from './shared'
+import { BEE_BEN, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
 
 const GAMES = [
-  { id: 'sudoku', name: 'Mini Sudoku',  blurb: '6×6 with today’s art', color: '#7a3040' },
-  { id: 'wordle', name: 'Wordle',       blurb: 'Five letters, six tries', color: '#1a6060' },
-  { id: 'queens', name: 'Queens',       blurb: 'One per row, column & colour', color: '#4a3a7a' },
-  { id: 'wend',   name: 'Wend',         blurb: 'One path through every square', color: '#1e3a8a' },
-  { id: 'bee',    name: 'Spelling Bee', blurb: 'Seven letters, how many words?', color: '#b8892e' },
+  { id: 'sudoku', name: 'Mini Sudoku',  blurb: 'Uncover a Dug-Dug drawing', icon: '🎨' },
+  { id: 'wordle', name: 'Wordle',       blurb: 'Five letters, six tries',   icon: '🔤' },
+  { id: 'queens', name: 'Dug-Dug Queens', blurb: 'One pup per row & colour', icon: '🐶' },
+  { id: 'wend',   name: 'Walkies',      blurb: 'Walk Dug-Dug past every square', icon: '🐾' },
+  { id: 'bee',    name: 'Bee’s Hive',   blurb: 'Spelling Bee with 7 letters', icon: '🐝' },
 ] as const
 type GameId = typeof GAMES[number]['id']
 
@@ -35,7 +35,7 @@ function useCountdown() {
   return left
 }
 
-export default function PuzzleHub({ daily, art }: { daily: Daily; art: { title: string; image_url: string } | null }) {
+export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { title: string; image_url: string } | null; theme: Theme }) {
   const [active, setActive] = useState<GameId>('sudoku')
   const [solved, setSolved] = useDailyState<Partial<Record<GameId, boolean>>>(daily.date, 'solved', {})
   const countdown = useCountdown()
@@ -46,9 +46,9 @@ export default function PuzzleHub({ daily, art }: { daily: Daily; art: { title: 
   const solvedCount = GAMES.filter(g => solved[g.id]).length
 
   return (
-    <div>
+    <ThemeContext.Provider value={theme}>
       {/* Date strip */}
-      <div className="flex flex-wrap items-center justify-between gap-3" style={{ marginBottom: 18 }}>
+      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2" style={{ marginBottom: 18, textAlign: 'center' }}>
         <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878' }}>
           {pretty} · No. {daily.number} · {solvedCount}/5 solved
         </p>
@@ -65,9 +65,9 @@ export default function PuzzleHub({ daily, art }: { daily: Daily; art: { title: 
             <button key={g.id} role="tab" aria-selected={on} type="button" onClick={() => setActive(g.id)}
               className={g.id === 'bee' ? 'col-span-2 sm:col-span-1' : ''}
               style={{ textAlign: 'left', padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                       background: on ? g.color : '#fff', color: on ? '#fff' : INK, transition: 'background .2s' }}>
+                       background: on ? BEE_BEN : '#fff', color: on ? '#fff' : INK, transition: 'background .2s' }}>
               <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontFamily: PLAYFAIR, fontSize: 17, fontWeight: 700 }}>{g.name}</span>
+                <span style={{ fontFamily: PLAYFAIR, fontSize: 17, fontWeight: 700 }}><span aria-hidden style={{ marginRight: 6 }}>{g.icon}</span>{g.name}</span>
                 {solved[g.id] && <span aria-label="solved" style={{ fontSize: 13 }}>✓</span>}
               </span>
               <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3, color: on ? 'rgba(255,255,255,.8)' : '#787878' }}>{g.blurb}</span>
@@ -81,6 +81,6 @@ export default function PuzzleHub({ daily, art }: { daily: Daily; art: { title: 
       {active === 'queens' && <Queens date={daily.date} regions={daily.queens.regions} onSolved={done('queens')} />}
       {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} onSolved={done('wend')} />}
       {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} onSolved={done('bee')} />}
-    </div>
+    </ThemeContext.Provider>
   )
 }

@@ -1,7 +1,8 @@
 'use client'
 import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-import { PRINT_SIZES, formatPrice, type Currency } from '@/lib/prints'
+import type { Currency } from '@/lib/prints'
+import SizePicker, { orderPayload, type Quantities } from '@/components/shop/SizePicker'
 
 type FormState = { name: string; email: string; piece: string; message: string }
 type Errors    = Partial<Record<keyof FormState, string>>
@@ -16,8 +17,6 @@ function validate(f: FormState, hasOrder: boolean): Errors {
   return e
 }
 
-const stepBtn: React.CSSProperties = { width: 30, height: 30, border: 'none', background: 'none', cursor: 'pointer', fontSize: 16, color: '#1a1014', fontFamily: 'inherit' }
-
 const inputStyle = (hasError: boolean): React.CSSProperties => ({
   width: '100%', background: 'transparent',
   border: 'none', borderBottom: `1px solid ${hasError ? '#7a3040' : '#d0d0d0'}`,
@@ -29,11 +28,8 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
   const params = useSearchParams()
   const isPrint = (params.get('piece') ?? '').startsWith('Print')
   const [currency, setCurrency] = useState<Currency>(initialCurrency)
-  const [qty, setQty] = useState<Record<string, number>>({})
-  const lines = PRINT_SIZES.filter(s => (qty[s.id] ?? 0) > 0).map(s => ({ ...s, n: qty[s.id] }))
-  const total = lines.reduce((sum, l) => sum + l.n * l[currency], 0)
-  const underMin = lines.filter(l => l.min && l.n < l.min)
-  const step = (id: string, d: number) => setQty(q => ({ ...q, [id]: Math.max(0, Math.min(99, (q[id] ?? 0) + d)) }))
+  const [qty, setQty] = useState<Quantities>({})
+  const order = orderPayload(qty, currency)
   const [form, setForm]     = useState<FormState>({ name: '', email: '', message: '', piece: params.get('piece') ?? '' })
   const [errors, setErrors] = useState<Errors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -47,17 +43,10 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const errs = validate(form, lines.length > 0)
+    const errs = validate(form, !!order)
     if (Object.keys(errs).length) { setErrors(errs); return }
     setStatus('sending')
-    const res = await fetch('/api/inquire', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-      ...form,
-      order: lines.length ? {
-        lines: lines.map(l => `${l.n} × ${l.name} (${l.dims}) @ ${formatPrice(l[currency], currency)} = ${formatPrice(l.n * l[currency], currency)}`),
-        total: formatPrice(total, currency),
-        shipping: underMin.length ? `Shipping to be added (under minimum: ${underMin.map(l => `${l.name} needs ${l.min}`).join(', ')})` : 'Free shipping',
-      } : undefined,
-    }) })
+    const res = await fetch('/api/inquire', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, order }) })
     setStatus(res.ok ? 'sent' : 'error')
   }
 
@@ -106,50 +95,7 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
         </div>
       )}
 
-      {isPrint && (
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-            <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>Sizes</p>
-            <button type="button" onClick={() => setCurrency(c => (c === 'inr' ? 'usd' : 'inr'))}
-                    style={{ fontSize: 10, letterSpacing: '.2em', background: 'none', border: 'none', color: '#1e3a8a', cursor: 'pointer', fontFamily: 'inherit' }}>
-              Show in {currency === 'inr' ? 'USD $' : 'INR ₹'}
-            </button>
-          </div>
-          <div style={{ border: '1px solid #ebebeb' }}>
-            {PRINT_SIZES.map((s, i) => {
-              const n = qty[s.id] ?? 0
-              return (
-                <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderTop: i ? '1px solid #ebebeb' : 'none', background: n ? '#faf6f6' : '#fff' }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 13, color: '#1a1014' }}>{s.name} <span style={{ fontWeight: 300, color: '#787878' }}>· {s.dims}</span></p>
-                    <p style={{ fontSize: 11, fontWeight: 300, color: '#787878' }}>
-                      {formatPrice(s[currency], currency)} each{s.min ? ` · free shipping on ${s.min}+` : ' · free shipping'}
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d0d0d0' }}>
-                    <button type="button" aria-label={`Fewer ${s.name}`} onClick={() => step(s.id, -1)} style={stepBtn}>−</button>
-                    <span style={{ width: 28, textAlign: 'center', fontSize: 13, fontVariantNumeric: 'tabular-nums' }}>{n}</span>
-                    <button type="button" aria-label={`More ${s.name}`} onClick={() => step(s.id, 1)} style={stepBtn}>+</button>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-          {lines.length > 0 && (
-            <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
-              <p style={{ fontSize: 11, fontWeight: 300, color: underMin.length ? '#7a3040' : '#1a6060' }}>
-                {underMin.length
-                  ? `Shipping added — ${underMin.map(l => `${l.name} ships free from ${l.min}`).join(', ')}`
-                  : 'Free shipping ✓'}
-              </p>
-              <p style={{ fontSize: 13, color: '#1a1014' }}>
-                Total <b style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 22 }}>{formatPrice(total, currency)}</b>
-                {underMin.length > 0 && <span style={{ fontSize: 11, fontWeight: 300, color: '#787878' }}> + shipping</span>}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
+      {isPrint && <SizePicker qty={qty} onChange={setQty} currency={currency} onCurrency={setCurrency} />}
 
       <div>
         <label htmlFor="message" style={{ display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8 }}>
@@ -176,7 +122,7 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
           transition: 'background .2s', alignSelf: 'flex-start',
         }}
       >
-        {status === 'sending' ? 'Sending…' : lines.length ? 'Send order request →' : 'Send Message →'}
+        {status === 'sending' ? 'Sending…' : order ? 'Send order request →' : 'Send Message →'}
       </button>
 
     </form>

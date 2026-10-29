@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, DugDug, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 // Soft versions of the site's palette, one per colour region
 const REGION_COLORS = ['#e7c3c9', '#c4cfe9', '#bfe0dc', '#d9cfe9', '#ead5b5', '#cfe0bf', '#e9d0e4', '#f0e2a8']
@@ -38,8 +38,8 @@ export default function Queens({ date, regions, onSolved }: { date: string; regi
   }
 
   return (
-    <div>
-      <Rules>Place one ♛ in every row, every column and every colour. Queens can’t touch, not even diagonally. Tap once for ×, twice for a queen.</Rules>
+    <div style={CENTERED}>
+      <Rules>Place one Dug-Dug in every row, every column and every colour. No two pups can touch, not even diagonally (he doesn’t share treats). Tap once for ×, twice for Dug-Dug.</Rules>
 
       <div style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, 1fr)`, width: 'min(100%, 420px)', aspectRatio: '1', border: `2px solid ${INK}` }}>
         {board.map((row, r) => row.map((v, c) => (
@@ -52,17 +52,17 @@ export default function Queens({ date, regions, onSolved }: { date: string; regi
               fontSize: 'clamp(18px, 5vw, 28px)', lineHeight: 1,
               color: v === 2 && clashes.has(`${r},${c}`) ? '#b3261e' : INK,
             }}>
-            {v === 2 ? '♛' : v === 1 ? <span style={{ fontSize: '.55em', opacity: .45 }}>✕</span> : ''}
+            {v === 2 ? <span style={{ display: 'flex', justifyContent: 'center' }}><DugDug size="72%" ring={clashes.has(`${r},${c}`) ? '#b3261e' : INK} /></span> : v === 1 ? <span style={{ fontSize: '.55em', opacity: .45 }}>✕</span> : ''}
           </button>
         )))}
       </div>
 
       {!solved && (
-        <div style={{ marginTop: 14 }}>
+        <div style={{ marginTop: 14, display: 'flex', justifyContent: 'center' }}>
           <SmallButton onClick={() => setBoard(empty())}>Clear</SmallButton>
         </div>
       )}
-      {solved && <SolvedBanner title="Long live the queens!" />}
+      {solved && <SolvedBanner title="Every pup in place! 🐾" artIndex={4} />}
     </div>
   )
 }
