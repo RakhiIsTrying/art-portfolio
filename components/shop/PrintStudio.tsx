@@ -10,22 +10,25 @@ const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 const INK = '#1a1014'
 const MAX_PX_PER_INCH = 17      // largest scale for the side-by-side size comparison
 const CARD_PX_PER_INCH = 30     // the larger greeting-card mockup
+const MARGIN_INCHES = .25       // white margin printed around the art
 
 const label: React.CSSProperties = { display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: INK, marginBottom: 8 }
 const input: React.CSSProperties = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #d0d0d0', padding: '7px 0', fontSize: 13, fontWeight: 300, color: INK, outline: 'none', fontFamily: 'inherit' }
 
 /** A print on paper: the whole art, with any spare paper in its own border colour. */
 function Paper({ art, w, h, ppi, highlight }: { art: Artwork; w: number; h: number; ppi: number; highlight?: boolean }) {
-  // Any paper around the art is printed in the art's own border colour
+  // A small white margin all round; inside it, any spare space takes the art's own border colour
   const edge = useEdge(art.image_url) ?? '#fff'
   return (
     <div style={{
-      width: w * ppi, height: h * ppi, background: edge, padding: Math.max(3, .22 * ppi), flexShrink: 0,
+      width: w * ppi, height: h * ppi, background: '#fff', padding: Math.max(4, MARGIN_INCHES * ppi), flexShrink: 0,
       boxShadow: highlight ? '0 0 0 2px #4a3a7a, 0 12px 26px rgba(26,16,20,.22)' : '0 8px 20px rgba(26,16,20,.16), 0 1px 3px rgba(26,16,20,.12)',
       transition: 'box-shadow .2s',
     }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={art.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+      <div style={{ width: '100%', height: '100%', background: edge }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={art.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+      </div>
     </div>
   )
 }
@@ -34,6 +37,8 @@ type Props = { artworks: Artwork[]; currency: Currency; initialTitle?: string }
 
 export default function PrintStudio({ artworks, currency: initialCurrency, initialTitle }: Props) {
   const [art, setArt] = useState<Artwork>(() => artworks.find(a => a.title === initialTitle) ?? artworks[0])
+  // The buyer picks portrait or landscape; until they do, we suggest one from the art's shape
+  const [orientation, setOrientation] = useState<'portrait' | 'landscape' | null>(null)
   const [qty, setQty] = useState<Quantities>({})
   const [currency, setCurrency] = useState<Currency>(initialCurrency)
   const [greetingMode, setGreetingMode] = useState<'random' | 'custom'>('random')
@@ -59,6 +64,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
 
   function pick(a: Artwork) {
     setArt(a)
+    setOrientation(null)
     topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
@@ -78,10 +84,11 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
 
   const prints = PRINT_SIZES.filter(s => !s.card)
   const card = PRINT_SIZES.find(s => s.card) as PrintSize
-  // Wide pieces print on landscape paper (and a sideways card) so the art fits properly
+  // Wide pieces suit landscape paper (and a sideways card); the buyer has the final say
   const aspect = useAspect(art.image_url)
   const edge = useEdge(art.image_url)
-  const landscape = (aspect ?? 0) > 1.05
+  const suggested = (aspect ?? 0) > 1.05 ? 'landscape' : 'portrait'
+  const landscape = (orientation ?? suggested) === 'landscape'
   const fit = (s: PrintSize) => (landscape ? { w: s.h, h: s.w } : { w: s.w, h: s.h })
   const dims = (s: PrintSize) => { const { w, h } = fit(s); return `${w}" × ${h}"` }
   // Shrink the comparison so every size fits side by side (all at the same scale)
@@ -117,6 +124,23 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                     <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 19, color: INK, lineHeight: 1.15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{art.title}</p>
                     <a href="#choose-piece" style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>Change piece ↓</a>
                   </div>
+                </div>
+              </div>
+
+              <div>
+                <span style={label}>Orientation</span>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {(['portrait', 'landscape'] as const).map(o => {
+                    const on = (orientation ?? suggested) === o
+                    return (
+                      <button key={o} type="button" onClick={() => setOrientation(o)} aria-pressed={on}
+                        style={{ flex: 1, padding: '9px 10px', fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
+                                 border: `1px solid ${on ? '#4a3a7a' : '#d0d0d0'}`, background: on ? '#4a3a7a' : '#fff', color: on ? '#fff' : INK }}>
+                        {o === 'portrait' ? '▯ Portrait' : '▭ Landscape'}
+                        {o === suggested && <span style={{ display: 'block', fontSize: 8, letterSpacing: '.15em', marginTop: 3, opacity: .75 }}>suggested</span>}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -173,7 +197,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>See it to scale</p>
           <h3 style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: INK, marginBottom: 18 }}>{art.title}, every size</h3>
           <p style={{ fontSize: 11, fontWeight: 300, color: '#787878', margin: '-12px 0 18px' }}>
-            {landscape ? '↔ Landscape: this piece is wider than it is tall, so it prints sideways.' : '↕ Portrait'} The whole artwork is printed, never cropped.
+            {landscape ? '▭ Landscape' : '▯ Portrait'} — switch it in your order. Every size shows the whole artwork with a small white margin.
           </p>
 
           <div ref={rowRef} className="no-scrollbar" style={{ overflowX: 'auto', paddingBottom: 6 }}>
