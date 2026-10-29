@@ -41,10 +41,12 @@ export default function Queens({ date, regions, onSolved }: { date: string; regi
     <div style={CENTERED}>
       <Rules>Place one Dug-Dug in every row, every column and every colour. No two pups can touch, not even diagonally (he doesn’t share treats). Tap once for ×, twice for Dug-Dug.</Rules>
 
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, 1fr)`, width: 'min(100%, 420px)', aspectRatio: '1', border: `2px solid ${INK}` }}>
+      {/* Fixed rows and columns, so placing a piece never changes the board's size */}
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, gridTemplateRows: `repeat(${n}, minmax(0, 1fr))`, width: 'min(100%, 420px)', aspectRatio: '1', border: `2px solid ${INK}` }}>
         {board.map((row, r) => row.map((v, c) => (
           <button key={`${r}-${c}`} type="button" onClick={() => tap(r, c)} aria-label={`Row ${r + 1} column ${c + 1}`}
             style={{
+              position: 'relative', overflow: 'hidden', minWidth: 0, minHeight: 0,
               padding: 0, cursor: solved ? 'default' : 'pointer', fontFamily: 'inherit',
               background: REGION_COLORS[regions[r][c] % REGION_COLORS.length],
               borderTop: r === 0 ? 'none' : edge(r, c, -1, 0), borderLeft: c === 0 ? 'none' : edge(r, c, 0, -1),
@@ -52,7 +54,7 @@ export default function Queens({ date, regions, onSolved }: { date: string; regi
               fontSize: 'clamp(18px, 5vw, 28px)', lineHeight: 1,
               color: v === 2 && clashes.has(`${r},${c}`) ? '#b3261e' : INK,
             }}>
-            {v === 2 ? <span style={{ display: 'flex', justifyContent: 'center' }}><DugDug size="72%" ring={clashes.has(`${r},${c}`) ? '#b3261e' : INK} /></span> : v === 1 ? <span style={{ fontSize: '.55em', opacity: .45 }}>✕</span> : ''}
+            {v === 2 ? <span style={{ position: 'absolute', inset: '14%' }}><DugDug size="100%" ring={clashes.has(`${r},${c}`) ? '#b3261e' : INK} /></span> : v === 1 ? <span style={{ fontSize: '.55em', opacity: .45 }}>✕</span> : ''}
           </button>
         )))}
       </div>
