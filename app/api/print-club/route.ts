@@ -3,8 +3,8 @@ import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getResendClient } from '@/lib/resend'
 import { PLANS, planForCountry } from '@/lib/printClub'
 
-const REQUIRED = ['name', 'email', 'phone', 'address_line1', 'city', 'country'] as const
-const OPTIONAL = ['birthday', 'birthday_request', 'address_line2', 'region', 'postal_code'] as const
+const REQUIRED = ['name', 'email', 'phone', 'address_line1', 'city', 'region', 'postal_code', 'country'] as const
+const OPTIONAL = ['birthday', 'birthday_request', 'address_line2'] as const
 type Field = typeof REQUIRED[number] | typeof OPTIONAL[number]
 
 export async function POST(req: NextRequest) {

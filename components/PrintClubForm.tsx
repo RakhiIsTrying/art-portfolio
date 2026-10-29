@@ -29,6 +29,8 @@ function validate(f: FormState): Errors {
   }
   if (!f.address_line1.trim()) e.address_line1 = 'Address is required'
   if (!f.city.trim())          e.city          = 'City is required'
+  if (!f.region.trim())        e.region        = 'State is required'
+  if (!f.postal_code.trim())   e.postal_code   = 'Postal code is required'
   if (!f.country.trim())       e.country       = 'Country is required'
   return e
 }
@@ -48,8 +50,8 @@ const ADDRESS: FieldDef[] = [
   { id: 'address_line1', label: 'Address',           autoComplete: 'address-line1' },
   { id: 'address_line2', label: 'Apt, suite, etc.',  autoComplete: 'address-line2', optional: true },
   { id: 'city',          label: 'City',              autoComplete: 'address-level2', half: true },
-  { id: 'region',        label: 'State',             autoComplete: 'address-level1', half: true, optional: true },
-  { id: 'postal_code',   label: 'Postal code',       autoComplete: 'postal-code',    half: true, optional: true },
+  { id: 'region',        label: 'State',             autoComplete: 'address-level1', half: true },
+  { id: 'postal_code',   label: 'Postal code',       autoComplete: 'postal-code',    half: true },
   { id: 'country',       label: 'Country',           autoComplete: 'country-name',   half: true },
 ]
 

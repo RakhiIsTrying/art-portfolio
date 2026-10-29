@@ -8,8 +8,8 @@ create table if not exists print_club_signups (
   address_line1 text not null,
   address_line2 text,
   city text not null,
-  region text,
-  postal_code text,
+  region text not null,
+  postal_code text not null,
   country text not null,
   plan text not null check (plan in ('india', 'international')),
   created_at timestamptz not null default now()
