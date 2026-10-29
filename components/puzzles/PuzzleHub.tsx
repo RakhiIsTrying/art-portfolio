@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Daily } from '@/lib/puzzles/daily'
 import Sudoku from './Sudoku'
 import Wordle from './Wordle'
@@ -50,6 +50,17 @@ export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { 
     }
     setSolved(s => (s[g] ? s : { ...s, [g]: true }))
   }, [setSolved, solved, solvedLoaded])
+  // Coming back (or refreshing) after solving today's puzzles celebrates again, once per page load
+  const greeted = useRef(false)
+  useEffect(() => {
+    if (!solvedLoaded || greeted.current) return
+    greeted.current = true
+    if (Object.values(solved).some(Boolean) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setBurst(b => b + 1)
+      setCelebrating(true)
+    }
+  }, [solvedLoaded, solved])
+
   useEffect(() => {
     if (!celebrating) return
     const t = setTimeout(() => setCelebrating(false), 5000)
