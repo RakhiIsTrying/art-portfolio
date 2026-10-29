@@ -9,7 +9,6 @@ const categoryColors: Record<string, string> = {
   movies:   '#1e3a8a',
   comics:   '#1a6060',
   'bee-ben':'#4a3a7a',
-  paper:    '#7a5020',
   sketchbook: '#3d4f45',
 }
 
@@ -18,7 +17,6 @@ const categoryDesc: Record<string, string> = {
   movies:   'Cinema & television',
   comics:   'Manga, anime & panels',
   'bee-ben':'Original characters',
-  paper:    'Cuts, folds & textures',
   sketchbook: 'Pencil, watercolor & still life',
 }
 
@@ -67,7 +65,7 @@ export default async function GalleryPage() {
                   {desc} · {totals[col.slug]} {totals[col.slug] === 1 ? 'piece' : 'pieces'}
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: 1, padding: '12px 16px', flexShrink: 0 }}>
+              <div className="hidden sm:flex" style={{ gap: 1, padding: '12px 16px', flexShrink: 0 }}>
                 {previews[col.slug]?.map(art => (
                   <div key={art.id} style={{ width: 52, height: 52, position: 'relative', overflow: 'hidden', background: '#e6e6e6', flexShrink: 0 }}>
                     <Image src={art.image_url} alt={art.title} fill className="object-cover" sizes="52px" />

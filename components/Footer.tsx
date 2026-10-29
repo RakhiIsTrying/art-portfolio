@@ -6,7 +6,7 @@ const categories = [
   { label: 'Music',    color: '#7a3040', href: '/gallery?cat=music'  },
   { label: 'Movies',   color: '#1e3a8a', href: '/gallery?cat=movies' },
   { label: 'Comics',   color: '#1a6060', href: '/gallery?cat=comics' },
-  { label: 'Paper Art',color: '#7a5020', href: '/gallery?cat=paper'  },
+  { label: 'Sketchbook',color: '#3d4f45', href: '/gallery/sketchbook' },
 ]
 
 const socials = [
@@ -16,9 +16,10 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer style={{ background: '#1a1014', height: 38, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px 0 76px', flexShrink: 0 }}>
+    <footer className="flex-wrap gap-y-2 px-4 py-3 md:h-[38px] md:py-0 md:pr-6 md:pl-[76px]" style={{ background: '#1a1014', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
 
-      <div style={{ display: 'flex', alignItems: 'stretch', height: '100%' }}>
+      {/* Collection links — hidden on phones to keep the footer to one line */}
+      <div className="hidden md:flex" style={{ alignItems: 'stretch', height: '100%' }}>
         {categories.map(({ label, color, href }) => (
           <Link
             key={label}
@@ -42,7 +43,7 @@ export default function Footer() {
         ))}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px 20px' }}>
         {socials.map(({ href, label }) => (
           <a
             key={label}

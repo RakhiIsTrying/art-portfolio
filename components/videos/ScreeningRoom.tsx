@@ -12,7 +12,6 @@ const FILTERS = [
   { slug: 'movies',  label: 'Movie Art',         color: '#1e3a8a' },
   { slug: 'music',   label: 'Music',             color: '#7a3040' },
   { slug: 'comics',  label: 'Comics',            color: '#1a6060' },
-  { slug: 'paper',   label: 'Paper Art',         color: '#7a5020' },
   { slug: 'bee-ben', label: 'Bee Ben & Dug-Dug', color: '#4a3a7a' },
 ]
 

@@ -6,11 +6,11 @@ import CollectionsStrip from '@/components/CollectionsStrip'
 import { COLLECTIONS } from '@/lib/collections'
 import type { Artwork } from '@/lib/types'
 
-const TOP_TICKER    = '✦ POP ART  ·  DIGITAL ART  ·  PAPER ART  ·  MUSIC ICONS  ·  MOVIE ART  ·  COMICS  ·  BEE BEN & DUG-DUG  ·  STICKERS  ·  CHIBI  ·  ORIGINALS'
+const TOP_TICKER    = '✦ POP ART  ·  DIGITAL ART  ·  SKETCHBOOK  ·  MUSIC ICONS  ·  MOVIE ART  ·  COMICS  ·  BEE BEN & DUG-DUG  ·  STICKERS  ·  CHIBI  ·  ORIGINALS'
 // Piece pinned to the hero; set to null to show the latest upload instead
 const HERO_TITLE: string | null = 'KATSEYE'
 
-const BOTTOM_TICKER = '✦ AVAILABLE FOR COMMISSIONS  ·  INQUIRE FOR PRICING  ·  ORIGINAL ART & PRINTS  ·  BEE BEN & DUG-DUG  ·  STICKERS & PAPER CUTS  ·  FAN ART & ORIGINALS'
+const BOTTOM_TICKER = '✦ AVAILABLE FOR COMMISSIONS  ·  INQUIRE FOR PRICING  ·  ORIGINAL ART & PRINTS  ·  BEE BEN & DUG-DUG  ·  DAILY PUZZLES  ·  FAN ART & ORIGINALS'
 
 export default async function HomePage() {
   const supabase = await getSupabaseServerClient()

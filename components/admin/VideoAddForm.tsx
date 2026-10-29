@@ -71,7 +71,6 @@ export default function VideoAddForm() {
               <option value="movies">Movie Art</option>
               <option value="music">Music</option>
               <option value="comics">Comics</option>
-              <option value="paper">Paper Art</option>
               <option value="bee-ben">Bee Ben &amp; Dug-Dug</option>
             </select>
           </div>

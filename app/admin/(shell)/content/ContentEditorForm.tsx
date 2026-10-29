@@ -6,7 +6,7 @@ import { savePageContent } from './actions'
 type Props = { puzzlesHtml: string; aboutHtml: string }
 
 export default function ContentEditorForm({ puzzlesHtml, aboutHtml }: Props) {
-  const [activeTab, setActiveTab] = useState<'puzzles' | 'about'>('puzzles')
+  const [activeTab, setActiveTab] = useState<'puzzles' | 'about'>('about')
   const [state, formAction, pending] = useActionState(savePageContent, null)
 
   const currentHtml = activeTab === 'puzzles' ? puzzlesHtml : aboutHtml
@@ -14,7 +14,8 @@ export default function ContentEditorForm({ puzzlesHtml, aboutHtml }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex border-b-4 border-ink">
-        {(['puzzles', 'about'] as const).map(tab => (
+        {/* Puzzles are generated daily now, so only About is editable */}
+        {(['about'] as ('puzzles' | 'about')[]).map(tab => (
           <button
             key={tab}
             type="button"

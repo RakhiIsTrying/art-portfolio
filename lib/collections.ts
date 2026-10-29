@@ -5,8 +5,7 @@ export const COLLECTIONS: Collection[] = [
   { slug: 'movies',  name: 'Movies & TV',         icon_emoji: '🎬', sort_order: 2 },
   { slug: 'comics',  name: 'Comics & Anime',      icon_emoji: '💥', sort_order: 3 },
   { slug: 'bee-ben', name: 'Bee, Ben & Dug-Dug',  icon_emoji: '🐝', sort_order: 4 },
-  { slug: 'paper',   name: 'Paper Art',           icon_emoji: '✂️', sort_order: 5 },
-  { slug: 'sketchbook', name: 'Sketchbook',       icon_emoji: '✏️', sort_order: 6 },
+  { slug: 'sketchbook', name: 'Sketchbook',       icon_emoji: '✏️', sort_order: 5 },
 ]
 
 export function getCollection(slug: string): Collection | undefined {

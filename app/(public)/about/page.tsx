@@ -52,7 +52,7 @@ export default async function AboutPage() {
               </h2>
               <div style={{ width: 24, height: 1, background: '#7a3040', marginBottom: 20 }} />
               <p style={{ fontSize: 13, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
-                Pop culture digital and paper art — music, movies, comics, originals. An original hand-crafted lens on the icons and moments that define culture.
+                Pop culture digital and traditional art — music, movies, comics, originals. An original hand-crafted lens on the icons and moments that define culture.
               </p>
             </div>
             <Link

@@ -8,7 +8,6 @@ const categoryColors: Record<string, string> = {
   movies:   '#1e3a8a',
   comics:   '#1a6060',
   'bee-ben':'#4a3a7a',
-  paper:    '#7a5020',
   sketchbook: '#3d4f45',
 }
 

@@ -126,7 +126,7 @@ export default async function ShopPage() {
               Commission an original — your icon, your pet, your moment.
             </p>
             <p style={{ fontSize: 12, fontWeight: 300, lineHeight: 1.7, color: 'rgba(255,255,255,.55)', maxWidth: 520 }}>
-              Digital or paper, drawn by hand from scratch. Tell me what you have in mind.
+              Digital or traditional, drawn by hand from scratch. Tell me what you have in mind.
             </p>
           </div>
           <Link

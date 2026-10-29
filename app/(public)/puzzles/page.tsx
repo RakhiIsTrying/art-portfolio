@@ -1,37 +1,42 @@
+import type { Metadata } from 'next'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getDaily } from '@/lib/puzzles/daily'
+import PuzzleHub from '@/components/puzzles/PuzzleHub'
+
+// Puzzles change every day (India time), so render per request
+export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: 'Daily Puzzles — Van Gone Broke',
+  description: 'Mini Sudoku over a new artwork, Wordle, Queens, Wend and Spelling Bee. New puzzles every day.',
+}
+
+const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 
 export default async function PuzzlesPage() {
-  const supabase = await getSupabaseServerClient()
-  const { data: page } = await supabase
-    .from('pages').select('content_json')
-    .eq('slug', 'puzzles').single()
+  const daily = getDaily()
 
-  const content = page?.content_json as { html?: string } | null
+  // Today's sudoku artwork rotates through the gallery
+  const supabase = await getSupabaseServerClient()
+  const { data: arts } = await supabase.from('artworks').select('title, image_url').order('created_at', { ascending: true })
+  const art = arts?.length ? arts[(daily.number * 7) % arts.length] : null
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: '36px 36px 60px' }}>
-
-      {/* Page header */}
-      <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #d0d0d0' }}>
-        <div style={{ width: 3, background: '#1a6060', marginRight: 16, flexShrink: 0 }} />
-        <div>
-          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#1a6060', marginBottom: 6 }}>Explore</p>
-          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 30, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Art Puzzles</h1>
-        </div>
-      </div>
-
-      {content?.html ? (
-        <div
-          style={{ fontSize: 14, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }}
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: content.html }}
-        />
-      ) : (
-        <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
-          Content coming soon.
+    <div style={{ maxWidth: 1000, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
+      <div style={{ paddingBottom: 22, borderBottom: '1px solid #d0d0d0', marginBottom: 22 }}>
+        <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#1a6060', marginBottom: 14 }}>
+          ✦ Play
         </p>
-      )}
-
+        <h1>
+          <span style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(40px, 6vw, 68px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.03em', lineHeight: .95, color: '#1a1014' }}>
+            Daily{' '}
+          </span>
+          <span style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(40px, 6vw, 68px)', fontWeight: 400, fontStyle: 'italic', lineHeight: 1.05, color: '#b07880' }}>
+            Puzzles
+          </span>
+        </h1>
+      </div>
+      <PuzzleHub daily={daily} art={art} />
     </div>
   )
 }

@@ -8,7 +8,7 @@ const categories = [
   { label: 'Music',   color: '#7a3040', href: '/gallery?cat=music'   },
   { label: 'Movies',  color: '#1e3a8a', href: '/gallery?cat=movies'  },
   { label: 'Comics',  color: '#1a6060', href: '/gallery?cat=comics'  },
-  { label: 'Paper',   color: '#7a5020', href: '/gallery?cat=paper'   },
+  { label: 'Sketch',  color: '#3d4f45', href: '/gallery/sketchbook'  },
 ]
 
 export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwork; label?: string }) {

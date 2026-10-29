@@ -7,7 +7,6 @@ const COLLECTIONS = [
   { slug: 'movies',  name: 'Movies & TV' },
   { slug: 'comics',  name: 'Comics & Anime' },
   { slug: 'bee-ben', name: 'Bee, Ben & Dug-Dug' },
-  { slug: 'paper',   name: 'Paper Art' },
   { slug: 'sketchbook', name: 'Sketchbook' },
 ]
 
