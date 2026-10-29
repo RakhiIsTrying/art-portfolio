@@ -17,8 +17,25 @@ export type Daily = {
   bee: { letters: string; center: string; answers: string[] }
 }
 
+// A new set of puzzles starts at 12:01 am India time
+const ROLLOVER_MS = 60_000
+
 export function todayKey(now = new Date()) {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now)
+  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(now.getTime() - ROLLOVER_MS))
+}
+
+export const LAUNCH_DATE = '2026-10-30'
+export const ARCHIVE_DAYS = 30
+
+/** Today and the days before it that can be played (back to launch, at most a month). */
+export function archiveDates(today = todayKey()) {
+  const dates: string[] = []
+  for (let i = 0; i < ARCHIVE_DAYS; i++) {
+    const d = new Date(Date.parse(today + 'T00:00:00Z') - i * 86_400_000).toISOString().slice(0, 10)
+    if (d < LAUNCH_DATE) break
+    dates.push(d)
+  }
+  return dates
 }
 
 /** Seeded PRNG (mulberry32) from a string. */

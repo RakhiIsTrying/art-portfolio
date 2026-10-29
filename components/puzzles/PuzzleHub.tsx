@@ -19,43 +19,86 @@ const GAMES = [
 type GameId = typeof GAMES[number]['id']
 
 /** Time until midnight in India, when the next puzzles arrive. */
-function useCountdown() {
+/** Time until 12:01 am India time, when the next puzzles arrive; reloads the page then if asked to. */
+function useCountdown(reloadAtZero: boolean) {
   const [left, setLeft] = useState('')
   useEffect(() => {
     const tick = () => {
       const now = new Date()
-      const ist = new Date(now.getTime() + 5.5 * 3600_000)
-      const next = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1) - 5.5 * 3600_000
+      const ist = new Date(now.getTime() + 5.5 * 3600_000 - 60_000)
+      const next = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1) - 5.5 * 3600_000 + 60_000
       const s = Math.max(0, Math.floor((next - now.getTime()) / 1000))
       setLeft(`${String(Math.floor(s / 3600)).padStart(2, '0')}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`)
+      if (s === 0 && reloadAtZero) setTimeout(() => window.location.reload(), 1500)
     }
     tick()
     const t = setInterval(tick, 1000)
     return () => clearInterval(t)
-  }, [])
+  }, [reloadAtZero])
   return left
 }
 
-export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { title: string; image_url: string } | null; theme: Theme }) {
+/** Past days on the left: click a date to play that day; shows how many you solved. */
+function Archive({ dates, current, today }: { dates: string[]; current: string; today: string }) {
+  const [counts, setCounts] = useState<Record<string, number>>({})
+  useEffect(() => {
+    const c: Record<string, number> = {}
+    for (const d of dates) {
+      try { c[d] = Object.values(JSON.parse(localStorage.getItem(`vgb-puzzle:${d}:solved`) ?? '{}')).filter(Boolean).length } catch { c[d] = 0 }
+    }
+    setCounts(c)
+  }, [dates, current])
+  const label = (d: string) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+  const weekday = (d: string) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' })
+
+  return (
+    <nav aria-label="Past puzzles" className="no-scrollbar flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible lg:sticky lg:top-[60px]">
+      <p className="hidden lg:block" style={{ fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878', marginBottom: 8 }}>Past month</p>
+      {dates.map(d => {
+        const on = d === current
+        const n = counts[d] ?? 0
+        return (
+          <a key={d} href={d === today ? '/puzzles' : `/puzzles?date=${d}`} aria-current={on ? 'page' : undefined}
+             style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '8px 10px', textDecoration: 'none',
+                      background: on ? BEE_BEN : '#fff', color: on ? '#fff' : INK, border: `1px solid ${on ? BEE_BEN : '#e0dcdc'}` }}>
+            <span style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: 9, letterSpacing: '.2em', textTransform: 'uppercase', opacity: .65, marginRight: 6 }}>{d === today ? 'Today' : weekday(d)}</span>
+              {label(d)}
+            </span>
+            <span style={{ fontSize: 10, whiteSpace: 'nowrap', color: on ? '#fff' : n === 5 ? '#3f8f4f' : '#a0a0a0' }}>{n === 5 ? '★ 5/5' : `${n}/5`}</span>
+          </a>
+        )
+      })}
+    </nav>
+  )
+}
+
+type HubProps = { daily: Daily; art: { title: string; image_url: string } | null; theme: Theme; dates: string[]; today: string }
+
+export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps) {
+  const isToday = daily.date === today
   const [active, setActive] = useState<GameId>('sudoku')
   const [solved, setSolved, solvedLoaded] = useDailyState<Partial<Record<GameId, boolean>>>(daily.date, 'solved', {})
   // Confetti only for a fresh win — not when reopening a puzzle solved earlier today
   const [burst, setBurst] = useState(0)
   const [celebrating, setCelebrating] = useState(false)
-  const countdown = useCountdown()
+  const countdown = useCountdown(isToday)
+  // Confetti only once all five of the day's puzzles are solved
+  const allSolved = (s: Partial<Record<GameId, boolean>>) => GAMES.every(g => s[g.id])
   const markSolved = useCallback((g: GameId) => {
-    if (solvedLoaded && !solved[g] && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const next = { ...solved, [g]: true }
+    if (solvedLoaded && !solved[g] && allSolved(next) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setBurst(b => b + 1)
       setCelebrating(true)
     }
     setSolved(s => (s[g] ? s : { ...s, [g]: true }))
   }, [setSolved, solved, solvedLoaded])
-  // Coming back (or refreshing) after solving today's puzzles celebrates again, once per page load
+  // Coming back (or refreshing) after solving all five celebrates again, once per page load
   const greeted = useRef(false)
   useEffect(() => {
     if (!solvedLoaded || greeted.current) return
     greeted.current = true
-    if (Object.values(solved).some(Boolean) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (allSolved(solved) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setBurst(b => b + 1)
       setCelebrating(true)
     }
@@ -73,14 +116,23 @@ export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { 
 
   return (
     <ThemeContext.Provider value={theme}>
+      <div className="grid lg:grid-cols-[180px_minmax(0,1fr)] gap-6 lg:gap-8 items-start">
+      <Archive dates={dates} current={daily.date} today={today} />
+      <div style={{ minWidth: 0 }}>
       {/* Date strip */}
       <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2" style={{ marginBottom: 18, textAlign: 'center' }}>
         <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878' }}>
           {pretty} · No. {daily.number} · {solvedCount}/5 solved
         </p>
-        <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
-          New puzzles in <span style={{ color: INK, fontVariantNumeric: 'tabular-nums' }}>{countdown}</span>
-        </p>
+        {isToday ? (
+          <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+            New puzzles in <span style={{ color: INK, fontVariantNumeric: 'tabular-nums' }}>{countdown}</span>
+          </p>
+        ) : (
+          <a href="/puzzles" style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN }}>
+            Playing a past day · Back to today →
+          </a>
+        )}
       </div>
 
       {/* Game picker */}
@@ -107,6 +159,8 @@ export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { 
       {active === 'queens' && <Queens date={daily.date} regions={daily.queens.regions} solution={daily.queens.solution} onSolved={done('queens')} />}
       {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} solution={daily.wend.solution} onSolved={done('wend')} />}
       {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} onSolved={done('bee')} />}
+      </div>
+      </div>
       <BeeCallout />
       {celebrating && <Confetti burst={burst} />}
     </ThemeContext.Provider>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import { getDaily } from '@/lib/puzzles/daily'
+import { archiveDates, getDaily, todayKey } from '@/lib/puzzles/daily'
 import PuzzleHub from '@/components/puzzles/PuzzleHub'
 
 // Puzzles change every day (India time), so render per request
@@ -13,8 +13,12 @@ export const metadata: Metadata = {
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 
-export default async function PuzzlesPage() {
-  const daily = getDaily()
+export default async function PuzzlesPage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
+  // ?date=YYYY-MM-DD plays a day from the past month; anything else shows today
+  const { date } = await searchParams
+  const today = todayKey()
+  const dates = archiveDates(today)
+  const daily = getDaily(date && dates.includes(date) ? date : today)
 
   // Bee, Ben & Dug-Dug drawings theme the puzzles; today's sudoku art rotates through them
   const supabase = await getSupabaseServerClient()
@@ -27,7 +31,7 @@ export default async function PuzzlesPage() {
   const theme = { mascot, arts: arts.slice(daily.number % Math.max(arts.length, 1)).concat(arts.slice(0, daily.number % Math.max(arts.length, 1))) }
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
+    <div style={{ maxWidth: 1180, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
       <div style={{ paddingBottom: 22, borderBottom: '1px solid #d0d0d0', marginBottom: 22, textAlign: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/puzzles/dugdug.png" alt="Dug-Dug" style={{ height: 96, margin: '0 auto 12px', display: 'block', filter: 'drop-shadow(0 8px 12px rgba(26,16,20,.2))' }} />
@@ -43,7 +47,7 @@ export default async function PuzzlesPage() {
           </span>
         </h1>
       </div>
-      <PuzzleHub daily={daily} art={art} theme={theme} />
+      <PuzzleHub daily={daily} art={art} theme={theme} dates={dates} today={today} />
     </div>
   )
 }
