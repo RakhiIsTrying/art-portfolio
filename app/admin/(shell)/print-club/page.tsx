@@ -55,7 +55,10 @@ export default async function AdminPrintClubPage() {
         ) : upcoming.map((s, i) => (
           <div key={s.id} style={{ display: 'flex', alignItems: 'baseline', gap: 16, padding: '10px 20px', borderBottom: i < upcoming.length - 1 ? '1px solid #ebebeb' : 'none' }}>
             <span style={{ width: 70, flexShrink: 0, fontSize: 12, fontWeight: 500, color: '#7a3040' }}>{formatBirthday(s.birthday)}</span>
-            <span style={{ flex: 1, fontSize: 13, color: '#1a1014' }}>{s.name}</span>
+            <span style={{ flex: 1, fontSize: 13, color: '#1a1014' }}>
+              {s.name}
+              {s.birthday_request && <span style={{ display: 'block', fontSize: 11, fontWeight: 300, fontStyle: 'italic', color: '#787878', marginTop: 2 }}>“{s.birthday_request}”</span>}
+            </span>
             <a href={`mailto:${s.email}?subject=${encodeURIComponent('Happy birthday! 🎂')}`} style={{ fontSize: 11, color: '#1e3a8a' }}>{s.email}</a>
             <span style={{ width: 70, textAlign: 'right', fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', color: s.inDays === 0 ? '#7a3040' : '#a0a0a0', fontWeight: s.inDays === 0 ? 500 : 300 }}>
               {s.inDays === 0 ? 'Today' : `in ${s.inDays}d`}
@@ -96,6 +99,11 @@ export default async function AdminPrintClubPage() {
                 <a href={`tel:${s.phone}`} style={{ color: '#1e3a8a' }}>{s.phone}</a>
                 {s.birthday && <span style={{ color: '#787878' }}>🎂 {formatBirthday(s.birthday)}</span>}
               </p>
+              {s.birthday_request && (
+                <p style={{ fontSize: 11, lineHeight: 1.6, fontWeight: 300, fontStyle: 'italic', color: '#787878', marginTop: 4 }}>
+                  🎂 Birthday request: “{s.birthday_request}”
+                </p>
+              )}
               <p style={{ fontSize: 12, lineHeight: 1.6, fontWeight: 300, color: '#1a1014', marginTop: 6 }}>
                 {[s.address_line1, s.address_line2].filter(Boolean).join(', ')}<br />
                 {[s.city, s.region, s.postal_code].filter(Boolean).join(', ')} · {s.country}

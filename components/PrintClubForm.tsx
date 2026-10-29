@@ -3,14 +3,14 @@ import { useState } from 'react'
 import { PLANS, planForCountry, type PlanId } from '@/lib/printClub'
 
 type FormState = {
-  name: string; email: string; phone: string; birthday: string
+  name: string; email: string; phone: string; birthday: string; birthday_request: string
   address_line1: string; address_line2: string; city: string; region: string; postal_code: string; country: string
 }
 type Field  = keyof FormState
 type Errors = Partial<Record<Field, string>>
 
 const EMPTY: FormState = {
-  name: '', email: '', phone: '', birthday: '',
+  name: '', email: '', phone: '', birthday: '', birthday_request: '',
   address_line1: '', address_line2: '', city: '', region: '', postal_code: '', country: '',
 }
 
@@ -33,13 +33,15 @@ function validate(f: FormState): Errors {
   return e
 }
 
-type FieldDef = { id: Field; label: string; type?: string; autoComplete: string; optional?: boolean; half?: boolean; hint?: string }
+type FieldDef = { id: Field; label: string; type?: string; autoComplete: string; optional?: boolean; half?: boolean; hint?: string; multiline?: boolean }
 
 const CONTACT: FieldDef[] = [
   { id: 'name',     label: 'Full name', autoComplete: 'name', half: true },
-  { id: 'birthday', label: 'Birthday',  autoComplete: 'bday', type: 'date', half: true, optional: true, hint: '🎂 Birthday perk: you can ask for a special request for your birthday' },
+  { id: 'birthday', label: 'Birthday',  autoComplete: 'bday', type: 'date', half: true, optional: true, hint: '🎂 Birthday perk: ask for a special request below' },
   { id: 'email', label: 'Email',     autoComplete: 'email', type: 'email', half: true },
   { id: 'phone', label: 'Phone',     autoComplete: 'tel',   type: 'tel',   half: true },
+  { id: 'birthday_request', label: 'Birthday request', autoComplete: 'off', optional: true, multiline: true,
+    hint: 'A favourite character, a dedication, something just for you — I’ll try to make it happen for your birthday.' },
 ]
 
 const ADDRESS: FieldDef[] = [
@@ -75,7 +77,7 @@ export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) 
   const plan = PLANS[form.country.trim() ? planForCountry(form.country) : defaultPlan]
 
   function update(field: Field) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setForm(f => ({ ...f, [field]: e.target.value }))
       if (errors[field]) setErrors(er => ({ ...er, [field]: undefined }))
     }
@@ -99,18 +101,25 @@ export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) 
     setStatus('sent')
   }
 
-  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint }: FieldDef) => (
+  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint, multiline }: FieldDef) => (
     <div key={id} className={half ? 'col-span-2 sm:col-span-1' : 'col-span-2'}>
       <label htmlFor={`pc-${id}`} style={labelStyle}>
         {label}
         {optional && <span style={{ fontWeight: 300, color: '#a0a0a0', letterSpacing: '.2em' }}> (optional)</span>}
       </label>
-      <input
-        id={`pc-${id}`} name={id} type={type} autoComplete={autoComplete}
-        value={form[id]} onChange={update(id)} style={inputStyle(!!errors[id])}
-        aria-invalid={!!errors[id]}
-        max={type === 'date' ? new Date().toISOString().slice(0, 10) : undefined}
-      />
+      {multiline ? (
+        <textarea
+          id={`pc-${id}`} name={id} autoComplete={autoComplete} rows={2} maxLength={500}
+          value={form[id]} onChange={update(id)} style={{ ...inputStyle(!!errors[id]), resize: 'vertical' }}
+        />
+      ) : (
+        <input
+          id={`pc-${id}`} name={id} type={type} autoComplete={autoComplete}
+          value={form[id]} onChange={update(id)} style={inputStyle(!!errors[id])}
+          aria-invalid={!!errors[id]}
+          max={type === 'date' ? new Date().toISOString().slice(0, 10) : undefined}
+        />
+      )}
       {hint && !errors[id] && <p style={{ fontSize: 10, letterSpacing: '.1em', fontWeight: 300, color: '#a0a0a0', marginTop: 6 }}>{hint}</p>}
       {errors[id] && <p style={{ fontSize: 10, letterSpacing: '.2em', color: '#7a3040', marginTop: 6 }}>{errors[id]}</p>}
     </div>
