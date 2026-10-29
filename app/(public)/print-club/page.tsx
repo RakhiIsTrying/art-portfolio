@@ -17,6 +17,7 @@ const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 const PERKS = [
   { title: 'A new print, every month', body: 'A fresh piece mailed to your door — music, movies, comics or Dug-Dug.' },
   { title: 'First look',               body: 'See new work before it’s posted anywhere else.' },
+  { title: 'Birthday special 🎂',       body: 'Add your birthday and ask for a special request — a favourite character, a dedication, something just for you.' },
   { title: 'Cancel anytime',           body: 'No commitment. Stay as long as the prints make you happy.' },
 ]
 

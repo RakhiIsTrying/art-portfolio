@@ -37,7 +37,7 @@ type FieldDef = { id: Field; label: string; type?: string; autoComplete: string;
 
 const CONTACT: FieldDef[] = [
   { id: 'name',     label: 'Full name', autoComplete: 'name', half: true },
-  { id: 'birthday', label: 'Birthday',  autoComplete: 'bday', type: 'date', half: true, optional: true, hint: 'So I can send you a birthday greeting 🎂' },
+  { id: 'birthday', label: 'Birthday',  autoComplete: 'bday', type: 'date', half: true, optional: true, hint: '🎂 Birthday perk: you can ask for a special request for your birthday' },
   { id: 'email', label: 'Email',     autoComplete: 'email', type: 'email', half: true },
   { id: 'phone', label: 'Phone',     autoComplete: 'tel',   type: 'tel',   half: true },
 ]
