@@ -47,7 +47,7 @@ export default async function AdminArtworksPage() {
           {artworks?.map((art, i) => (
             <div key={art.id} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 20px', borderBottom: i < artworks.length - 1 ? '1px solid #ebebeb' : 'none' }}>
               <div style={{ position: 'relative', width: 48, height: 48, flexShrink: 0, background: '#e6e6e6', overflow: 'hidden' }}>
-                <Image src={art.image_url} alt={art.title} fill className="object-cover" />
+                <Image src={art.image_url} alt={art.title} fill className="object-contain" />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 13, fontWeight: 500, color: '#1a1014', letterSpacing: '.02em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 3 }}>

@@ -30,12 +30,12 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
     <>
       {/* Mat — the piece sits on paper like a framed print */}
       <div style={{ position: 'relative', aspectRatio: '4/5', background: '#f4f2ef', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: '9%', boxShadow: '0 10px 28px rgba(26,16,20,.18), 0 2px 6px rgba(26,16,20,.12)' }}>
+        <div style={{ position: 'absolute', inset: '9%', background: '#fff', boxShadow: '0 10px 28px rgba(26,16,20,.18), 0 2px 6px rgba(26,16,20,.12)' }}>
           <Image
             src={artwork.image_url}
             alt={artwork.title}
             fill
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            className="object-contain"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
           />
         </div>

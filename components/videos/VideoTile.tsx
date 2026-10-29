@@ -47,7 +47,7 @@ export default function VideoTile({ video, index, onOpen }: Props) {
           src={video.thumbnail_url}
           alt=""
           fill
-          className="object-cover vgb-motion transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
+          className="object-contain vgb-motion"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
           unoptimized={!video.video_url}
         />
@@ -61,7 +61,7 @@ export default function VideoTile({ video, index, onOpen }: Props) {
           preload={video.thumbnail_url ? 'none' : 'metadata'}
           className="vgb-motion"
           style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+            position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain',
             opacity: previewing || !video.thumbnail_url ? 1 : 0, transition: 'opacity .5s',
           }}
         />

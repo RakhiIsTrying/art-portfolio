@@ -42,7 +42,7 @@ export default function FeaturedPicker({ artworks }: { artworks: Artwork[] }) {
                          hover:opacity-80 transition-opacity disabled:cursor-not-allowed group"
               title={`Remove "${art.title}" from featured`}
             >
-              <Image src={art.image_url} alt={art.title} fill className="object-cover" />
+              <Image src={art.image_url} alt={art.title} fill className="object-contain" />
               <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/30 transition-colors" />
               <span className="absolute top-1 left-1 bg-rust text-cream text-[9px] font-black px-1.5 py-0.5 border border-ink">
                 {art.featured_order}
@@ -89,7 +89,7 @@ export default function FeaturedPicker({ artworks }: { artworks: Artwork[] }) {
                          hover:opacity-80 transition-opacity disabled:cursor-not-allowed group"
               title={`Feature "${art.title}"`}
             >
-              <Image src={art.image_url} alt={art.title} fill className="object-cover" />
+              <Image src={art.image_url} alt={art.title} fill className="object-contain" />
               <span className="absolute bottom-0 left-0 right-0 bg-ink/80 text-cream text-[8px] font-black uppercase tracking-widest px-1 py-0.5 truncate opacity-0 group-hover:opacity-100 transition-opacity">
                 + Feature
               </span>

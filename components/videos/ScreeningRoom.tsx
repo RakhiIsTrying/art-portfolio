@@ -132,10 +132,10 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
                   src={featured.video_url}
                   poster={featured.thumbnail_url ?? undefined}
                   muted loop playsInline preload="auto"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
                 />
               ) : featured.thumbnail_url && (
-                <Image src={featured.thumbnail_url} alt="" fill priority unoptimized className="object-cover" />
+                <Image src={featured.thumbnail_url} alt="" fill priority unoptimized className="object-contain" />
               )}
               <div className="vgb-motion opacity-0 group-hover:opacity-100" style={{
                 position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',

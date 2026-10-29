@@ -110,7 +110,7 @@ export default async function PrintClubPage() {
                 boxShadow: '0 22px 50px rgba(26,16,20,.22), 0 3px 10px rgba(26,16,20,.12)',
               }}>
                 <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                  <Image src={art.image_url} alt="" fill className="object-cover" sizes="(max-width: 768px) 50vw, 300px" priority={i === pieces.length - 1} />
+                  <Image src={art.image_url} alt="" fill className="object-contain" sizes="(max-width: 768px) 50vw, 300px" priority={i === pieces.length - 1} />
                 </div>
               </div>
             )

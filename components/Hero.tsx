@@ -70,7 +70,7 @@ export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwo
               src={latest.image_url}
               alt={latest.title}
               fill priority
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              className="object-contain"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
             {/* Scrims keep the labels legible over any artwork */}

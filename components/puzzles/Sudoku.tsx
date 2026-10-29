@@ -55,7 +55,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
 
       <div style={{ position: 'relative', width: 'min(100%, 420px)', aspectRatio: '1', background: '#fff', border: `2px solid ${INK}` }}>
         {art && (
-          <Image src={art.image_url} alt={solved ? art.title : ''} fill sizes="420px" className="object-cover"
+          <Image src={art.image_url} alt={solved ? art.title : ''} fill sizes="420px" className="object-contain"
                  style={{ opacity: solved ? 1 : .35, transition: 'opacity 1.2s ease' }} />
         )}
         <div style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gridTemplateRows: 'repeat(6, 1fr)' }}>

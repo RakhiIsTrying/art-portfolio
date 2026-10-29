@@ -22,7 +22,7 @@ function Paper({ art, w, h, ppi, highlight }: { art: Artwork; w: number; h: numb
       transition: 'box-shadow .2s',
     }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={art.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      <img src={art.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
     </div>
   )
 }
@@ -86,7 +86,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                 <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a3040', marginBottom: 12 }}>Your order</p>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'cover', flexShrink: 0, border: '1px solid #ebebeb' }} />
+                  <img src={art.image_url} alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0, border: '1px solid #ebebeb', background: '#fff' }} />
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 19, color: INK, lineHeight: 1.15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{art.title}</p>
                     <a href="#choose-piece" style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>Change piece ↓</a>

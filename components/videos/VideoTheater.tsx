@@ -166,7 +166,7 @@ export default function VideoTheater({ videos, index, onClose, onNavigate, onSel
             }}
           >
             {v.thumbnail_url && (
-              <Image src={v.thumbnail_url} alt="" fill sizes="42px" className="object-cover" unoptimized={!v.video_url} />
+              <Image src={v.thumbnail_url} alt="" fill sizes="42px" className="object-contain" unoptimized={!v.video_url} />
             )}
           </button>
         ))}

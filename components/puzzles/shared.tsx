@@ -34,7 +34,7 @@ export function DugDug({ size, ring }: { size: number | string; ring?: string })
   return mascot ? (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={mascot} alt="Dug-Dug" draggable={false}
-         style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', objectPosition: '50% 18%',
+         style={{ width: size, height: size, borderRadius: '50%', objectFit: 'contain', padding: '13%', boxSizing: 'border-box',
                   background: '#fff', boxShadow: `0 0 0 2px ${ring ?? '#fff'}`, display: 'block', pointerEvents: 'none' }} />
   ) : <span style={{ fontSize: typeof size === 'number' ? size * .7 : size }}>🐾</span>
 }
@@ -46,7 +46,7 @@ export function SolvedBanner({ title, detail, artIndex = 0 }: { title: string; d
     <div style={{ marginTop: 22, width: 'min(100%, 420px)', background: '#fff', border: `1px solid #d0d0d0`, borderTop: `3px solid ${BEE_BEN}`, display: 'flex', alignItems: 'center', gap: 14, padding: 14, textAlign: 'left' }}>
       {art && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={art.image_url} alt={art.title} style={{ width: 72, height: 72, objectFit: 'cover', flexShrink: 0 }} />
+        <img src={art.image_url} alt={art.title} style={{ width: 72, height: 72, objectFit: 'contain', flexShrink: 0, background: '#f4f2ef' }} />
       )}
       <div>
         <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 21, color: INK, lineHeight: 1.2 }}>{title}</p>

@@ -96,7 +96,7 @@ export default function ClubBoxEditor({ box, pieces }: { box: ClubBox; pieces: P
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 8 }}>
             {box.video_url && (
               <div style={{ position: 'relative', gridColumn: 'span 2' }}>
-                <video src={box.video_url} controls muted playsInline style={{ width: '100%', aspectRatio: '16/10', objectFit: 'cover', background: '#000' }} />
+                <video src={box.video_url} controls muted playsInline style={{ width: '100%', aspectRatio: '16/10', objectFit: 'contain', background: '#000' }} />
                 <span style={{ ...small, position: 'absolute', top: 6, left: 6, background: '#1a1014', color: '#fff', padding: '3px 6px', fontSize: 8 }}>Unboxing</span>
                 <RemoveButton onClick={() => remove(box.video_url!)} />
               </div>
@@ -104,7 +104,7 @@ export default function ClubBoxEditor({ box, pieces }: { box: ClubBox; pieces: P
             {box.photo_urls.map(url => (
               <div key={url} style={{ position: 'relative' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt="" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', display: 'block' }} />
+                <img src={url} alt="" style={{ width: '100%', aspectRatio: '1', objectFit: 'contain', display: 'block' }} />
                 <RemoveButton onClick={() => remove(url)} />
               </div>
             ))}
@@ -133,7 +133,7 @@ export default function ClubBoxEditor({ box, pieces }: { box: ClubBox; pieces: P
                 <button key={p.id} type="button" onClick={() => togglePiece(p.id)} title={p.title}
                         style={{ padding: 0, cursor: 'pointer', background: '#fff', border: `2px solid ${on ? '#4a3a7a' : 'transparent'}`, opacity: on ? 1 : .55, position: 'relative' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.image_url} alt={p.title} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', display: 'block' }} />
+                  <img src={p.image_url} alt={p.title} style={{ width: '100%', aspectRatio: '1', objectFit: 'contain', display: 'block' }} />
                   {on && <span style={{ position: 'absolute', top: 3, right: 3, background: '#4a3a7a', color: '#fff', fontSize: 10, width: 16, height: 16, lineHeight: '16px' }}>✓</span>}
                 </button>
               )

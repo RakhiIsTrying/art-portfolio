@@ -36,7 +36,7 @@ export default function BoxMedia({ month, videoUrl, photos }: { month: string; v
             <button key={url} type="button" onClick={() => setOpen(i)} aria-label={`Open photo ${i + 1}`}
                     className="group" style={{ position: 'relative', aspectRatio: '1', padding: 0, border: 'none', cursor: 'zoom-in', overflow: 'hidden', background: '#d0d0d0' }}>
               <Image src={url} alt={`${month} box, photo ${i + 1}`} fill sizes="(max-width: 640px) 33vw, 200px"
-                     className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                     className="object-contain" />
             </button>
           ))}
         </div>

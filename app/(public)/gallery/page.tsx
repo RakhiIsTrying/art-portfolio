@@ -68,7 +68,7 @@ export default async function GalleryPage() {
               <div className="hidden sm:flex" style={{ gap: 1, padding: '12px 16px', flexShrink: 0 }}>
                 {previews[col.slug]?.map(art => (
                   <div key={art.id} style={{ width: 52, height: 52, position: 'relative', overflow: 'hidden', background: '#e6e6e6', flexShrink: 0 }}>
-                    <Image src={art.image_url} alt={art.title} fill className="object-cover" sizes="52px" />
+                    <Image src={art.image_url} alt={art.title} fill className="object-contain" sizes="52px" />
                   </div>
                 ))}
                 {Array.from({ length: Math.max(0, 3 - (previews[col.slug]?.length ?? 0)) }).map((_, k) => (
