@@ -1,10 +1,10 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { CENTERED, BEE_BEN, DugDug, HONEY, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, BEE_BEN, DugDug, HONEY, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
-type Props = { date: string; size: number; numbers: Record<string, number>; last: number; onSolved: () => void }
+type Props = { date: string; size: number; numbers: Record<string, number>; last: number; solution: number[]; onSolved: () => void }
 
-export default function Wend({ date, size, numbers, last, onSolved }: Props) {
+export default function Wend({ date, size, numbers, last, solution, onSolved }: Props) {
   const N = size * size
   const [path, setPath] = useDailyState<number[]>(date, 'wend', [])
   const boardRef = useRef<HTMLDivElement>(null)
@@ -112,6 +112,17 @@ export default function Wend({ date, size, numbers, last, onSolved }: Props) {
           </span>
         </div>
       )}
+      {!solved && <HintButton getHint={() => {
+        // Keep the part of the walk that matches Ben's route, then walk three more squares
+        let same = 0
+        while (same < path.length && path[same] === solution[same]) same++
+        const backedUp = same < path.length
+        setPath(solution.slice(0, Math.min(solution.length, same + 3)))
+        return backedUp
+          ? `That turn after square ${same} leads to a dead end. I backed Dug-Dug up and walked him 3 squares the right way.`
+          : 'Here’s the way I’d go: I walked Dug-Dug 3 more squares.'
+      }} />}
+
       {solved && <SolvedBanner title="Walkies complete! 🐾" detail="Dug-Dug is happily tired." artIndex={5} />}
     </div>
   )

@@ -1,13 +1,13 @@
 'use client'
 import { useEffect } from 'react'
-import { CENTERED, DugDug, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, DugDug, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 // Soft versions of the site's palette, one per colour region
 const REGION_COLORS = ['#e7c3c9', '#c4cfe9', '#bfe0dc', '#d9cfe9', '#ead5b5', '#cfe0bf', '#e9d0e4', '#f0e2a8']
 
 type Cell = 0 | 1 | 2 // empty, ×, queen
 
-export default function Queens({ date, regions, onSolved }: { date: string; regions: number[][]; onSolved: () => void }) {
+export default function Queens({ date, regions, solution, onSolved }: { date: string; regions: number[][]; solution: number[]; onSolved: () => void }) {
   const n = regions.length
   const empty = () => Array.from({ length: n }, () => Array<Cell>(n).fill(0))
   const [board, setBoard] = useDailyState<Cell[][]>(date, 'queens', empty())
@@ -64,6 +64,15 @@ export default function Queens({ date, regions, onSolved }: { date: string; regi
           <SmallButton onClick={() => setBoard(empty())}>Clear</SmallButton>
         </div>
       )}
+      {!solved && <HintButton getHint={() => {
+        // Put Dug-Dug in the first row that doesn't have him in the right square
+        const r = solution.findIndex((c, row) => board[row][c] !== 2 || board[row].filter(v => v === 2).length > 1)
+        if (r === -1) return null
+        const c = solution[r]
+        setBoard(b => b.map((row, i) => row.map((v, j) => (i === r ? (j === c ? 2 : v === 2 ? 0 : v) : v))))
+        return `Dug-Dug belongs in row ${r + 1}, column ${c + 1}. I’ve put him there.`
+      }} />}
+
       {solved && <SolvedBanner title="Every pup in place! 🐾" artIndex={4} />}
     </div>
   )

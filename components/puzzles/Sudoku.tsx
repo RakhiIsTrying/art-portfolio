@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { CENTERED, BEE_BEN, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, BEE_BEN, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 import ArtFill from '@/components/ArtFill'
 
 type Props = {
@@ -92,6 +92,21 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
           <SmallButton onClick={() => setGrid(puzzle)}>Reset</SmallButton>
         </div>
       )}
+
+      {!solved && <HintButton getHint={() => {
+        // Fix a wrong number first; otherwise fill in an empty square
+        const cells = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).filter(({ r, c }) => !puzzle[r][c])
+        const wrong = cells.find(({ r, c, v }) => v && v !== solution[r][c])
+        const empty = cells.filter(({ v }) => !v)
+        const target = wrong ?? empty[Math.floor(Math.random() * empty.length)]
+        if (!target) return null
+        const { r, c } = target
+        setGrid(g => g.map((row, i) => row.map((x, j) => (i === r && j === c ? solution[r][c] : x))))
+        setSel([r, c])
+        return wrong
+          ? `Row ${r + 1}, column ${c + 1} should be ${solution[r][c]}, not ${wrong.v}. I fixed it for you.`
+          : `Row ${r + 1}, column ${c + 1} is a ${solution[r][c]}. I’ve filled it in.`
+      }} />}
 
       {solved && <SolvedBanner title="Solved! Dug-Dug is wagging 🐾" detail={art ? `Today’s drawing: ${art.title}` : undefined} artIndex={1} />}
     </div>

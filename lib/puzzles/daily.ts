@@ -10,8 +10,8 @@ export type Daily = {
   date: string        // 2026-10-30
   number: number      // #1, #2, …
   sudoku: { puzzle: number[][]; solution: number[][] }
-  queens: { regions: number[][]; unique: boolean }
-  wend: { size: number; numbers: Record<string, number>; last: number }
+  queens: { regions: number[][]; unique: boolean; solution: number[] }   // solution: queen column for each row
+  wend: { size: number; numbers: Record<string, number>; last: number; solution: number[] }  // solution: one valid path
   wordle: { answer: string }
   bee: { letters: string; center: string; answers: string[] }
 }
@@ -81,15 +81,15 @@ export function sudokuOk(g: number[][], r: number, c: number, v: number) {
 
 // ── Queens: one per row, column and colour region; no two touching ─────────
 function queens(rng: Rng, n = 7) {
-  let best: number[][] | null = null
+  let best: { regions: number[][]; solution: number[] } | null = null
   for (let attempt = 0; attempt < 400; attempt++) {
     const cols = placeQueens(rng, n)
     if (!cols) continue
     const regions = growRegions(rng, n, cols)
-    best = regions
-    if (countQueens(regions, n) === 1) return { regions, unique: true }
+    best = { regions, solution: cols }
+    if (countQueens(regions, n) === 1) return { regions, unique: true, solution: cols }
   }
-  return { regions: best!, unique: false }
+  return { ...best!, unique: false }
 }
 function placeQueens(rng: Rng, n: number): number[] | null {
   const out: number[] = []
@@ -159,7 +159,7 @@ function wend(rng: Rng, size = 6) {
   const checkpoints = [0, ...shuffle(rng, [...Array(N - 2).keys()].map(i => i + 1)).slice(0, 6).sort((a, b) => a - b), N - 1]
   const numbers: Record<string, number> = {}
   checkpoints.forEach((idx, k) => { numbers[path[idx]] = k + 1 })
-  return { size, numbers, last: checkpoints.length }
+  return { size, numbers, last: checkpoints.length, solution: path }
 }
 
 export function getDaily(date = todayKey()): Daily {

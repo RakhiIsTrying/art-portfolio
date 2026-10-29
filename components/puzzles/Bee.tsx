@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { CENTERED, HONEY, INK, PLAYFAIR, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, HONEY, INK, PLAYFAIR, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 type Props = { date: string; letters: string; center: string; answers: string[]; onSolved: () => void }
 
@@ -114,6 +114,16 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
           </div>
         </div>
       </div>
+
+      <HintButton getHint={() => {
+        // Point at a word not found yet: pangrams first
+        const left = answers.filter(w => !found.includes(w))
+        if (!left.length) return null
+        const w = left.find(x => isPangram(x, letters)) ?? left[found.length % left.length]
+        return isPangram(w, letters)
+          ? `There’s a pangram (uses all seven letters): ${w.length} letters, starting with “${w.slice(0, 2).toUpperCase()}”.`
+          : `Try a ${w.length}-letter word starting with “${w.slice(0, 2).toUpperCase()}”.`
+      }} />
 
       {genius && <SolvedBanner title="Genius! Bee is buzzing 🐝" detail={`${found.length} words, ${score} points. Keep going to find them all.`} artIndex={6} />}
     </div>

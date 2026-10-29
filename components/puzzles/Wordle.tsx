@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { CENTERED, INK, Rules, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, INK, Rules, SolvedBanner, useDailyState } from './shared'
 
 type Mark = 'hit' | 'near' | 'miss'
 const COLORS: Record<Mark, string> = { hit: '#3f8f4f', near: '#d9a521', miss: '#b8433b' }
@@ -29,6 +29,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
   const [current, setCurrent] = useState('')
   const [message, setMessage] = useState<string | null>(null)
   const [shake, setShake] = useState(false)
+  const [hinted, setHinted] = useDailyState<number[]>(date, 'wordle-hints', [])
 
   const won = guesses.includes(answer)
   const lost = !won && guesses.length >= 6
@@ -117,6 +118,15 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
           ))}
         </div>
       )}
+
+      {!done && <HintButton getHint={() => {
+        // Reveal a letter in its right spot that hasn't been found or hinted yet
+        const known = new Set([...hinted, ...[0, 1, 2, 3, 4].filter(i => guesses.some(g => g[i] === answer[i]))])
+        const i = [0, 1, 2, 3, 4].find(p => !known.has(p))
+        if (i === undefined) return 'You already have every letter in the right place — just put them together!'
+        setHinted(h => [...h, i])
+        return `Letter ${i + 1} is “${answer[i].toUpperCase()}”.`
+      }} />}
 
       {won && <SolvedBanner title="Good human! Dug-Dug approves 🐾" detail={`Got it in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}.`} artIndex={2} />}
       {lost && <SolvedBanner title={`The word was “${answer.toUpperCase()}”`} detail="Dug-Dug says try again tomorrow." artIndex={3} />}

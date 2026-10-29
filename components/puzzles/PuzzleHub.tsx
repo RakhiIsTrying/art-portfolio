@@ -78,8 +78,8 @@ export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { 
 
       {active === 'sudoku' && <Sudoku date={daily.date} puzzle={daily.sudoku.puzzle} solution={daily.sudoku.solution} art={art} onSolved={done('sudoku')} />}
       {active === 'wordle' && <Wordle date={daily.date} answer={daily.wordle.answer} onSolved={done('wordle')} />}
-      {active === 'queens' && <Queens date={daily.date} regions={daily.queens.regions} onSolved={done('queens')} />}
-      {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} onSolved={done('wend')} />}
+      {active === 'queens' && <Queens date={daily.date} regions={daily.queens.regions} solution={daily.queens.solution} onSolved={done('queens')} />}
+      {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} solution={daily.wend.solution} onSolved={done('wend')} />}
       {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} onSolved={done('bee')} />}
     </ThemeContext.Provider>
   )
