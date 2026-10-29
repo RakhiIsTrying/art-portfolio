@@ -1,7 +1,7 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { sudokuOk } from '@/lib/puzzles/rules'
-import { CENTERED, HintButton, BEE_BEN, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, DUG_DUG, HintButton, BEE_BEN, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 import ArtFill from '@/components/ArtFill'
 
 type Props = {
@@ -13,11 +13,38 @@ type Props = {
 }
 
 export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props) {
-  const [grid, setGrid] = useDailyState<number[][]>(date, 'sudoku', puzzle)
+  const [grid, setGrid, loaded] = useDailyState<number[][]>(date, 'sudoku', puzzle)
   const [sel, setSel] = useDailyState<[number, number] | null>(date, 'sudoku-sel', null)
   const solved = grid.every((row, r) => row.every((v, c) => v === solution[r][c]))
 
   useEffect(() => { if (solved) onSolved() }, [solved, onSolved])
+
+  // Rows, columns and 2×3 boxes filled in correctly
+  const rowDone = (r: number) => grid[r].every((v, c) => v === solution[r][c])
+  const colDone = (c: number) => grid.every((row, r) => row[c] === solution[r][c])
+  const BOXES = [0, 2, 4].flatMap(br => [0, 3].map(bc => [br, bc] as const))
+  const boxDone = (b: number) => { const [br, bc] = BOXES[b]; return [0, 1].every(i => [0, 1, 2].every(j => grid[br + i][bc + j] === solution[br + i][bc + j])) }
+  const done = { row: [0, 1, 2, 3, 4, 5].filter(rowDone), col: [0, 1, 2, 3, 4, 5].filter(colDone), box: [0, 1, 2, 3, 4, 5].filter(boxDone) }
+  const cellDone = (r: number, c: number) => done.row.includes(r) || done.col.includes(c) || done.box.includes(BOXES.findIndex(([br, bc]) => r >= br && r < br + 2 && c >= bc && c < bc + 3))
+
+  // When one is newly completed, Dug-Dug runs across a row, slides down a column or circles a box
+  type Run = { id: number; kind: 'row' | 'col' | 'box'; index: number }
+  const [runs, setRuns] = useState<Run[]>([])
+  const prevDone = useRef<string[] | null>(null)
+  const key = [...done.row.map(i => `row${i}`), ...done.col.map(i => `col${i}`), ...done.box.map(i => `box${i}`)]
+  useEffect(() => {
+    if (!loaded) return
+    const prev = prevDone.current
+    prevDone.current = key
+    if (!prev || solved) return     // nothing on first load; the win has its own celebration
+    const fresh = key.filter(k => !prev.includes(k))
+    if (!fresh.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const added = fresh.map((k, n) => ({ id: Date.now() + n, kind: k.slice(0, 3) as Run['kind'], index: Number(k.slice(3)) }))
+    setRuns(r => [...r, ...added])
+    const ids = added.map(a => a.id)
+    setTimeout(() => setRuns(r => r.filter(x => !ids.includes(x.id))), 1700)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key.join(), loaded])
 
   const conflict = (r: number, c: number) => {
     const v = grid[r][c]
@@ -69,7 +96,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
                   border: 'none', padding: 0, cursor: given || solved ? 'default' : 'pointer', fontFamily: 'inherit',
                   borderRight: c === 5 ? 'none' : `${c === 2 ? 2 : 1}px solid ${c === 2 ? INK : 'rgba(26,16,20,.25)'}`,
                   borderBottom: r === 5 ? 'none' : `${r % 2 === 1 ? 2 : 1}px solid ${r % 2 === 1 ? INK : 'rgba(26,16,20,.25)'}`,
-                  background: solved ? 'transparent' : isSel ? 'rgba(232,197,90,.7)' : peer ? 'rgba(255,255,255,.62)' : 'rgba(255,255,255,.45)',
+                  background: solved ? 'transparent' : isSel ? 'rgba(232,197,90,.7)' : cellDone(r, c) ? 'rgba(63,143,79,.22)' : peer ? 'rgba(255,255,255,.62)' : 'rgba(255,255,255,.45)',
                   color: conflict(r, c) ? '#b3261e' : given ? INK : BEE_BEN,
                   fontSize: 'clamp(18px, 5vw, 26px)', fontWeight: given ? 700 : 400,
                   opacity: solved ? 0 : 1, transition: 'opacity 1s ease, background .15s',
@@ -79,6 +106,33 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
             )
           }))}
         </div>
+
+        {/* Dug-Dug celebrating a finished row / column / box */}
+        {runs.map(run => {
+          const cell = 100 / 6
+          if (run.kind === 'box') {
+            const [br, bc] = BOXES[run.index]
+            return (
+              <div key={run.id} style={{ position: 'absolute', left: `${(bc + 1.5) * cell}%`, top: `${(br + 1) * cell}%`, width: 0, height: 0, pointerEvents: 'none' }}>
+                <div className="vgb-motion" style={{ position: 'absolute', animation: 'vgb-orbit 1.5s linear both' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={DUG_DUG} alt="" className="vgb-motion" style={{ position: 'absolute', width: 46, left: 26, top: -23, animation: 'vgb-orbit-counter 1.5s linear both', filter: 'drop-shadow(0 3px 4px rgba(26,16,20,.35))' }} />
+                </div>
+              </div>
+            )
+          }
+          const style: React.CSSProperties = run.kind === 'row'
+            ? { top: `${run.index * cell}%`, height: `${cell}%`, left: 0, animation: 'vgb-run-across 1.5s ease-in-out both' }
+            : { left: `${run.index * cell}%`, width: `${cell}%`, top: 0, animation: 'vgb-slide-down 1.5s ease-in both' }
+          return (
+            <div key={run.id} style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+              <div className="vgb-motion" style={{ position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', width: `${cell}%`, aspectRatio: '1', ...style }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={DUG_DUG} alt="" style={{ width: '85%', filter: 'drop-shadow(0 3px 4px rgba(26,16,20,.35))', transform: run.kind === 'col' ? 'rotate(-12deg)' : undefined }} />
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       {!solved && (

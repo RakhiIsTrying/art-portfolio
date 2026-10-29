@@ -107,3 +107,18 @@
   85%  { opacity: 1; }
   100% { transform: translate(var(--sway, 0px), 108vh) rotate(var(--spin, 360deg)); opacity: .9; }
 }
+/* Dug-Dug celebrating finished sudoku rows, columns and boxes */
+@keyframes vgb-run-across {
+  0%   { transform: translateX(-100%) translateY(0); }
+  20%  { transform: translateX(80%) translateY(-6%); }
+  40%  { transform: translateX(200%) translateY(0); }
+  60%  { transform: translateX(320%) translateY(-6%); }
+  80%  { transform: translateX(440%) translateY(0); }
+  100% { transform: translateX(620%) translateY(-6%); }
+}
+@keyframes vgb-slide-down {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(620%); }
+}
+@keyframes vgb-orbit         { from { transform: rotate(0deg); }   to { transform: rotate(360deg); } }
+@keyframes vgb-orbit-counter { from { transform: rotate(0deg); }   to { transform: rotate(-360deg); } }
