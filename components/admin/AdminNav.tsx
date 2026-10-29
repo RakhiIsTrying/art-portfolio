@@ -9,6 +9,7 @@ const links = [
   { href: '/admin/featured', label: 'Featured', color: '#1a6060' },
   { href: '/admin/content',  label: 'Content',  color: '#7a5020' },
   { href: '/admin/print-club', label: 'Print Club', color: '#4a3a7a' },
+  { href: '/admin/club-boxes', label: 'Club Boxes', color: '#4a3a7a' },
 ]
 
 export default function AdminNav() {

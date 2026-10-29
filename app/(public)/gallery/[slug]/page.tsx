@@ -13,10 +13,11 @@ const categoryColors: Record<string, string> = {
   paper:    '#7a5020',
 }
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ art?: string }> }
 
-export default async function CollectionPage({ params }: Props) {
+export default async function CollectionPage({ params, searchParams }: Props) {
   const { slug } = await params
+  const { art } = await searchParams
   const collection = getCollection(slug)
   if (!collection) notFound()
 
@@ -50,7 +51,7 @@ export default async function CollectionPage({ params }: Props) {
       </div>
 
       {artworks && artworks.length > 0 ? (
-        <MasonryGrid artworks={artworks as Artwork[]} />
+        <MasonryGrid artworks={artworks as Artwork[]} initialId={art} />
       ) : (
         <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
           No pieces here yet — check back soon.

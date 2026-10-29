@@ -4,10 +4,11 @@ import ArtworkCard from '@/components/ArtworkCard'
 import Lightbox from '@/components/Lightbox'
 import type { Artwork } from '@/lib/types'
 
-type Props = { artworks: Artwork[] }
+type Props = { artworks: Artwork[]; initialId?: string }
 
-export default function MasonryGrid({ artworks }: Props) {
-  const [selected, setSelected] = useState<Artwork | null>(null)
+export default function MasonryGrid({ artworks, initialId }: Props) {
+  // ?art=<id> opens that piece straight away (links from Club Boxes)
+  const [selected, setSelected] = useState<Artwork | null>(() => artworks.find(a => a.id === initialId) ?? null)
 
   const columns: Artwork[][] = [[], [], []]
   artworks.forEach((art, i) => columns[i % 3].push(art))

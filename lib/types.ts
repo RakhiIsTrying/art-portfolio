@@ -37,3 +37,13 @@ export type PageContent = {
   content_json: Record<string, unknown>
   updated_at: string
 }
+
+export type ClubBox = {
+  id: string
+  month: string          // "2026-11"
+  note: string | null
+  photo_urls: string[]
+  video_url: string | null
+  artwork_ids: string[]
+  created_at: string
+}

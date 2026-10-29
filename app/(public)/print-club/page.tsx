@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
@@ -90,6 +91,10 @@ export default async function PrintClubPage() {
               </li>
             ))}
           </ul>
+          <Link href="/print-club/boxes" className="group"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 20, fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', textDecoration: 'none' }}>
+            See past boxes &amp; unboxings <span className="transition-transform group-hover:translate-x-1">→</span>
+          </Link>
         </div>
 
         {/* Fanned prints */}
