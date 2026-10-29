@@ -1,5 +1,7 @@
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
+import Link from 'next/link'
 import { PLANS, type PlanId } from '@/lib/printClub'
+import { monthKey, monthLabel } from '@/lib/printClubExport'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,12 +17,25 @@ function daysUntilBirthday(iso: string, now = new Date()) {
   return Math.round((next - today) / 86_400_000)
 }
 
-export default async function AdminPrintClubPage() {
+export default async function AdminPrintClubPage({ searchParams }: { searchParams: Promise<{ month?: string }> }) {
+  const { month } = await searchParams
   const admin = getSupabaseAdminClient()
   const { data: signups } = await admin
     .from('print_club_signups')
     .select('*')
     .order('created_at', { ascending: false })
+
+  // Month tabs, newest first, with counts
+  const counts = new Map<string, number>()
+  for (const s of signups ?? []) counts.set(monthKey(s.created_at), (counts.get(monthKey(s.created_at)) ?? 0) + 1)
+  const months = [...counts.keys()].sort().reverse()
+  const selected = month && counts.has(month) ? month : null
+  const shown = (signups ?? []).filter(s => !selected || monthKey(s.created_at) === selected)
+
+  const tab = (active: boolean): React.CSSProperties => ({
+    padding: '6px 12px', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', textDecoration: 'none',
+    border: `1px solid ${active ? '#4a3a7a' : '#d0d0d0'}`, background: active ? '#4a3a7a' : '#fff', color: active ? '#fff' : '#1a1014',
+  })
 
   const upcoming = (signups ?? [])
     .filter(s => s.birthday)
@@ -70,21 +85,40 @@ export default async function AdminPrintClubPage() {
       <div style={{ border: '1px solid #d0d0d0', background: '#fff' }}>
         <div style={{ padding: '10px 20px', borderBottom: '1px solid #d0d0d0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafafa' }}>
           <h2 style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.4em', textTransform: 'uppercase', color: '#1a1014' }}>
-            Sign-ups
+            Sign-ups{selected && ` · ${monthLabel(selected)}`}
           </h2>
-          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
-            {signups?.length ?? 0} total
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
+              {shown.length} {selected ? 'this month' : 'total'}
+            </span>
+            {shown.length > 0 && (
+              <a href={`/admin/print-club/export${selected ? `?month=${selected}` : ''}`} download
+                 style={{ padding: '6px 12px', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', textDecoration: 'none', background: '#1a1014', color: '#fff' }}>
+                ↓ Download CSV
+              </a>
+            )}
+          </div>
         </div>
 
-        {!signups?.length && (
+        {months.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, padding: '12px 20px', borderBottom: '1px solid #ebebeb' }}>
+            <Link href="/admin/print-club" style={tab(!selected)}>All · {signups?.length ?? 0}</Link>
+            {months.map(m => (
+              <Link key={m} href={`/admin/print-club?month=${m}`} style={tab(m === selected)}>
+                {monthLabel(m)} · {counts.get(m)}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {!shown.length && (
           <p style={{ padding: '20px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
             No sign-ups yet.
           </p>
         )}
 
-        {signups?.map((s, i) => (
-          <div key={s.id} style={{ display: 'flex', alignItems: 'baseline', gap: 16, padding: '12px 20px', borderBottom: i < signups.length - 1 ? '1px solid #ebebeb' : 'none' }}>
+        {shown.map((s, i) => (
+          <div key={s.id} style={{ display: 'flex', alignItems: 'baseline', gap: 16, padding: '12px 20px', borderBottom: i < shown.length - 1 ? '1px solid #ebebeb' : 'none' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 13, fontWeight: 500, color: '#1a1014', marginBottom: 3 }}>
                 {s.name}
