@@ -119,14 +119,26 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
         </div>
       )}
 
-      <HintButton disabled={done} getHint={() => {
-        // Reveal a letter in its right spot that hasn't been found or hinted yet
-        const known = new Set([...hinted, ...[0, 1, 2, 3, 4].filter(i => guesses.some(g => g[i] === answer[i]))])
-        const i = [0, 1, 2, 3, 4].find(p => !known.has(p))
-        if (i === undefined) return 'You already have every letter in the right place — just put them together!'
-        setHinted(h => [...h, i])
-        return `Letter ${i + 1} is “${answer[i].toUpperCase()}”.`
-      }} />
+      <HintButton date={date} game="wordle" disabled={done}
+        getHint={n => {
+          // Clue: a letter that's in the word but hasn't shown up yet
+          const seen = new Set(guesses.flatMap(g => [...g].filter(l => answer.includes(l))))
+          const missing = [...new Set(answer)].filter(l => !seen.has(l))
+          if (missing.length) return `The word contains “${missing[n % missing.length].toUpperCase()}”.`
+          // All letters found: say where one isn't, to help with order
+          const misplaced = guesses.flatMap(g => [...g].map((l, i) => ({ l, i }))).filter(({ l, i }) => answer.includes(l) && answer[i] !== l)
+          if (!misplaced.length) return 'You’ve found every letter — now work out their order!'
+          const m = misplaced[n % misplaced.length]
+          return `“${m.l.toUpperCase()}” is not letter ${m.i + 1}.`
+        }}
+        getReveal={() => {
+          // One step: put a letter in its right spot
+          const known = new Set([...hinted, ...[0, 1, 2, 3, 4].filter(i => guesses.some(g => g[i] === answer[i]))])
+          const i = [0, 1, 2, 3, 4].find(p => !known.has(p))
+          if (i === undefined) return 'Every letter is already in place — just type it in!'
+          setHinted(h => [...h, i])
+          return `Letter ${i + 1} is “${answer[i].toUpperCase()}”.`
+        }} />
 
       {won && <SolvedBanner title="Good human! Dug-Dug approves 🐾" detail={`Got it in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}.`} artIndex={2} />}
       {lost && <SolvedBanner title={`The word was “${answer.toUpperCase()}”`} detail="Dug-Dug says try again tomorrow." artIndex={3} />}

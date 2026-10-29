@@ -2,6 +2,7 @@
 // Word data: SCOWL word lists (see data/SCOWL-COPYRIGHT.txt).
 import wordleAnswers from './data/wordle-answers.json'
 import beePuzzles from './data/bee.json'
+import { sudokuOk } from './rules'
 
 const TZ = 'Asia/Kolkata'
 const EPOCH = Date.UTC(2026, 9, 30) // puzzle #1 (launch day)
@@ -71,12 +72,6 @@ function countSudoku(g: number[][], limit = 2): number {
     return n
   }
   return 1
-}
-export function sudokuOk(g: number[][], r: number, c: number, v: number) {
-  for (let k = 0; k < 6; k++) if ((k !== c && g[r][k] === v) || (k !== r && g[k][c] === v)) return false
-  const br = r - (r % 2), bc = c - (c % 3)
-  for (let i = br; i < br + 2; i++) for (let j = bc; j < bc + 3; j++) if ((i !== r || j !== c) && g[i][j] === v) return false
-  return true
 }
 
 // ── Queens: one per row, column and colour region; no two touching ─────────

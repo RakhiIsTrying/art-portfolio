@@ -115,15 +115,25 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
         </div>
       </div>
 
-      <HintButton getHint={() => {
-        // Point at a word not found yet: pangrams first
-        const left = answers.filter(w => !found.includes(w))
-        if (!left.length) return null
-        const w = left.find(x => isPangram(x, letters)) ?? left[found.length % left.length]
-        return isPangram(w, letters)
-          ? `There’s a pangram (uses all seven letters): ${w.length} letters, starting with “${w.slice(0, 2).toUpperCase()}”.`
-          : `Try a ${w.length}-letter word starting with “${w.slice(0, 2).toUpperCase()}”.`
-      }} />
+      <HintButton date={date} game="bee" disabled={genius && found.length === answers.length}
+        getHint={n => {
+          // Clue: length and first two letters of a word not found yet (pangrams first)
+          const left = answers.filter(w => !found.includes(w))
+          if (!left.length) return null
+          const pangram = left.find(x => isPangram(x, letters))
+          const w = n === 0 && pangram ? pangram : left[n % left.length]
+          return isPangram(w, letters)
+            ? `There’s a pangram (uses all seven letters): ${w.length} letters, starting with “${w.slice(0, 2).toUpperCase()}”.`
+            : `Try a ${w.length}-letter word starting with “${w.slice(0, 2).toUpperCase()}”.`
+        }}
+        getReveal={() => {
+          // One step: give a whole word
+          const left = answers.filter(w => !found.includes(w))
+          if (!left.length) return null
+          const w = left.find(x => !isPangram(x, letters)) ?? left[0]
+          setFound(f => [...f, w])
+          return `Here’s one: “${w.toUpperCase()}”. Added to your words!`
+        }} />
 
       {genius && <SolvedBanner title="Genius! Bee is buzzing 🐝" detail={`${found.length} words, ${score} points. Keep going to find them all.`} artIndex={6} />}
     </div>

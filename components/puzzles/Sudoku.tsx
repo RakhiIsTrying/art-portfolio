@@ -1,5 +1,6 @@
 'use client'
 import { useEffect } from 'react'
+import { sudokuOk } from '@/lib/puzzles/rules'
 import { CENTERED, HintButton, BEE_BEN, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 import ArtFill from '@/components/ArtFill'
 
@@ -93,20 +94,36 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
         </div>
       )}
 
-      <HintButton disabled={solved} getHint={() => {
-        // Fix a wrong number first; otherwise fill in an empty square
-        const cells = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).filter(({ r, c }) => !puzzle[r][c])
-        const wrong = cells.find(({ r, c, v }) => v && v !== solution[r][c])
-        const empty = cells.filter(({ v }) => !v)
-        const target = wrong ?? empty[Math.floor(Math.random() * empty.length)]
-        if (!target) return null
-        const { r, c } = target
-        setGrid(g => g.map((row, i) => row.map((x, j) => (i === r && j === c ? solution[r][c] : x))))
-        setSel([r, c])
-        return wrong
-          ? `Row ${r + 1}, column ${c + 1} should be ${solution[r][c]}, not ${wrong.v}. I fixed it for you.`
-          : `Row ${r + 1}, column ${c + 1} is a ${solution[r][c]}. I’ve filled it in.`
-      }} />
+      <HintButton date={date} game="sudoku" disabled={solved}
+        getHint={n => {
+          // Clue: point out a mistake's row, or a square where only one number fits
+          const wrong = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).find(({ r, c, v }) => !puzzle[r][c] && v && v !== solution[r][c])
+          if (wrong) return `Something in row ${wrong.r + 1} isn’t right — take another look.`
+          const empties = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).filter(({ v }) => !v)
+            .map(({ r, c }) => ({ r, c, n: [1, 2, 3, 4, 5, 6].filter(v => sudokuOk(grid, r, c, v)).length }))
+            .sort((a, b) => a.n - b.n)
+          // Easiest squares first; each new hint points somewhere different
+          const t = empties[n % Math.max(1, Math.min(3, empties.length))]
+          if (!t) return null
+          setSel([t.r, t.c])
+          return t.n === 1
+            ? `Look at row ${t.r + 1}, column ${t.c + 1} (I’ve selected it) — only one number can go there.`
+            : `Try row ${t.r + 1}, column ${t.c + 1} next (I’ve selected it).`
+        }}
+        getReveal={() => {
+          // One step: fix a wrong number, or fill the selected / an empty square
+          const cells = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).filter(({ r, c }) => !puzzle[r][c])
+          const wrong = cells.find(({ r, c, v }) => v && v !== solution[r][c])
+          const empty = cells.filter(({ v }) => !v)
+          const target = wrong ?? empty.find(({ r, c }) => sel?.[0] === r && sel?.[1] === c) ?? empty[0]
+          if (!target) return null
+          const { r, c } = target
+          setGrid(g => g.map((row, i) => row.map((x, j) => (i === r && j === c ? solution[r][c] : x))))
+          setSel([r, c])
+          return wrong
+            ? `Row ${r + 1}, column ${c + 1} is ${solution[r][c]}, not ${wrong.v}. Fixed!`
+            : `Row ${r + 1}, column ${c + 1} is ${solution[r][c]}. Filled in!`
+        }} />
 
       {solved && <SolvedBanner title="Solved! Dug-Dug is wagging 🐾" detail={art ? `Today’s drawing: ${art.title}` : undefined} artIndex={1} />}
     </div>

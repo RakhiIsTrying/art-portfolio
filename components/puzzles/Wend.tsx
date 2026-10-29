@@ -112,16 +112,31 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           </span>
         </div>
       )}
-      <HintButton disabled={solved} getHint={() => {
-        // Keep the part of the walk that matches Ben's route, then walk three more squares
-        let same = 0
-        while (same < path.length && path[same] === solution[same]) same++
-        const backedUp = same < path.length
-        setPath(solution.slice(0, Math.min(solution.length, same + 3)))
-        return backedUp
-          ? `That turn after square ${same} leads to a dead end. I backed Dug-Dug up and walked him 3 squares the right way.`
-          : 'Here’s the way I’d go: I walked Dug-Dug 3 more squares.'
-      }} />
+      <HintButton date={date} game="wend" disabled={solved}
+        getHint={n => {
+          // Clue: where the path went wrong, or which way to go next
+          let same = 0
+          while (same < path.length && path[same] === solution[same]) same++
+          if (same < path.length) return `The walk goes wrong after square ${same} — go back and try another way.`
+          // Nothing drawn yet: talk about the first step out of the 1
+          const walked = path.length ? same : 1
+          const from = path.length ? path[path.length - 1] : solution[0], to = solution[walked]
+          const way = to === from - size ? 'up' : to === from + size ? 'down' : to === from - 1 ? 'left' : 'right'
+          if (n % 2 === 0) return path.length ? `From where Dug-Dug is now, head ${way}.` : `Start on the 1 and head ${way}.`
+          // Every other hint: how far the next number is along the route
+          const nextNum = 1 + path.filter(i => numbers[i] !== undefined).length
+          const target = path.length ? nextNum : 2
+          const at = solution.findIndex((c, k) => k >= walked && numbers[c] === target)
+          return at === -1 ? `Head ${way} next.` : `Number ${target} is ${at - walked + 1} ${at - walked === 0 ? 'step' : 'steps'} away along the walk.`
+        }}
+        getReveal={() => {
+          // One step: move Dug-Dug to the next square (backing up first if the path went wrong)
+          let same = 0
+          while (same < path.length && path[same] === solution[same]) same++
+          const backedUp = same < path.length
+          setPath(solution.slice(0, Math.min(solution.length, same + 1)))
+          return backedUp ? `Backed up to square ${same} and took the right next step.` : 'Woof! One more square.'
+        }} />
 
       {solved && <SolvedBanner title="Walkies complete! 🐾" detail="Dug-Dug is happily tired." artIndex={5} />}
     </div>

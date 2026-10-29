@@ -4,6 +4,7 @@ import { CENTERED, HintButton, DugDug, INK, Rules, SmallButton, SolvedBanner, us
 
 // Soft versions of the site's palette, one per colour region
 const REGION_COLORS = ['#e7c3c9', '#c4cfe9', '#bfe0dc', '#d9cfe9', '#ead5b5', '#cfe0bf', '#e9d0e4', '#f0e2a8']
+const REGION_NAMES  = ['pink', 'blue', 'mint', 'lilac', 'sand', 'green', 'rose', 'yellow']
 
 type Cell = 0 | 1 | 2 // empty, ×, queen
 
@@ -64,14 +65,22 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
           <SmallButton bee="clear" onClick={() => setBoard(empty())}>Clear</SmallButton>
         </div>
       )}
-      <HintButton disabled={solved} getHint={() => {
-        // Put Dug-Dug in the first row that doesn't have him in the right square
-        const r = solution.findIndex((c, row) => board[row][c] !== 2 || board[row].filter(v => v === 2).length > 1)
-        if (r === -1) return null
-        const c = solution[r]
-        setBoard(b => b.map((row, i) => row.map((v, j) => (i === r ? (j === c ? 2 : v === 2 ? 0 : v) : v))))
-        return `Dug-Dug belongs in row ${r + 1}, column ${c + 1}. I’ve put him there.`
-      }} />
+      <HintButton date={date} game="queens" disabled={solved}
+        getHint={n => {
+          // Clue: which row Dug-Dug goes in for one colour area
+          const open = solution.map((c, row) => row).filter(row => board[row][solution[row]] !== 2)
+          if (!open.length) return 'Every Dug-Dug is in place — check none of them are touching!'
+          const r = open[n % open.length]
+          return `In the ${REGION_NAMES[regions[r][solution[r]] % REGION_NAMES.length]} area, Dug-Dug goes in row ${r + 1}.`
+        }}
+        getReveal={() => {
+          // One step: move Dug-Dug to his right square in one row
+          const r = solution.findIndex((c, row) => board[row][c] !== 2 || board[row].filter(v => v === 2).length > 1)
+          if (r === -1) return null
+          const c = solution[r]
+          setBoard(b => b.map((row, i) => row.map((v, j) => (i === r ? (j === c ? 2 : v === 2 ? 0 : v) : v))))
+          return `Woof! I belong in row ${r + 1}, column ${c + 1}.`
+        }} />
 
       {solved && <SolvedBanner title="Every pup in place! 🐾" artIndex={4} />}
     </div>
