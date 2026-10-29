@@ -88,8 +88,8 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
               {n}
             </button>
           ))}
-          <SmallButton onClick={() => put(0)}>Erase</SmallButton>
-          <SmallButton onClick={() => setGrid(puzzle)}>Reset</SmallButton>
+          <SmallButton bee="erase" onClick={() => put(0)}>Erase</SmallButton>
+          <SmallButton bee="reset" onClick={() => setGrid(puzzle)}>Reset</SmallButton>
         </div>
       )}
 

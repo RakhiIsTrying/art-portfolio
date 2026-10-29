@@ -105,8 +105,8 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
 
       {!solved && (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: 12, marginTop: 14 }}>
-          <SmallButton onClick={() => setPath(p => p.slice(0, -1))}>Undo</SmallButton>
-          <SmallButton onClick={() => setPath([])}>Clear</SmallButton>
+          <SmallButton bee="undo" onClick={() => setPath(p => p.slice(0, -1))}>Undo</SmallButton>
+          <SmallButton bee="clear" onClick={() => setPath([])}>Clear</SmallButton>
           <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
             {path.length} / {N} · next: {Math.min(nextNumber, last)}
           </span>

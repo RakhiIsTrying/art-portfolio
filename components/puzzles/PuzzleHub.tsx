@@ -6,7 +6,7 @@ import Wordle from './Wordle'
 import Queens from './Queens'
 import Wend from './Wend'
 import Bee from './Bee'
-import { BEE_BEN, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
+import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
 
 const GAMES = [
   { id: 'sudoku', name: 'Mini Sudoku',  blurb: 'Uncover a Dug-Dug drawing', icon: '🎨' },
@@ -81,6 +81,7 @@ export default function PuzzleHub({ daily, art, theme }: { daily: Daily; art: { 
       {active === 'queens' && <Queens date={daily.date} regions={daily.queens.regions} solution={daily.queens.solution} onSolved={done('queens')} />}
       {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} solution={daily.wend.solution} onSolved={done('wend')} />}
       {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} onSolved={done('bee')} />}
+      <BeeCallout />
     </ThemeContext.Provider>
   )
 }

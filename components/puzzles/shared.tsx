@@ -63,9 +63,9 @@ export function Rules({ children }: { children: React.ReactNode }) {
   return <p style={{ fontSize: 12, lineHeight: 1.7, fontWeight: 300, color: '#787878', margin: '0 auto 18px', maxWidth: 440, textAlign: 'center' }}>{children}</p>
 }
 
-export function SmallButton({ onClick, children, dark }: { onClick: () => void; children: React.ReactNode; dark?: boolean }) {
+export function SmallButton({ onClick, children, dark, bee }: { onClick: () => void; children: React.ReactNode; dark?: boolean; bee?: keyof typeof BEE_LINES }) {
   return (
-    <button type="button" onClick={onClick}
+    <button type="button" onClick={() => { onClick(); if (bee) callBee(bee) }}
       style={{ padding: '9px 14px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
                border: `1px solid ${dark ? BEE_BEN : INK}`, background: dark ? BEE_BEN : '#fff', color: dark ? '#fff' : INK }}>
       {children}
@@ -149,6 +149,50 @@ export function HintButton({ getHint, disabled }: { getHint: () => string | null
           {wait > 0 ? `Ben is thinking… ${wait}s` : 'Ask Ben for a hint'}
         </button>
       )}
+    </div>
+  )
+}
+
+// ── Bee calls out every erase / reset ─────────────────────────────────────
+export const BEE = '/puzzles/bee.png'   // Bee's cut-out, from the Day 2 "Me & Dug-Dug" drawing
+export const BEE_LINES = {
+  erase: ['Erased! Pick another one.', 'Poof — gone!', 'Rubbed it out for you.'],
+  reset: ['Fresh start! You’ve got this.', 'Wiped clean — round two!', 'Back to the beginning!'],
+  clear: ['Board cleared — Dug-Dug’s waiting!', 'All clear!', 'Clean slate, let’s go!'],
+  undo:  ['Back one step!', 'Rewind!', 'Oops, undone.'],
+}
+
+/** Ask Bee to pop up and call out an action (shown by <BeeCallout />). */
+export function callBee(kind: keyof typeof BEE_LINES) {
+  const lines = BEE_LINES[kind]
+  window.dispatchEvent(new CustomEvent('vgb-bee', { detail: lines[Math.floor(Math.random() * lines.length)] }))
+}
+
+export function BeeCallout() {
+  const [said, setSaid] = useState<{ text: string; n: number } | null>(null)
+  const hide = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    const onBee = (e: Event) => {
+      const text = (e as CustomEvent<string>).detail
+      setSaid(prev => ({ text, n: (prev?.n ?? 0) + 1 }))
+      if (hide.current) clearTimeout(hide.current)
+      hide.current = setTimeout(() => setSaid(null), 2400)
+    }
+    window.addEventListener('vgb-bee', onBee)
+    return () => { window.removeEventListener('vgb-bee', onBee); if (hide.current) clearTimeout(hide.current) }
+  }, [])
+  if (!said) return null
+  return (
+    <div key={said.n} aria-live="polite" className="vgb-motion"
+         style={{ position: 'fixed', right: 16, bottom: 0, zIndex: 60, display: 'flex', alignItems: 'flex-end', gap: 4, pointerEvents: 'none',
+                  animation: 'vgb-bee-in .4s cubic-bezier(.2,1.3,.4,1) both' }}>
+      <div style={{ marginBottom: 96, padding: '10px 14px', maxWidth: 200, background: '#fff', color: INK, fontSize: 13, lineHeight: 1.4,
+                    border: `2px solid ${BEE_BEN}`, borderRadius: 14, borderBottomRightRadius: 2, boxShadow: '0 10px 24px rgba(26,16,20,.18)' }}>
+        <span style={{ display: 'block', fontSize: 9, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN, marginBottom: 2 }}>Bee</span>
+        {said.text}
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={BEE} alt="Bee" style={{ height: 170, display: 'block', filter: 'drop-shadow(0 6px 12px rgba(26,16,20,.25))' }} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { CENTERED, HintButton, INK, Rules, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, callBee, INK, Rules, SolvedBanner, useDailyState } from './shared'
 
 type Mark = 'hit' | 'near' | 'miss'
 const COLORS: Record<Mark, string> = { hit: '#3f8f4f', near: '#d9a521', miss: '#b8433b' }
@@ -113,7 +113,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
             <div key={row} style={{ display: 'flex', gap: 5, justifyContent: 'center' }}>
               {i === 2 && <Key label="Enter" wide onClick={() => press('enter')} />}
               {[...row].map(k => <Key key={k} label={k} mark={keyMarks[k]} onClick={() => press(k)} />)}
-              {i === 2 && <Key label="⌫" wide onClick={() => press('back')} />}
+              {i === 2 && <Key label="⌫" wide onClick={() => { press('back'); callBee('erase') }} />}
             </div>
           ))}
         </div>

@@ -61,7 +61,7 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
 
       {!solved && (
         <div style={{ marginTop: 14, display: 'flex', justifyContent: 'center' }}>
-          <SmallButton onClick={() => setBoard(empty())}>Clear</SmallButton>
+          <SmallButton bee="clear" onClick={() => setBoard(empty())}>Clear</SmallButton>
         </div>
       )}
       <HintButton disabled={solved} getHint={() => {

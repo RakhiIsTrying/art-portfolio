@@ -94,7 +94,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
           </div>
 
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-            <SmallButton onClick={() => setWord(w => w.slice(0, -1))}>Delete</SmallButton>
+            <SmallButton bee="erase" onClick={() => setWord(w => w.slice(0, -1))}>Delete</SmallButton>
             <SmallButton onClick={() => setOuter(o => [...o].sort(() => Math.random() - .5))}>⟳</SmallButton>
             <SmallButton dark onClick={submit}>Enter</SmallButton>
           </div>
