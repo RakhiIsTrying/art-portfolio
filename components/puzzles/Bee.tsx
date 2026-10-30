@@ -127,12 +127,11 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
             : `Try a ${w.length}-letter word starting with “${w.slice(0, 2).toUpperCase()}”.`
         }}
         getReveal={() => {
-          // One step: give a whole word
+          // One step: tell them a whole word; they type it in themselves
           const left = answers.filter(w => !found.includes(w))
           if (!left.length) return null
           const w = left.find(x => !isPangram(x, letters)) ?? left[0]
-          setFound(f => [...f, w])
-          return `Here’s one: “${w.toUpperCase()}”. Added to your words!`
+          return `Here’s one: “${w.toUpperCase()}”. Type it in to add it!`
         }} />
 
       {genius && <SolvedBanner title="Genius! Bee is buzzing 🐝" detail={`${found.length} words, ${score} points. Keep going to find them all.`} artIndex={6} />}
