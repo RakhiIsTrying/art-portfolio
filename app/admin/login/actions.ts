@@ -1,6 +1,5 @@
 'use server'
 import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { isAdminEmail } from '@/lib/adminEmail'
 import { createClient } from '@supabase/supabase-js'
@@ -8,10 +7,9 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase/env'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { Resend } from 'resend'
 
-export async function loginAction(
-  _prev: { error?: string; sent?: string } | null,
-  formData: FormData
-): Promise<{ error?: string; sent?: string } | null> {
+type FormState = { error?: string; sent?: string; ok?: boolean } | null
+
+export async function loginAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const email = String(formData.get('email') ?? '').trim()
   const password = String(formData.get('password') ?? '')
 
@@ -19,17 +17,18 @@ export async function loginAction(
   if (!isAdminEmail(email)) return { error: 'Invalid login credentials.' }
 
   const supabase = await getSupabaseServerClient()
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) return { error: 'Invalid login credentials.' }
+  // Never leave the button spinning: give up after 15 seconds with a real message
+  const timeout = new Promise<'timeout'>(r => setTimeout(() => r('timeout'), 15000))
+  const result = await Promise.race([supabase.auth.signInWithPassword({ email, password }), timeout])
+  if (result === 'timeout') return { error: 'Sign-in is taking too long. Try again in a minute.' }
+  if (result.error) return { error: 'Invalid login credentials.' }
 
-  redirect('/admin/artworks')
+  // The page then opens Admin with a normal page load (see page.tsx)
+  return { ok: true }
 }
 
 /** Emails a link to set a new password, only ever to the owner's address. */
-export async function forgotPasswordAction(
-  _prev: { error?: string; sent?: string } | null,
-  formData: FormData
-): Promise<{ error?: string; sent?: string } | null> {
+export async function forgotPasswordAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const email = String(formData.get('email') ?? '').trim()
   const done = { sent: 'If that’s the admin email, a link to set a new password is on its way. Check your inbox (and Spam).' }
   if (!isAdminEmail(email)) return done

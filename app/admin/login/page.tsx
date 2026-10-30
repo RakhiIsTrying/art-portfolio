@@ -1,10 +1,13 @@
 'use client'
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { forgotPasswordAction, loginAction } from './actions'
 
 export default function LoginPage() {
   const [forgot, setForgot] = useState(false)
   const [state, formAction, pending] = useActionState(forgot ? forgotPasswordAction : loginAction, null)
+  // Signed in: open Admin with a full page load, so the new sign-in is definitely sent along
+  useEffect(() => { if (state?.ok) window.location.assign('/admin/artworks') }, [state])
+  const busy = pending || !!state?.ok
 
   return (
     <div style={{ minHeight: '100svh', background: '#e6e6e6', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
@@ -74,17 +77,17 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={pending}
+              disabled={busy}
               style={{
                 marginTop: 4,
-                background: pending ? '#d0d0d0' : '#1a1014',
+                background: busy ? '#d0d0d0' : '#1a1014',
                 color: '#faf8f5',
                 fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500,
-                padding: '12px 20px', border: 'none', cursor: pending ? 'not-allowed' : 'pointer',
+                padding: '12px 20px', border: 'none', cursor: busy ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit', transition: 'background .2s',
               }}
             >
-              {forgot ? (pending ? 'Sending…' : 'Email me a reset link →') : (pending ? 'Signing in…' : 'Sign In →')}
+              {forgot ? (pending ? 'Sending…' : 'Email me a reset link →') : (state?.ok ? 'Opening admin…' : pending ? 'Signing in…' : 'Sign In →')}
             </button>
             <button type="button" onClick={() => setForgot(f => !f)}
               style={{ alignSelf: 'flex-start', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, color: '#1e3a8a' }}>
