@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Daily Puzzles | Van Gone Broke',
-  description: 'Bee-doku over a new drawing, Benigma, Benchmark, Walkies, Bee’s Hive and Dug’s Dig. New puzzles every day.',
+  description: 'Bee-doku over a new drawing, Benigma, Dug-Dug Kings, Ben’s Walkies, Bee’s Hive and Dug’s Dig. New puzzles every day.',
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'

@@ -13,8 +13,8 @@ import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type T
 const GAMES = [
   { id: 'sudoku', name: 'Bee-doku',     blurb: 'Uncover a drawing', icon: '🐝' },
   { id: 'wordle', name: 'Benigma',      blurb: 'Ben’s 5-letter word', icon: '🔤' },
-  { id: 'queens', name: 'Benchmark',    blurb: 'One pup per row', icon: '🐶' },
-  { id: 'wend',   name: 'Walkies',      blurb: 'Walk every square', icon: '🐾' },
+  { id: 'queens', name: 'Dug-Dug Kings', blurb: 'One pup per row', icon: '👑' },
+  { id: 'wend',   name: 'Ben’s Walkies', blurb: 'Walk every square', icon: '🐾' },
   { id: 'bee',    name: 'Bee’s Hive',   blurb: 'Spell with 7 letters', icon: '🍯' },
   { id: 'dig',    name: 'Dug’s Dig',    blurb: 'Find the hidden words', icon: '🦴' },
 ] as const

@@ -40,7 +40,7 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
 
   return (
     <div className="vgb-puzzle" style={CENTERED}>
-      <Rules who="ben" title="Benchmark" intro="Ben is finding Dug-Dug the perfect nap spots. One pup per spot, no sharing!"
+      <Rules who="dug" title="Dug-Dug Kings" intro="Crown Dug-Dug king of every row, column and colour. One royal pup per kingdom!"
         steps={['Place one Dug-Dug in every row, every column and every colour.', 'No two pups can touch, not even diagonally (he doesn’t share treats).', 'Tap once for ×, twice for Dug-Dug, three times to clear.']} />
 
       {/* Fixed rows and columns, so placing a piece never changes the board's size */}
@@ -83,7 +83,7 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
           return `Woof! I belong in row ${r + 1}, column ${c + 1}.`
         }} />
 
-      {solved && <SolvedBanner title="Every pup in place! 🐾" artIndex={4} />}
+      {solved && <SolvedBanner title="Long live the Dug-Dug Kings! 👑" artIndex={4} />}
     </div>
   )
 }

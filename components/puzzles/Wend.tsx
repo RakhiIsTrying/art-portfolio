@@ -1,6 +1,9 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { CENTERED, HintButton, BEE_BEN, DugDug, HONEY, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, BEN_IMG, DugDug, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+
+// Ben's autumn browns
+const TRAIL = '#d9935a', TRAIL_DONE = '#7a3b16', AUTUMN = '#a0521d'
 
 type Props = { date: string; size: number; numbers: Record<string, number>; last: number; solution: number[]; onSolved: () => void }
 
@@ -61,7 +64,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
 
   return (
     <div className="vgb-puzzle" style={CENTERED}>
-      <Rules who="dug" title="Walkies" intro="Dug-Dug wants to sniff every square on his walk."
+      <Rules who="ben" title="Ben’s Walkies" intro="Ben is taking Dug-Dug for walkies, and Dug-Dug insists on sniffing every single square."
         steps={['Start on 1 and draw one path through every square.', <>Pass the numbers in order and finish on {last}.</>, 'Drag, or tap square by square.', 'Go back over the line to undo.']} />
 
       <div ref={boardRef} onPointerDown={down} onPointerMove={move} onPointerUp={() => (dragging.current = false)}
@@ -79,26 +82,35 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
         <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
           {path.length > 1 && (
             <polyline points={path.map(i => centre(i).join(',')).join(' ')} fill="none"
-                      stroke={solved ? BEE_BEN : HONEY} strokeWidth={100 / size / 2.6} strokeLinecap="round" strokeLinejoin="round" />
+                      stroke={solved ? TRAIL_DONE : TRAIL} strokeWidth={100 / size / 2.6} strokeLinecap="round" strokeLinejoin="round" />
           )}
           {Object.entries(numbers).map(([cell, num]) => {
             const [x, y] = centre(Number(cell))
             const reached = inPath.has(Number(cell))
             return (
               <g key={cell}>
-                <circle cx={x} cy={y} r={100 / size / 3.4} fill={reached ? BEE_BEN : INK} />
+                <circle cx={x} cy={y} r={100 / size / 3.4} fill={reached ? AUTUMN : INK} />
                 <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize={100 / size / 3.4} fontWeight={700}>{num}</text>
               </g>
             )
           })}
         </svg>
 
-        {/* Dug-Dug trots along at the end of the path */}
+        {/* Ben leads the walk, with Dug-Dug trotting one step behind */}
+        {path.length > 1 && (() => {
+          const [x, y] = centre(path[path.length - 2])
+          return (
+            <div style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: `${100 / size * .66}%`, pointerEvents: 'none', transition: 'left .12s, top .12s' }}>
+              <DugDug size="100%" />
+            </div>
+          )
+        })()}
         {path.length > 0 && (() => {
           const [x, y] = centre(path[path.length - 1])
           return (
-            <div style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: `${100 / size * .78}%`, pointerEvents: 'none', transition: 'left .12s, top .12s' }}>
-              <DugDug size="100%" />
+            <div style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: `${100 / size * .8}%`, aspectRatio: '1', pointerEvents: 'none', transition: 'left .12s, top .12s' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={BEN_IMG} alt="Ben" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff) drop-shadow(0 3px 4px rgba(26,16,20,.3))' }} />
             </div>
           )
         })()}
@@ -139,7 +151,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           return backedUp ? `Backed up to square ${same} and took the right next step.` : 'Woof! One more square.'
         }} />
 
-      {solved && <SolvedBanner title="Walkies complete! 🐾" detail="Dug-Dug is happily tired." artIndex={5} />}
+      {solved && <SolvedBanner title="Walkies complete! 🐾" detail="Ben and Dug-Dug are happily tired." artIndex={5} />}
     </div>
   )
 }
