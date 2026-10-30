@@ -12,7 +12,7 @@ import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type T
 const GAMES = [
   { id: 'sudoku', name: 'Mini Sudoku',  blurb: 'Uncover a Dug-Dug drawing', icon: '🎨' },
   { id: 'wordle', name: 'Wordle',       blurb: 'Five letters, six tries',   icon: '🔤' },
-  { id: 'queens', name: 'Dug-Dug Queens', blurb: 'One pup per row & colour', icon: '🐶' },
+  { id: 'queens', name: 'Dug-Dug Kings', blurb: 'One pup per row & colour', icon: '🐶' },
   { id: 'wend',   name: 'Walkies',      blurb: 'Walk Dug-Dug past every square', icon: '🐾' },
   { id: 'bee',    name: 'Bee’s Hive',   blurb: 'Spelling Bee with 7 letters', icon: '🐝' },
 ] as const
