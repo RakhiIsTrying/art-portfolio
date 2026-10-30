@@ -160,14 +160,15 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
         </div>
 
         {/* Where to next, four colour tiles, each with a cut-out peeking in */}
-        <div className="grid grid-cols-2 grid-rows-2" style={{ gap: 8, marginTop: 22, flex: 1, minHeight: 230 }}>
+        <div className="grid grid-cols-2 grid-rows-3" style={{ gap: 8, marginTop: 22, flex: 1, minHeight: 300 }}>
           {[
+            { href: '/originals', label: 'Originals for sale', sub: 'One of one, ask for price', color: '#b0552f', img: cutouts?.['bee-ben']?.url, extra: true },
             { href: '/gallery', label: 'Explore the gallery', sub: stats ? `${stats.works} works` : 'All collections', color: '#7a3040', img: cutouts?.music?.url ?? cutouts?.comics?.url },
-            { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: cutouts?.comics?.url ?? cutouts?.movies?.url },
-            { href: '/print-club', label: 'Print Club', sub: stats ? `${stats.clubPrice} / month` : 'A print every month', color: '#9a5a64', img: cutouts?.['bee-ben']?.url },
+            { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: cutouts?.comics?.url ?? cutouts?.sketchbook?.url },
+            { href: '/print-club', label: 'Print Club', sub: stats ? `${stats.clubPrice} / month` : 'A print every month', color: '#9a5a64', img: cutouts?.movies?.url ?? cutouts?.comics?.url },
             { href: '/puzzles', label: 'Daily puzzles', sub: '5 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png', friends: true },
           ].map(t => (
-            <Link key={t.href} href={t.href} className="group"
+            <Link key={t.href} href={t.href} className={`group ${'extra' in t ? 'col-span-2' : ''}`}
               style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 110,
                        padding: '12px 14px', background: t.color, color: '#fff', textDecoration: 'none', overflow: 'hidden' }}>
               {/* Puzzles tile: Bee, Ben and Dug-Dug together */}
@@ -179,16 +180,25 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
                   ))}
                 </span>
               )}
-              {t.img && !('friends' in t) && (
+              {/* Originals tile: one piece from each collection that's for sale */}
+              {'extra' in t && (
+                <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 6, top: 8, bottom: 8, width: '58%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4%' }}>
+                  {[cutouts?.['bee-ben']?.url, cutouts?.sketchbook?.url].filter(Boolean).map((src, k) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img key={src} src={src} alt="" style={{ height: '100%', maxWidth: '48%', objectFit: 'contain', transform: `rotate(${k ? 3 : -3}deg)`, filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
+                  ))}
+                </span>
+              )}
+              {t.img && !('friends' in t) && !('extra' in t) && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={t.img} alt="" aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-[-3deg]"
                   style={{ position: 'absolute', right: -6, top: 8, height: '66%', maxWidth: '58%', objectFit: 'contain', opacity: .97,
                            filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
               )}
-              <span style={{ position: 'relative', fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif', fontSize: 'clamp(14px, 1.5vw, 21px)', fontWeight: 700, lineHeight: 1.15, whiteSpace: 'nowrap', textShadow: '0 1px 8px rgba(0,0,0,.45)' }}>
+              <span style={{ position: 'relative', zIndex: 4, fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif', fontSize: 'clamp(14px, 1.5vw, 21px)', fontWeight: 700, lineHeight: 1.15, whiteSpace: 'nowrap', textShadow: '0 1px 8px rgba(0,0,0,.45)' }}>
                 {t.label}
               </span>
-              <span style={{ position: 'relative', fontSize: 10, letterSpacing: '.12em', color: 'rgba(255,255,255,.72)', marginTop: 3, display: 'flex', justifyContent: 'space-between', gap: 6 }}>
+              <span style={{ position: 'relative', zIndex: 4, fontSize: 10, letterSpacing: '.12em', color: 'rgba(255,255,255,.72)', marginTop: 3, display: 'flex', justifyContent: 'space-between', gap: 6 }}>
                 {t.sub}<span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
               </span>
             </Link>

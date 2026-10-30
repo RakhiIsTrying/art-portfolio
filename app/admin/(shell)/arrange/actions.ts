@@ -29,3 +29,12 @@ export async function updateArtwork(id: string, fields: { title: string; medium:
   if (error) throw new Error(error.message)
   revalidatePath('/', 'layout')
 }
+
+/** Set how every piece in a collection is offered in the shop, in one go. */
+export async function setCollectionSale(collection: string, prints_available: boolean, original_available: boolean) {
+  const admin = await requireAdmin()
+  if (!getCollection(collection)) throw new Error('Unknown collection')
+  const { error } = await admin.from('artworks').update({ prints_available, original_available }).eq('collection_slug', collection)
+  if (error) throw new Error(error.message)
+  revalidatePath('/', 'layout')
+}

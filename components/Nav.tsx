@@ -5,19 +5,20 @@ import { usePathname } from 'next/navigation'
 
 const navItems = [
   { href: '/gallery',  label: 'Gallery', color: '#7a3040' },
+  { href: '/originals', label: 'Originals', color: '#b0552f' },
   { href: '/videos',   label: 'Videos',  color: '#1e3a8a' },
   { href: '/puzzles',  label: 'Puzzles', color: '#1a6060' },
   { href: '/about',    label: 'About',   color: '#7a5020' },
   { href: '/inquire',  label: 'Inquire', color: '#4a3a7a' },
   { href: '/shop',     label: 'Shop',    color: '#1a1014' },
-  { href: '/print-club', label: 'Print Club', color: '#9a5a64', wide: true },
+  { href: '/print-club', label: 'Print Club', color: '#9a5a64' },
 ]
 
 export default function Nav() {
   const pathname = usePathname()
 
   return (
-    <nav className="md:h-[44px]" style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', position: 'sticky', top: 0, zIndex: 50, background: '#e6e6e6' }}>
+    <nav className="lg:h-[44px]" style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', position: 'sticky', top: 0, zIndex: 50, background: '#e6e6e6' }}>
       <Link
         href="/"
         style={{
@@ -35,16 +36,16 @@ export default function Nav() {
       </Link>
 
       {/* Phones: tabs wrap into rows of 4 so every one stays visible */}
-      <div className="grid grid-cols-4 md:flex" style={{ flex: 1 }}>
-        {navItems.map(({ href, label, color, wide }) => {
+      <div className="grid grid-cols-4 lg:flex" style={{ flex: 1 }}>
+        {navItems.map(({ href, label, color }) => {
           const active = pathname === href || pathname.startsWith(href + '/')
           return (
             <Link
               key={href}
               href={href}
-              className={`h-9 md:h-auto ${wide ? 'col-span-2 md:col-span-1' : ''}`}
+              className="h-9 lg:h-auto"
               style={{
-                flex: '1 0 auto', padding: '0 8px', whiteSpace: 'nowrap',
+                flex: '1 0 auto', padding: '0 4px', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase',
                 fontWeight: active ? 500 : 300,
@@ -63,7 +64,7 @@ export default function Nav() {
         })}
       </div>
 
-      <div className="hidden md:flex" style={{
+      <div className="hidden xl:flex" style={{
         padding: '0 24px',
         fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
         color: '#a0a0a0',

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
 import SortableList from './SortableList'
-import { saveArtworkOrder, updateArtwork } from '@/app/admin/(shell)/arrange/actions'
+import { saveArtworkOrder, setCollectionSale, updateArtwork } from '@/app/admin/(shell)/arrange/actions'
 import type { Artwork } from '@/lib/types'
 
 type Props = { collections: { slug: string; name: string }[]; initial: Record<string, Artwork[]> }
@@ -25,8 +25,23 @@ export default function ArrangeArt({ collections, initial }: Props) {
   const [dirty, setDirty] = useState(false)
   const [note, setNote] = useState<string | null>(null)
   const [pending, start] = useTransition()
+  const [rowKey, setRowKey] = useState(0)   // bumps after a whole-collection change so rows show the new setting
 
   const list = lists[tab] ?? []
+  const [bulk, setBulk] = useState<Sale>('both')
+
+  function applyToCollection() {
+    const name = collections.find(c => c.slug === tab)?.name
+    if (!window.confirm(`Set every piece in ${name} to “${SALE[bulk].label}”?`)) return
+    start(async () => {
+      try {
+        await setCollectionSale(tab, SALE[bulk].prints, SALE[bulk].original)
+        setLists(prev => ({ ...prev, [tab]: prev[tab].map(a => ({ ...a, prints_available: SALE[bulk].prints, original_available: SALE[bulk].original })) }))
+        setRowKey(k => k + 1)
+        flash(`All of ${name}: ${SALE[bulk].label} ✓`)
+      } catch (e) { flash(e instanceof Error ? e.message : 'Could not save') }
+    })
+  }
   const flash = (m: string) => { setNote(m); setTimeout(() => setNote(null), 2500) }
 
   function saveOrder() {
@@ -71,12 +86,22 @@ export default function ArrangeArt({ collections, initial }: Props) {
         <span style={{ fontSize: 12, color: dirty ? '#7a3040' : '#787878' }}>{note ?? (dirty ? 'Unsaved changes to the order' : 'Drag ⠿ or use ↑ ↓, then save.')}</span>
       </div>
 
+      {/* Whole collection at once */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', padding: '10px 12px', background: '#fff', border: '1px solid #e0dcdc' }}>
+        <span style={{ fontSize: 12, color: '#1a1014' }}>Set the whole collection to</span>
+        <select value={bulk} onChange={e => setBulk(e.target.value as Sale)} style={{ ...input, width: 220 }}>
+          {(Object.keys(SALE) as Sale[]).map(k => <option key={k} value={k}>{SALE[k].label}</option>)}
+        </select>
+        <button type="button" onClick={applyToCollection} disabled={pending || !list.length} style={btn()}>Apply</button>
+        <span style={{ fontSize: 11, color: '#a0a0a0' }}>or change pieces one by one below</span>
+      </div>
+
       {list.length === 0 ? (
         <p style={{ fontSize: 12, color: '#a0a0a0' }}>No pieces in this collection.</p>
       ) : (
         <SortableList items={list} getId={a => a.id}
           onChange={items => { setLists(prev => ({ ...prev, [tab]: items })); setDirty(true) }}
-          renderItem={a => <Row key={a.id} art={a} collections={collections} onSave={fields => saveRow(a, fields)} disabled={pending} />} />
+          renderItem={a => <Row key={`${a.id}-${rowKey}`} art={a} collections={collections} onSave={fields => saveRow(a, fields)} disabled={pending} />} />
       )}
     </div>
   )
