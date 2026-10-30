@@ -76,8 +76,12 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
   while (rows.length < 6) rows.push('')
 
   return (
-    <div style={CENTERED}>
-      <Rules>Guess the five-letter word in six tries. <b style={{ color: COLORS.hit }}>Green</b> is the right letter in the right spot, <b style={{ color: COLORS.near }}>yellow</b> is in the word but somewhere else, <b style={{ color: COLORS.miss }}>red</b> is not in the word.</Rules>
+    <div className="vgb-puzzle" style={CENTERED}>
+      <Rules who="ben" title="Benigma" intro="Ben is thinking of a five-letter word. Crack it in six tries!"
+        steps={['Type a five-letter word and press Enter.',
+                <>Tiles turn <b style={{ color: COLORS.hit }}>green</b> for the right letter in the right spot.</>,
+                <><b style={{ color: COLORS.near }}>Yellow</b> means it’s in the word, just somewhere else.</>,
+                <><b style={{ color: COLORS.miss }}>Red</b> means it’s not in the word at all.</>]} />
 
       <div style={{ position: 'relative', display: 'grid', gap: 5, width: 'min(100%, 380px)' }}>
         {message && (

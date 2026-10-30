@@ -60,8 +60,9 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
   const inPath = new Set(path)
 
   return (
-    <div style={CENTERED}>
-      <Rules>Take Dug-Dug for walkies! Start at 1 and draw one path through every square, passing the numbers in order and finishing on {last}. Drag, or tap square by square; go back over the line to undo.</Rules>
+    <div className="vgb-puzzle" style={CENTERED}>
+      <Rules who="dug" title="Walkies" intro="Dug-Dug wants to sniff every square on his walk."
+        steps={['Start on 1 and draw one path through every square.', <>Pass the numbers in order and finish on {last}.</>, 'Drag, or tap square by square.', 'Go back over the line to undo.']} />
 
       <div ref={boardRef} onPointerDown={down} onPointerMove={move} onPointerUp={() => (dragging.current = false)}
         style={{ position: 'relative', width: 'min(100%, 520px)', aspectRatio: '1', border: `2px solid ${INK}`, background: '#fff', touchAction: 'none', userSelect: 'none', cursor: solved ? 'default' : 'pointer' }}>

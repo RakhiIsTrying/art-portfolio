@@ -18,6 +18,8 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
   const [outer, setOuter] = useState(() => [...letters].filter(l => l !== center))
   const [word, setWord] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  // Dug-Dug's reveal: which word he's sniffing out, and a key to restart the animation
+  const [sniff, setSniff] = useState<{ word: string; key: number } | null>(null)
 
   const max = useMemo(() => answers.reduce((s, w) => s + points(w, letters), 0), [answers, letters])
   const score = found.reduce((s, w) => s + points(w, letters), 0)
@@ -55,8 +57,9 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
   const HEX = [[0, -1], [.87, -.5], [.87, .5], [0, 1], [-.87, .5], [-.87, -.5]]
 
   return (
-    <div style={CENTERED}>
-      <Rules>Help Bee fill the hive! Make words of 4+ letters that use the centre letter. Letters can repeat. A pangram uses all seven. Reach Genius to solve.</Rules>
+    <div className="vgb-puzzle" style={CENTERED}>
+      <Rules who="bee" title="Bee’s Hive" intro="Help Bee fill the hive with words!"
+        steps={['Make words of 4 or more letters from the hive.', 'Every word must use the centre (gold) letter. Letters can repeat.', 'A pangram uses all seven letters, for bonus points.', 'Reach Genius to solve.']} />
 
       {/* Rank */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '0 auto 16px', width: 'min(100%, 520px)' }}>
@@ -82,8 +85,10 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
             {[center, ...outer].map((l, i) => {
               const [dx, dy] = i === 0 ? [0, 0] : HEX[i - 1]
               return (
-                <button key={l} type="button" onClick={() => setWord(w => w + l)}
+                <button key={sniff && sniff.word.includes(l) ? `${l}-${sniff.key}` : l} type="button" onClick={() => setWord(w => w + l)}
+                  className={sniff && sniff.word.includes(l) ? 'vgb-motion' : undefined}
                   style={{
+                    animation: sniff && sniff.word.includes(l) ? `vgb-sniff .55s ease ${0.3 + sniff.word.indexOf(l) * 0.22}s 2 both` : undefined,
                     position: 'absolute', left: 135 + dx * 84 - 46, top: 135 + dy * 84 - 40, width: 92, height: 80,
                     clipPath: 'polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)',
                     border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 26, fontWeight: 700, textTransform: 'uppercase',
@@ -139,7 +144,9 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
           // The answer to Ben's latest hint, for them to type in (never a new word)
           if (!benWord) return 'Ask Ben for a hint first, then I’ll tell you his word!'
           if (found.includes(benWord)) return `You already found Ben’s word, “${benWord.toUpperCase()}”! Ask Ben for a new hint.`
-          return `Ben’s word is “${benWord.toUpperCase()}”. Type it in to add it!`
+          setSniff({ word: benWord, key: Date.now() })
+          setTimeout(() => setSniff(null), 4000)
+          return { text: 'Sniff sniff… Dug-Dug sniffed out Ben’s word! Type it in to add it:', word: benWord }
         }} />
 
       {genius && <SolvedBanner title="Genius! Bee is buzzing 🐝" detail={`${found.length} words, ${score} points. Keep going to find them all.`} artIndex={6} />}

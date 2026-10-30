@@ -163,3 +163,41 @@ label[style*="text-transform: uppercase"] { white-space: nowrap; }
 [style*="text-transform: uppercase"][style*="letter-spacing:.3em"],
 [style*="text-transform: uppercase"][style*="letter-spacing: 0.3em"] { letter-spacing: .18em !important; }
 }
+
+/* ── Puzzles: How to play on the left, Ben & Dug-Dug's hints on the right (wide screens) ── */
+@media (min-width: 1100px) {
+  .vgb-puzzle { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 520px) minmax(0, 1fr); column-gap: 24px; align-items: start !important; justify-items: center !important; }
+  .vgb-puzzle > * { grid-column: 2; }
+  .vgb-puzzle > .vgb-side-left,
+  .vgb-puzzle > .vgb-side-right { grid-row: 1 / span 40; position: sticky; top: 72px; width: 100% !important; max-width: 300px; }
+  .vgb-puzzle > .vgb-side-left  { grid-column: 1; justify-self: end; margin: 34px 0 0 !important; }
+  .vgb-puzzle > .vgb-side-right { grid-column: 3; justify-self: start; margin: 34px 0 0 !important; }
+  /* Speech bubbles in the narrow side column: smaller cut-out, more room for words */
+  .vgb-side-right .vgb-bubble { padding: 14px 12px 14px 66px !important; text-align: left !important; }
+  .vgb-side-right .vgb-bubble-img { height: 70px !important; left: 2px !important; }
+}
+
+/* Dug-Dug's reveals */
+@keyframes vgb-tile-pop {
+  0%   { transform: translateY(16px) scale(.3) rotate(-20deg); opacity: 0; }
+  60%  { transform: translateY(-6px) scale(1.15) rotate(6deg); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+@keyframes vgb-hop {
+  0%, 100% { transform: translateY(0); }
+  30%      { transform: translateY(-16px) rotate(-6deg); }
+  60%      { transform: translateY(0) rotate(4deg); }
+}
+/* Bee's Hive: Dug-Dug sniffs along the honeycomb */
+@keyframes vgb-sniff {
+  0%, 100% { transform: scale(1); }
+  45%      { transform: scale(1.16); background: #f6d77a; }
+}
+/* Dug's Dig: letters jump out of the ground */
+@keyframes vgb-dug {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-18px) rotate(-10deg); }
+  55%  { transform: translateY(0) rotate(5deg); }
+  72%  { transform: translateY(-6px); }
+  100% { transform: none; }
+}

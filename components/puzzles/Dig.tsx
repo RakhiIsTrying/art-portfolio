@@ -15,6 +15,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
   // Ben's clue: which hidden word, and how many of its first letters are lit
   const [clue, setClue] = useDailyState<{ word: number; show: number } | null>(date, 'dig-clue', null)
   const [flash, setFlash] = useState<string | null>(null)
+  const [dugUp, setDugUp] = useState(0)      // restarts the dig-up animation on each reveal
   const boardRef = useRef<HTMLDivElement>(null)
   const dragging = useRef(false)
 
@@ -90,10 +91,12 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
 
   const centre = (i: number) => [((i % size) + .5) * (100 / size), (Math.floor(i / size) + .5) * (100 / size)]
   const lit = new Set(clue ? words[clue.word].cells.slice(0, clue.show) : [])
+  const revealCells = clue && clue.show === words[clue.word].word.length ? words[clue.word].cells : []
 
   return (
-    <div style={CENTERED}>
-      <Rules>Help Dug-Dug dig up today’s words! Drag through neighbouring letters (up, down, left or right) to spell a word. Every letter is part of exactly one word. Tap a found word below to put it back.</Rules>
+    <div className="vgb-puzzle" style={CENTERED}>
+      <Rules who="dug" title="Dug’s Dig" intro="Dug-Dug buried today’s words in the garden. Dig them all up!"
+        steps={['Drag through neighbouring letters (up, down, left or right) to spell a word.', 'Every letter belongs to exactly one word, and all fit today’s theme.', 'The tiles under the grid show how long each word is.', 'Tap a found word to put it back if it blocks another.']} />
 
       <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>Today’s theme</p>
       <p style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: INK, marginBottom: 14 }}>{theme}</p>
@@ -124,7 +127,8 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
             const inPath = path.includes(i)
             return (
               <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{
+                <span key={dugUp && revealCells.includes(i) ? `${i}-${dugUp}` : i} className={dugUp && revealCells.includes(i) ? 'vgb-motion' : undefined} style={{
+                  animation: dugUp && revealCells.includes(i) ? `vgb-dug .7s ease-out ${0.3 + revealCells.indexOf(i) * 0.14}s both` : undefined,
                   width: '70%', aspectRatio: '1', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 'clamp(18px, 5.5vw, 28px)', fontWeight: 700, textTransform: 'uppercase', color: INK,
                   background: mine !== undefined ? COLOURS[mine % COLOURS.length] : inPath ? HONEY : lit.has(i) ? '#f3d9a8' : 'transparent',
@@ -185,7 +189,8 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
           const target = clue && left.includes(clue.word) ? clue.word : null
           if (target === null) return 'Ask Ben for a hint first, then I’ll dig up his word!'
           setClue({ word: target, show: words[target].word.length })
-          return `Ben’s word is lit up on the board: trace “${words[target].word.toUpperCase()}” to add it!`
+          setDugUp(Date.now())
+          return { text: 'Dig dig dig… Dug-Dug dug up Ben’s word! Now trace it on the board:', word: words[target].word }
         }} />
 
       {solved && <SolvedBanner title="All dug up! 🦴" detail={`Every ${theme.toLowerCase()} word found.`} artIndex={4} />}

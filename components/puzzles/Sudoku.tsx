@@ -78,8 +78,9 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
   })
 
   return (
-    <div style={CENTERED}>
-      <Rules>Fill the grid so every row, column and 2×3 box has the numbers 1–6. Solve it to uncover today’s Bee, Ben &amp; Dug-Dug drawing.</Rules>
+    <div className="vgb-puzzle" style={CENTERED}>
+      <Rules who="bee" title="Bee-doku" intro="Bee hid today’s drawing under the numbers. Fill them in to uncover it!"
+        steps={['Tap a square, then a number (or type 1–6).', 'Every row, column and 2×3 box needs 1–6, once each.', 'Red numbers clash with another in the same line or box.', 'Finish the grid to reveal today’s Bee, Ben & Dug-Dug drawing.']} />
 
       <div style={{ position: 'relative', width: 'min(100%, 520px)', aspectRatio: '1', background: '#fff', border: `2px solid ${INK}` }}>
         {art && (

@@ -11,11 +11,11 @@ import Confetti from './Confetti'
 import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
 
 const GAMES = [
-  { id: 'sudoku', name: 'Mini Sudoku',  blurb: 'Uncover a drawing', icon: '🎨' },
-  { id: 'wordle', name: 'Wordle',       blurb: '5 letters, 6 tries', icon: '🔤' },
-  { id: 'queens', name: 'Dug-Dug Kings', blurb: 'One pup per row', icon: '🐶' },
+  { id: 'sudoku', name: 'Bee-doku',     blurb: 'Uncover a drawing', icon: '🐝' },
+  { id: 'wordle', name: 'Benigma',      blurb: 'Ben’s 5-letter word', icon: '🔤' },
+  { id: 'queens', name: 'Benchmark',    blurb: 'One pup per row', icon: '🐶' },
   { id: 'wend',   name: 'Walkies',      blurb: 'Walk every square', icon: '🐾' },
-  { id: 'bee',    name: 'Bee’s Hive',   blurb: 'Spell with 7 letters', icon: '🐝' },
+  { id: 'bee',    name: 'Bee’s Hive',   blurb: 'Spell with 7 letters', icon: '🍯' },
   { id: 'dig',    name: 'Dug’s Dig',    blurb: 'Find the hidden words', icon: '🦴' },
 ] as const
 type GameId = typeof GAMES[number]['id']
@@ -134,7 +134,6 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
           const on = g.id === active
           return (
             <button key={g.id} role="tab" aria-selected={on} type="button" onClick={() => setActive(g.id)}
-              className={g.id === 'bee' ? 'col-span-2 sm:col-span-1' : ''}
               style={{ position: 'relative', textAlign: 'center', padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                        background: on ? BEE_BEN : '#fff', color: on ? '#fff' : INK, transition: 'background .2s' }}>
               <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>

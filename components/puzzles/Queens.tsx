@@ -39,8 +39,9 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
   }
 
   return (
-    <div style={CENTERED}>
-      <Rules>Place one Dug-Dug in every row, every column and every colour. No two pups can touch, not even diagonally (he doesn’t share treats). Tap once for ×, twice for Dug-Dug.</Rules>
+    <div className="vgb-puzzle" style={CENTERED}>
+      <Rules who="ben" title="Benchmark" intro="Ben is finding Dug-Dug the perfect nap spots. One pup per spot, no sharing!"
+        steps={['Place one Dug-Dug in every row, every column and every colour.', 'No two pups can touch, not even diagonally (he doesn’t share treats).', 'Tap once for ×, twice for Dug-Dug, three times to clear.']} />
 
       {/* Fixed rows and columns, so placing a piece never changes the board's size */}
       <div style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, gridTemplateRows: `repeat(${n}, minmax(0, 1fr))`, width: 'min(100%, 520px)', aspectRatio: '1', border: `2px solid ${INK}` }}>

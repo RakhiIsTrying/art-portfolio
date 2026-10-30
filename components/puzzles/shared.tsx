@@ -63,8 +63,35 @@ export function SolvedBanner({ title, detail, artIndex = 0 }: { title: string; d
 const keepTogether = (node: React.ReactNode): React.ReactNode =>
   typeof node === 'string' ? node.replace(/Dug-Dug/g, 'Dug\u2011Dug') : Array.isArray(node) ? node.map(keepTogether) : node
 
-export function Rules({ children }: { children: React.ReactNode }) {
-  return <p style={{ fontSize: 12.5, lineHeight: 1.7, fontWeight: 300, color: '#787878', margin: '0 auto 18px', maxWidth: 780, textAlign: 'center' }}>{keepTogether(children)}</p>
+const HOST = {
+  bee: { img: '/puzzles/bee.png', name: 'Bee', accent: '#e8c55a', ink: '#8a6414', wash: '#fdf6e3' },
+  ben: { img: '/puzzles/ben.png', name: 'Ben', accent: '#a0521d', ink: '#7a3b16', wash: '#fbf1e6' },
+  dug: { img: '/puzzles/dugdug.png', name: 'Dug-Dug', accent: '#4a3a7a', ink: '#4a3a7a', wash: '#f3f0fa' },
+} as const
+
+/** "How to play": a card hosted by Bee, Ben or Dug-Dug. Sits beside the puzzle on wide screens, above it otherwise. */
+export function Rules({ who, title, intro, steps }: { who: keyof typeof HOST; title: string; intro?: React.ReactNode; steps: React.ReactNode[] }) {
+  const h = HOST[who]
+  return (
+    <aside className="vgb-side-left" aria-label={`How to play ${title}`}
+      style={{ position: 'relative', width: 'min(100%, 560px)', margin: '22px auto 22px', padding: '18px 18px 16px', background: h.wash,
+               border: `1px solid ${h.accent}55`, borderTop: `4px solid ${h.accent}`, boxShadow: '0 10px 24px rgba(26,16,20,.07)', textAlign: 'left' }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={h.img} alt={h.name} style={{ position: 'absolute', right: 8, top: -34, height: 62, filter: 'drop-shadow(0 0 2px #fff) drop-shadow(0 5px 8px rgba(26,16,20,.2))' }} />
+      <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: h.ink, fontWeight: 600, paddingRight: 50, whiteSpace: 'nowrap' }}>How to play</p>
+      <p style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(19px, 1.6vw, 22px)', fontWeight: 700, color: INK, lineHeight: 1.15, margin: '6px 0 8px', whiteSpace: 'nowrap' }}>{title}</p>
+      {intro && <p style={{ fontSize: 13, fontStyle: 'italic', color: '#6a5e5e', marginBottom: 10, lineHeight: 1.5, whiteSpace: 'normal' }}>{keepTogether(intro)}</p>}
+      <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {steps.map((st, i) => (
+          <li key={i} style={{ display: 'flex', gap: 9, alignItems: 'flex-start', fontSize: 12.5, lineHeight: 1.5, color: '#3a2e30', whiteSpace: 'normal' }}>
+            <span aria-hidden style={{ flexShrink: 0, width: 22, height: 22, borderRadius: '50%', background: h.accent, color: who === 'bee' ? INK : '#fff',
+                                       fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>{i + 1}</span>
+            <span>{keepTogether(st)}</span>
+          </li>
+        ))}
+      </ol>
+    </aside>
+  )
 }
 
 export function SmallButton({ onClick, children, dark, bee }: { onClick: () => void; children: React.ReactNode; dark?: boolean; bee?: keyof typeof BEE_LINES }) {
@@ -91,8 +118,8 @@ type HintProps = {
   game: string
   /** Gives a clue (without changing the board) and returns what Ben says; `n` = hints given so far, to vary the clue */
   getHint: (n: number) => string | null
-  /** Does one step of the answer and returns what Dug-Dug says */
-  getReveal: () => string | null
+  /** Does one step of the answer and returns what Dug-Dug says (optionally a word to show off as tiles) */
+  getReveal: () => string | { text: string; word: string } | null
   disabled?: boolean
 }
 
@@ -101,7 +128,7 @@ type HintProps = {
  * Every 3 hints unlock a "Reveal" from Dug-Dug, which does one step of the answer.
  */
 export function HintButton({ date, game, getHint, getReveal, disabled }: HintProps) {
-  const [said, setSaid] = useState<{ who: 'ben' | 'dug'; text: string } | null>(null)
+  const [said, setSaid] = useState<{ who: 'ben' | 'dug'; text: string; word?: string } | null>(null)
   const [wait, setWait] = useState(0)
   const [count, setCount] = useState(0)
   const [used, setUsed] = useDailyState(date, `${game}-help`, { hints: 0, reveals: 0 })
@@ -140,28 +167,40 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
 
   function reveal() {
     if (revealsReady < 1 || disabled) return
-    setSaid({ who: 'dug', text: getReveal() ?? 'Woof! Nothing left to reveal.' })
+    const r = getReveal()
+    setSaid(typeof r === 'string' ? { who: 'dug', text: r } : r ? { who: 'dug', ...r } : { who: 'dug', text: 'Woof! Nothing left to reveal.' })
     setCount(c => c + 1)
     setUsed(u => ({ ...u, reveals: u.reveals + 1 }))
   }
 
   const dug = said?.who === 'dug'
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 18, width: 'min(100%, 520px)' }}>
+    <div className="vgb-side-right" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 18, width: 'min(100%, 520px)' }}>
       {said && (
         // Pops out each time someone speaks (the key restarts the animation)
-        <div key={count} role="status" className="vgb-motion"
+        <div key={count} role="status" className="vgb-motion vgb-bubble"
              style={{ position: 'relative', alignSelf: 'stretch', marginTop: 34, padding: '14px 16px 14px 96px', textAlign: 'center',
                       background: dug ? `linear-gradient(135deg, ${BEE_BEN} 0%, #2f2452 100%)` : `linear-gradient(135deg, ${AUTUMN} 0%, ${AUTUMN_DARK} 100%)`,
                       color: '#fbf1e4', boxShadow: '0 14px 30px rgba(26,16,20,.3)', borderRadius: 4,
                       transformOrigin: '50% 100%', animation: 'vgb-pop .45s cubic-bezier(.2,1.4,.4,1) both' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={dug ? DUG_DUG : BEN} alt={dug ? 'Dug-Dug' : 'Ben'}
-               style={{ position: 'absolute', left: 6, bottom: 0, height: dug ? 92 : 108, filter: 'drop-shadow(0 0 2px #fbf1e4) drop-shadow(0 6px 10px rgba(0,0,0,.25))' }} />
+               className={dug ? 'vgb-motion vgb-bubble-img' : 'vgb-bubble-img'}
+               style={{ position: 'absolute', left: 6, bottom: 0, height: dug ? 92 : 108, filter: 'drop-shadow(0 0 2px #fbf1e4) drop-shadow(0 6px 10px rgba(0,0,0,.25))',
+                        animation: dug && said.word ? 'vgb-hop .7s ease-out .1s 2 both' : undefined }} />
           <span style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: dug ? HONEY : '#f3c98b', display: 'block', marginBottom: 4 }}>
             {dug ? 'Dug-Dug reveals' : 'Ben says'}
           </span>
           <span style={{ fontSize: 13, lineHeight: 1.55 }}>{said.text}</span>
+          {said.word && (
+            <span style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 4, marginTop: 10 }} aria-label={said.word}>
+              {[...said.word].map((ch, i) => (
+                <span key={i} className="vgb-motion" style={{ width: 28, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: HONEY, color: INK,
+                  fontSize: 17, fontWeight: 800, textTransform: 'uppercase', borderRadius: 4, boxShadow: '0 3px 0 #b8892e',
+                  animation: `vgb-tile-pop .5s cubic-bezier(.2,1.5,.4,1) ${0.25 + i * 0.12}s both` }}>{ch}</span>
+              ))}
+            </span>
+          )}
           <span aria-hidden style={{ position: 'absolute', bottom: -7, left: '50%', width: 14, height: 14, background: dug ? '#2f2452' : AUTUMN_DARK, transform: 'translateX(-50%) rotate(45deg)' }} />
         </div>
       )}
