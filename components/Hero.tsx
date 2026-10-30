@@ -173,7 +173,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
                        padding: '12px 14px', background: t.color, color: '#fff', textDecoration: 'none', overflow: 'hidden' }}>
               {/* Puzzles tile: Bee, Ben and Dug-Dug together */}
               {'friends' in t && (
-                <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 4, top: 8, height: '72%', width: '64%', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 8, top: 8, height: '72%', width: '64%', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                   {['/puzzles/bee.png', '/puzzles/ben.png', '/puzzles/dugdug.png'].map((src, k) => (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img key={src} src={src} alt="" style={{ height: k === 2 ? '72%' : '100%', marginLeft: k ? '-9%' : 0, objectFit: 'contain', filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.35))', position: 'relative', zIndex: k === 2 ? 3 : 1 }} />
@@ -182,7 +182,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
               )}
               {/* Originals tile: one piece from each collection that's for sale */}
               {'extra' in t && (
-                <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 6, top: 8, bottom: 8, width: '58%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4%' }}>
+                <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 8, top: 8, height: '84%', width: '58%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4%' }}>
                   {[cutouts?.['bee-ben']?.url, cutouts?.sketchbook?.url].filter(Boolean).map((src, k) => (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img key={src} src={src} alt="" style={{ height: '100%', maxWidth: '48%', objectFit: 'contain', transform: `rotate(${k ? 3 : -3}deg)`, filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
@@ -191,9 +191,9 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
               )}
               {t.img && !('friends' in t) && !('extra' in t) && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={t.img} alt="" aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-[-3deg]"
-                  style={{ position: 'absolute', right: -6, top: 8, height: '66%', maxWidth: '58%', objectFit: 'contain', opacity: .97,
-                           filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
+                <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 8, top: 8, height: '72%', width: '50%', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                  <img src={t.img} alt="" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.35))' }} />
+                </span>
               )}
               <span style={{ position: 'relative', zIndex: 4, fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif', fontSize: 'clamp(14px, 1.5vw, 21px)', fontWeight: 700, lineHeight: 1.15, whiteSpace: 'nowrap', textShadow: '0 1px 8px rgba(0,0,0,.45)' }}>
                 {t.label}

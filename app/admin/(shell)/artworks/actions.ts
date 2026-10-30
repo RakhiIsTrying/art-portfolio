@@ -1,4 +1,5 @@
 'use server'
+import { requireAdmin } from '@/lib/adminAuth'
 import { revalidatePath } from 'next/cache'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 
@@ -15,6 +16,7 @@ export async function uploadArtwork(
   const instagram_url = formData.get('instagram_url') as string || null
 
   if (!file || !file.size || !title || !collection_slug) {
+  await requireAdmin()
     return { error: 'Title, collection, and image are required.' }
   }
 
@@ -44,14 +46,18 @@ export async function uploadArtwork(
 }
 
 export async function toggleShopFlag(id: string, field: 'prints_available' | 'original_available', value: boolean) {
+  await requireAdmin()
   const admin = getSupabaseAdminClient()
-  await admin.from('artworks').update({ [field]: value }).eq('id', id)
-  revalidatePath('/admin/artworks')
+  const { error } = await admin.from('artworks').update({ [field]: value }).eq('id', id)
+  if (error) throw new Error(error.message)
+  // Only the public pages need refreshing; the admin button already shows the new state
   revalidatePath('/shop')
+  revalidatePath('/originals')
   revalidatePath('/gallery', 'layout')
 }
 
 export async function deleteArtwork(id: string) {
+  await requireAdmin()
   const admin = getSupabaseAdminClient()
 
   const { data } = await admin

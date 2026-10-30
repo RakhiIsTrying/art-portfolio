@@ -5,6 +5,7 @@ import { requireAdmin } from '@/lib/adminAuth'
 import { saveSettings } from '@/lib/settings'
 
 export async function toggleFeatured(artworkId: string, currentlyFeatured: boolean) {
+  await requireAdmin()
   const admin = getSupabaseAdminClient()
 
   if (currentlyFeatured) {

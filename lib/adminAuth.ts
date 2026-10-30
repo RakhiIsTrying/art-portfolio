@@ -4,7 +4,7 @@ import { isAdminEmail } from '@/lib/adminEmail'
 
 /** For server actions: only a signed-in admin may continue. Returns the service client. */
 export async function requireAdmin() {
-  const { data: { user } } = await (await getSupabaseServerClient()).auth.getUser()
-  if (!user || !isAdminEmail(user.email)) throw new Error('Please sign in again.')
+  const { data } = await (await getSupabaseServerClient()).auth.getClaims()
+  if (!data?.claims || !isAdminEmail(data.claims.email as string | undefined)) throw new Error('Please sign in again.')
   return getSupabaseAdminClient()
 }

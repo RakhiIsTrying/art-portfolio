@@ -1,4 +1,5 @@
 'use server'
+import { requireAdmin } from '@/lib/adminAuth'
 import { revalidatePath } from 'next/cache'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 
@@ -10,6 +11,7 @@ export async function savePageContent(
   const html = formData.get('content') as string
 
   if (!slug || !['puzzles', 'about'].includes(slug)) {
+  await requireAdmin()
     return { error: 'Invalid page slug.' }
   }
 

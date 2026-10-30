@@ -5,6 +5,7 @@ import { COLLECTIONS, categoryColors, categoryDesc } from '@/lib/collections'
 import { arrange, getSettings, collectionCutouts } from '@/lib/settings'
 import type { Artwork } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
+import FriendsTrio from '@/components/FriendsTrio'
 
 export const dynamic = 'force-dynamic'
 
@@ -135,7 +136,10 @@ export default async function GalleryPage() {
                   </div>
                 )
               })}
-              {c.cut && (
+              {c.slug === 'bee-ben' ? (
+                <FriendsTrio className="vgb-motion transition-transform duration-500 ease-out group-hover:-translate-y-2"
+                  style={{ position: 'absolute', right: '2%', bottom: 0, zIndex: 5, height: i === 0 ? '64%' : '50%', width: '56%', justifyContent: 'flex-end' }} />
+              ) : c.cut && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={c.cut.url} alt={c.cut.title} title={c.cut.title}
                   className="vgb-motion transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:-rotate-2"

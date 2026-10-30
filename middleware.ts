@@ -22,8 +22,10 @@ export async function middleware(req: NextRequest) {
     }
   )
 
-  // getUser checks the session with Supabase (getSession only reads the cookie)
-  const { data: { user } } = await supabase.auth.getUser()
+  // getClaims checks the sign-in's signature (on this server when it can, no round trip to Supabase),
+  // refreshing it first if it has expired
+  const { data } = await supabase.auth.getClaims()
+  const user = data?.claims ? { email: data.claims.email as string | undefined } : null
   const path = req.nextUrl.pathname
   const isOpenPage = path === '/admin/login' || path === '/admin/reset'
 

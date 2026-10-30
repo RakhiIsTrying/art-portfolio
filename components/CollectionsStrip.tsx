@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { COLLECTIONS, categoryColors, categoryDesc } from '@/lib/collections'
 import type { Cutout } from '@/lib/settings'
+import FriendsTrio from '@/components/FriendsTrio'
 
 /** Browse Collections: one colour block per collection, with a cut-out of its art popping out. */
 export default function CollectionsStrip({ cutouts = {} }: { cutouts?: Record<string, Cutout | null> }) {
@@ -35,8 +36,11 @@ export default function CollectionsStrip({ cutouts = {} }: { cutouts?: Record<st
               background: 'radial-gradient(circle at 50% 40%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.06) 38%, transparent 62%)',
             }} />
 
-            {/* The cut-out */}
-            {cut && (
+            {/* The cut-out (Bee, Ben & Dug-Dug: the three of them together) */}
+            {col.slug === 'bee-ben' ? (
+              <FriendsTrio className="vgb-motion transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.04]"
+                style={{ position: 'absolute', top: 14, left: '6%', right: '6%', height: 'calc(100% - 92px)' }} />
+            ) : cut && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={cut.url} alt={cut.title} title={cut.title}
                 className="vgb-motion transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.04]"

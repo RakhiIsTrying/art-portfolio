@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import ArtworkUploadForm from '@/components/admin/ArtworkUploadForm'
-import { deleteArtwork, toggleShopFlag } from './actions'
+import { deleteArtwork } from './actions'
+import ShopFlags from '@/components/admin/ShopFlags'
 
 export const dynamic = 'force-dynamic'
 
@@ -57,16 +58,7 @@ export default async function AdminArtworksPage() {
                   {art.collection_slug}{art.medium && ` · ${art.medium}`}{art.year && ` · ${art.year}`}{art.featured && ' · Featured'}
                 </p>
               </div>
-              {([['prints_available', 'Prints'], ['original_available', 'Original']] as const).map(([field, label]) => {
-                const on = art[field] === true
-                return (
-                  <form key={field} action={toggleShopFlag.bind(null, art.id, field, !on)}>
-                    <button type="submit" title={`${on ? 'Remove from' : 'Add to'} shop`} style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400, color: on ? '#fff' : '#a0a0a0', background: on ? '#1a1014' : 'none', border: `1px solid ${on ? '#1a1014' : '#d0d0d0'}`, padding: '4px 10px', cursor: 'pointer', fontFamily: 'inherit' }}>
-                      {on ? '✓ ' : ''}{label}
-                    </button>
-                  </form>
-                )
-              })}
+              <ShopFlags id={art.id} prints={art.prints_available === true} original={art.original_available === true} />
               <form action={deleteArtwork.bind(null, art.id)}>
                 <button type="submit" style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', background: 'none', border: '1px solid #7a3040', padding: '4px 10px', cursor: 'pointer', fontFamily: 'inherit' }}>
                   Delete

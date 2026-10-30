@@ -21,6 +21,7 @@ export async function addVideo(
   try {
     thumbnail_url = await fetchYouTubeThumbnail(youtube_url)
   } catch {
+  await requireAdmin()
     return { error: 'Could not fetch video thumbnail. Check the YouTube URL.' }
   }
 
@@ -37,6 +38,7 @@ export async function addVideo(
 }
 
 export async function deleteVideo(id: string) {
+  await requireAdmin()
   const admin = getSupabaseAdminClient()
   await admin.from('videos').delete().eq('id', id)
   revalidatePath('/admin/videos')
