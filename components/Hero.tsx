@@ -2,16 +2,25 @@
 
 import Link from 'next/link'
 import type { Artwork } from '@/lib/types'
+import type { Cutout } from '@/lib/settings'
 import ArtFill from '@/components/ArtFill'
 
 const categories = [
-  { label: 'Music',   color: '#7a3040', href: '/gallery?cat=music'   },
-  { label: 'Movies',  color: '#1e3a8a', href: '/gallery?cat=movies'  },
-  { label: 'Comics',  color: '#1a6060', href: '/gallery?cat=comics'  },
+  { label: 'Music',   color: '#7a3040', href: '/gallery/music'   },
+  { label: 'Movies',  color: '#1e3a8a', href: '/gallery/movies'  },
+  { label: 'Comics',  color: '#1a6060', href: '/gallery/comics'  },
   { label: 'Sketch',  color: '#3d4f45', href: '/gallery/sketchbook'  },
 ]
 
-export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwork; label?: string }) {
+type HeroProps = {
+  latest?: Artwork
+  label?: string
+  /** Numbers for the tiles: total works, cheapest print, Print Club price */
+  stats?: { works: number; printFrom: string; clubPrice: string }
+  cutouts?: Record<string, Cutout | null>
+}
+
+export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: HeroProps) {
   return (
     // Phones: art on top at full width, words underneath. Tablets and up: side by side.
     <section className="grid grid-cols-1 md:grid-cols-[52px_1fr_1fr] md:h-[calc(100svh-82px)] md:min-h-[420px] md:max-h-[660px]"
@@ -109,7 +118,7 @@ export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwo
       {/* Content panel */}
       <div style={{
         padding: '28px 26px 22px',
-        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        display: 'flex', flexDirection: 'column', justifyContent: 'flex-start',
         background: '#e6e6e6',
       }}>
         <div>
@@ -150,57 +159,31 @@ export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwo
           </p>
         </div>
 
-        {/* Category tag chips */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          {categories.map(({ label, color, href }) => (
-            <Link
-              key={label}
-              href={href}
-              style={{
-                display: 'flex', alignItems: 'stretch', overflow: 'hidden',
-                textDecoration: 'none',
-              }}
-            >
-              <div style={{ width: 10, flexShrink: 0, background: color }} />
-              <div style={{
-                padding: '7px 12px',
-                fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
-                color: '#1a1014', borderBottom: '1px solid #d0d0d0', flex: 1,
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                background: '#e6e6e6',
-              }}>
-                {label}
-                <span style={{ fontSize: 10, fontWeight: 300, color: '#a0a0a0', letterSpacing: '.1em' }}>
-                  →
-                </span>
-              </div>
+        {/* Where to next — four colour tiles, each with a cut-out peeking in */}
+        <div className="grid grid-cols-2 grid-rows-2" style={{ gap: 8, marginTop: 22, flex: 1, minHeight: 230 }}>
+          {[
+            { href: '/gallery', label: 'Explore the gallery', sub: stats ? `${stats.works} works` : 'All collections', color: '#7a3040', img: cutouts?.music?.url ?? cutouts?.comics?.url },
+            { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: cutouts?.comics?.url ?? cutouts?.movies?.url },
+            { href: '/print-club', label: 'Print Club', sub: stats ? `${stats.clubPrice} / month` : 'A print every month', color: '#9a5a64', img: cutouts?.['bee-ben']?.url },
+            { href: '/puzzles', label: 'Daily puzzles', sub: '5 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png' },
+          ].map(t => (
+            <Link key={t.href} href={t.href} className="group"
+              style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 110,
+                       padding: '12px 14px', background: t.color, color: '#fff', textDecoration: 'none', overflow: 'hidden' }}>
+              {t.img && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={t.img} alt="" aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-[-3deg]"
+                  style={{ position: 'absolute', right: -6, top: 8, height: '66%', maxWidth: '58%', objectFit: 'contain', opacity: .97,
+                           filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
+              )}
+              <span style={{ position: 'relative', fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif', fontSize: 'clamp(14px, 1.5vw, 21px)', fontWeight: 700, lineHeight: 1.15, whiteSpace: 'nowrap', textShadow: '0 1px 8px rgba(0,0,0,.45)' }}>
+                {t.label}
+              </span>
+              <span style={{ position: 'relative', fontSize: 10, letterSpacing: '.12em', color: 'rgba(255,255,255,.72)', marginTop: 3, display: 'flex', justifyContent: 'space-between', gap: 6 }}>
+                {t.sub}<span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
+              </span>
             </Link>
           ))}
-
-          <div style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: '12px 20px' }}>
-            <Link
-              href="/gallery"
-              style={{
-                display: 'inline-block',
-                fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
-                color: '#1a1014', borderBottom: '1px solid #1a1014', paddingBottom: 1,
-                textDecoration: 'none',
-              }}
-            >
-              View Full Gallery →
-            </Link>
-            <Link
-              href="/shop"
-              style={{
-                display: 'inline-block',
-                fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
-                color: '#7a3040', borderBottom: '1px solid #7a3040', paddingBottom: 1,
-                textDecoration: 'none',
-              }}
-            >
-              Originals &amp; Prints →
-            </Link>
-          </div>
         </div>
       </div>
 

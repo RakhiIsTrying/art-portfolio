@@ -1,11 +1,16 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import { getSettings } from '@/lib/settings'
+import { getSettings, randomCutouts } from '@/lib/settings'
+import { planForVisitor } from '@/lib/printClubServer'
+import { formatPrice } from '@/lib/prints'
 import Ticker from '@/components/Ticker'
 import Hero from '@/components/Hero'
 import FeaturedGrid from '@/components/FeaturedGrid'
 import CollectionsStrip from '@/components/CollectionsStrip'
 import { COLLECTIONS } from '@/lib/collections'
 import type { Artwork } from '@/lib/types'
+
+// New random cut-outs on every visit
+export const dynamic = 'force-dynamic'
 
 const TOP_TICKER    = '✦ POP ART  ·  DIGITAL ART  ·  SKETCHBOOK  ·  MUSIC ICONS  ·  MOVIE ART  ·  COMICS  ·  BEE BEN & DUG-DUG  ·  STICKERS  ·  CHIBI  ·  ORIGINALS'
 // Front-page piece: chosen in Admin → Front page ('latest' = newest upload). Until one is chosen, KATSEYE.
@@ -24,7 +29,8 @@ export default async function HomePage() {
 
   const works = (artworks ?? []) as Artwork[]
 
-  const { heroArtworkId } = await getSettings()
+  const settings = await getSettings()
+  const { heroArtworkId } = settings
   const { data: pinned } = heroArtworkId === 'latest'
     ? { data: null }
     : heroArtworkId
@@ -35,10 +41,21 @@ export default async function HomePage() {
     : await supabase.from('artworks').select('*').order('created_at', { ascending: false }).limit(1).maybeSingle()
   const hero = (pinned ?? latest) as Artwork | null
 
+  // A different random cut-out per collection on every visit, plus numbers for the front-page tiles
+  const cutouts = await randomCutouts()
+  const { count: totalWorks } = await supabase.from('artworks').select('id', { count: 'exact', head: true })
+  const plan = await planForVisitor()
+  const currency = plan === 'india' ? 'inr' : 'usd'
+  const stats = {
+    works: totalWorks ?? 0,
+    printFrom: formatPrice(Math.min(...settings.printSizes.map(sz => sz[currency])), currency),
+    clubPrice: settings.plans[plan].price,
+  }
+
   return (
     <>
       <Ticker text={TOP_TICKER} direction="left" variant="rust" />
-      <Hero latest={hero ?? undefined} label={pinned ? 'Featured Work' : 'Latest Work'} />
+      <Hero latest={hero ?? undefined} label={pinned ? 'Featured Work' : 'Latest Work'} stats={stats} cutouts={cutouts} />
       <Ticker text={BOTTOM_TICKER} direction="right" variant="blush" />
 
       {/* ── Featured Work header ── */}
@@ -91,7 +108,7 @@ export default async function HomePage() {
         </div>
       </div>
 
-      <CollectionsStrip />
+      <CollectionsStrip cutouts={cutouts} />
     </>
   )
 }

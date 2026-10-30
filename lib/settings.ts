@@ -15,6 +15,8 @@ export type SiteSettings = {
   greetings: string[]
   plans: Plans
   shopIntro: string
+  /** Background-removed versions of artworks (artwork id → image url), used as cut-outs */
+  cutouts: Record<string, string>
 }
 
 const SLUG = 'site-settings'
@@ -26,6 +28,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   printSizes: DEFAULT_PRINT_SIZES,
   greetings: DEFAULT_GREETINGS,
   plans: DEFAULT_PLANS,
+  cutouts: {},
   shopIntro: 'Bring a piece home. Every print and card is made to order — pick a piece, see it at every size, and send your order.',
 }
 
@@ -49,4 +52,17 @@ export function arrange<T extends { id: string }>(items: T[], order: string[] | 
   if (!order?.length) return items
   const rank = new Map(order.map((id, i) => [id, i]))
   return [...items].sort((a, b) => (rank.get(a.id) ?? 1e6 + items.indexOf(a)) - (rank.get(b.id) ?? 1e6 + items.indexOf(b)))
+}
+
+export type Cutout = { url: string; title: string; collection: string }
+
+/** One random cut-out per collection (different on every page load). */
+export async function randomCutouts(): Promise<Record<string, Cutout | null>> {
+  const { cutouts } = await getSettings()
+  const ids = Object.keys(cutouts)
+  if (!ids.length) return {}
+  const { data } = await getSupabaseAdminClient().from('artworks').select('id, title, collection_slug').in('id', ids)
+  const byCollection: Record<string, Cutout[]> = {}
+  for (const a of data ?? []) (byCollection[a.collection_slug] ??= []).push({ url: cutouts[a.id], title: a.title, collection: a.collection_slug })
+  return Object.fromEntries(Object.entries(byCollection).map(([slug, list]) => [slug, list[Math.floor(Math.random() * list.length)]]))
 }

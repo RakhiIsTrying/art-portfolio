@@ -11,3 +11,19 @@ export const COLLECTIONS: Collection[] = [
 export function getCollection(slug: string): Collection | undefined {
   return COLLECTIONS.find(c => c.slug === slug)
 }
+
+export const categoryColors: Record<string, string> = {
+  music:    '#7a3040',
+  movies:   '#1e3a8a',
+  comics:   '#1a6060',
+  'bee-ben':'#4a3a7a',
+  sketchbook: '#3d4f45',
+}
+
+export const categoryDesc: Record<string, string> = {
+  music:    'Icons, legends & sounds',
+  movies:   'Cinema & television',
+  comics:   'Manga, anime & panels',
+  'bee-ben':'Original characters',
+  sketchbook: 'Pencil, watercolor & still life',
+}

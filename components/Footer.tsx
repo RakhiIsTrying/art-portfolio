@@ -3,9 +3,9 @@
 import Link from 'next/link'
 
 const categories = [
-  { label: 'Music',    color: '#7a3040', href: '/gallery?cat=music'  },
-  { label: 'Movies',   color: '#1e3a8a', href: '/gallery?cat=movies' },
-  { label: 'Comics',   color: '#1a6060', href: '/gallery?cat=comics' },
+  { label: 'Music',    color: '#7a3040', href: '/gallery/music'  },
+  { label: 'Movies',   color: '#1e3a8a', href: '/gallery/movies' },
+  { label: 'Comics',   color: '#1a6060', href: '/gallery/comics' },
   { label: 'Sketchbook',color: '#3d4f45', href: '/gallery/sketchbook' },
 ]
 
