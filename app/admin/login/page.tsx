@@ -1,9 +1,10 @@
 'use client'
-import { useActionState } from 'react'
-import { loginAction } from './actions'
+import { useActionState, useState } from 'react'
+import { forgotPasswordAction, loginAction } from './actions'
 
 export default function LoginPage() {
-  const [state, formAction, pending] = useActionState(loginAction, null)
+  const [forgot, setForgot] = useState(false)
+  const [state, formAction, pending] = useActionState(forgot ? forgotPasswordAction : loginAction, null)
 
   return (
     <div style={{ minHeight: '100svh', background: '#e6e6e6', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
@@ -22,6 +23,12 @@ export default function LoginPage() {
 
         {/* Card */}
         <div style={{ background: '#fff', border: '1px solid #d0d0d0' }}>
+
+          {state?.sent && (
+            <div style={{ padding: '10px 20px', borderBottom: '1px solid #d0d0d0', background: '#eef6f1' }}>
+              <p style={{ fontSize: 12, lineHeight: 1.6, color: '#1a6060' }}>{state.sent}</p>
+            </div>
+          )}
 
           {state?.error && (
             <div style={{ padding: '10px 20px', borderBottom: '1px solid #d0d0d0', background: '#fdf0f2' }}>
@@ -49,7 +56,7 @@ export default function LoginPage() {
               />
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {!forgot && <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label htmlFor="password" style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>
                 Password
               </label>
@@ -63,7 +70,7 @@ export default function LoginPage() {
                 onFocus={e => (e.target.style.borderBottomColor = '#7a3040')}
                 onBlur={e => (e.target.style.borderBottomColor = '#d0d0d0')}
               />
-            </div>
+            </div>}
 
             <button
               type="submit"
@@ -77,7 +84,11 @@ export default function LoginPage() {
                 fontFamily: 'inherit', transition: 'background .2s',
               }}
             >
-              {pending ? 'Signing in…' : 'Sign In →'}
+              {forgot ? (pending ? 'Sending…' : 'Email me a reset link →') : (pending ? 'Signing in…' : 'Sign In →')}
+            </button>
+            <button type="button" onClick={() => setForgot(f => !f)}
+              style={{ alignSelf: 'flex-start', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, color: '#1e3a8a' }}>
+              {forgot ? '← Back to sign in' : 'Forgot password?'}
             </button>
           </form>
         </div>

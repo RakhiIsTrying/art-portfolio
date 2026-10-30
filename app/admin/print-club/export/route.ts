@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
+import { isAdminEmail } from '@/lib/adminEmail'
 import { monthKey, signupsToCsv } from '@/lib/printClubExport'
 
 export const dynamic = 'force-dynamic'
@@ -8,7 +9,7 @@ export const dynamic = 'force-dynamic'
 // GET /admin/print-club/export?month=2026-10  (omit month for everything)
 export async function GET(req: NextRequest) {
   const { data: { user } } = await (await getSupabaseServerClient()).auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!user || !isAdminEmail(user.email)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const month = req.nextUrl.searchParams.get('month')
   if (month && !/^\d{4}-\d{2}$/.test(month)) return NextResponse.json({ error: 'Invalid month' }, { status: 400 })

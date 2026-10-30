@@ -2,12 +2,13 @@
 import { revalidatePath } from 'next/cache'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { isAdminEmail } from '@/lib/adminEmail'
 
 const BUCKET = 'club-boxes'
 
 async function requireAdmin() {
   const { data: { user } } = await (await getSupabaseServerClient()).auth.getUser()
-  if (!user) throw new Error('Unauthorized')
+  if (!user || !isAdminEmail(user.email)) throw new Error('Unauthorized')
   return getSupabaseAdminClient()
 }
 
