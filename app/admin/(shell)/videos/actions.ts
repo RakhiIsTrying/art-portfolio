@@ -9,6 +9,7 @@ export async function addVideo(
   _prev: { error: string } | null,
   formData: FormData
 ): Promise<{ error: string } | null> {
+  await requireAdmin()
   const title = formData.get('title') as string
   const youtube_url = formData.get('youtube_url') as string
   const description = (formData.get('description') as string) || null
@@ -21,7 +22,6 @@ export async function addVideo(
   try {
     thumbnail_url = await fetchYouTubeThumbnail(youtube_url)
   } catch {
-  await requireAdmin()
     return { error: 'Could not fetch video thumbnail. Check the YouTube URL.' }
   }
 

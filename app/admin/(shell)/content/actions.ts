@@ -7,11 +7,11 @@ export async function savePageContent(
   _prev: { error?: string; saved?: string } | null,
   formData: FormData
 ): Promise<{ error?: string; saved?: string } | null> {
+  await requireAdmin()
   const slug = formData.get('slug') as string
   const html = formData.get('content') as string
 
   if (!slug || !['puzzles', 'about'].includes(slug)) {
-  await requireAdmin()
     return { error: 'Invalid page slug.' }
   }
 

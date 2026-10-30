@@ -7,6 +7,7 @@ export async function uploadArtwork(
   _prev: { error?: string; ok?: boolean } | null,
   formData: FormData
 ): Promise<{ error?: string; ok?: boolean } | null> {
+  await requireAdmin()
   const file = formData.get('image') as File
   const title = formData.get('title') as string
   const collection_slug = formData.get('collection_slug') as string
@@ -16,7 +17,6 @@ export async function uploadArtwork(
   const instagram_url = formData.get('instagram_url') as string || null
 
   if (!file || !file.size || !title || !collection_slug) {
-  await requireAdmin()
     return { error: 'Title, collection, and image are required.' }
   }
 

@@ -8,7 +8,7 @@ export const ARTIST_EMAIL = ADMIN_EMAIL
 /** Every subject starts with this, so a Gmail filter can label them "Artist account query". */
 export const SUBJECT_PREFIX = 'Artist account query'
 
-export type MessageKind = 'Inquiry' | 'Print order' | 'Print Club'
+export type MessageKind = 'Inquiry' | 'Print order' | 'Print Club' | 'Instagram'
 export type InboxMessage = { kind: MessageKind; subject: string; text: string; from?: string; at: string; emailed: boolean }
 
 export async function notifyArtist({ kind, subject, text, replyTo }: { kind: MessageKind; subject: string; text: string; replyTo?: string }) {

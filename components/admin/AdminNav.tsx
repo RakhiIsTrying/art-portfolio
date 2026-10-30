@@ -6,6 +6,7 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase/env'
 
 const links = [
   { href: '/admin/inbox',    label: 'Inbox',    color: '#1e3a8a' },
+  { href: '/admin/instagram', label: 'Instagram', color: '#b0552f' },
   { href: '/admin/artworks', label: 'Artworks', color: '#7a3040' },
   { href: '/admin/arrange',  label: 'Arrange art', color: '#7a3040' },
   { href: '/admin/featured', label: 'Front page', color: '#1a6060' },
