@@ -121,14 +121,19 @@ type HintProps = {
   /** Does one step of the answer and returns what Dug-Dug says (optionally a word to show off as tiles) */
   getReveal: () => string | { text: string; word: string } | null
   disabled?: boolean
+  /** Who gives the hints: the puzzle's own host. Reveals are always Dug-Dug's. */
+  host?: keyof typeof HOST
 }
 
 /**
  * "Ask Ben" gives a clue, then locks for 10 seconds (shared by every puzzle).
  * Every 3 hints unlock a "Reveal" from Dug-Dug, which does one step of the answer.
  */
-export function HintButton({ date, game, getHint, getReveal, disabled }: HintProps) {
-  const [said, setSaid] = useState<{ who: 'ben' | 'dug'; text: string; word?: string } | null>(null)
+export function HintButton({ date, game, getHint, getReveal, disabled, host = 'ben' }: HintProps) {
+  const h = HOST[host]
+  // Each host's hint colours (Dug-Dug's hints are a lighter purple than his reveals)
+  const HINT = { bee: ['#e8c55a', '#c9a033', INK], ben: [AUTUMN, AUTUMN_DARK, '#fbf1e4'], dug: ['#7b6bb0', '#5a4a8c', '#fff'] }[host]
+  const [said, setSaid] = useState<{ who: 'host' | 'dug'; text: string; word?: string } | null>(null)
   const [wait, setWait] = useState(0)
   const [count, setCount] = useState(0)
   const [used, setUsed] = useDailyState(date, `${game}-help`, { hints: 0, reveals: 0 })
@@ -157,7 +162,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
 
   function ask() {
     if (tick() > 0 || disabled) return
-    setSaid({ who: 'ben', text: getHint(used.hints) ?? 'Hmm, nothing left to tell you. You’ve got this!' })
+    setSaid({ who: 'host', text: getHint(used.hints) ?? 'Hmm, nothing left to tell you. You’ve got this!' })
     setCount(c => c + 1)
     setUsed(u => ({ ...u, hints: u.hints + 1 }))
     try { localStorage.setItem(HINT_LOCK_KEY, String(Date.now() + HINT_COOLDOWN * 1000)) } catch {}
@@ -180,16 +185,16 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
         // Pops out each time someone speaks (the key restarts the animation)
         <div key={count} role="status" className="vgb-motion vgb-bubble"
              style={{ position: 'relative', alignSelf: 'stretch', marginTop: 34, padding: '14px 16px 14px 96px', textAlign: 'center',
-                      background: dug ? `linear-gradient(135deg, ${BEE_BEN} 0%, #2f2452 100%)` : `linear-gradient(135deg, ${AUTUMN} 0%, ${AUTUMN_DARK} 100%)`,
-                      color: '#fbf1e4', boxShadow: '0 14px 30px rgba(26,16,20,.3)', borderRadius: 4,
+                      background: dug ? `linear-gradient(135deg, ${BEE_BEN} 0%, #2f2452 100%)` : `linear-gradient(135deg, ${HINT[0]} 0%, ${HINT[1]} 100%)`,
+                      color: dug ? '#fbf1e4' : HINT[2], boxShadow: '0 14px 30px rgba(26,16,20,.3)', borderRadius: 4,
                       transformOrigin: '50% 100%', animation: 'vgb-pop .45s cubic-bezier(.2,1.4,.4,1) both' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={dug ? DUG_DUG : BEN} alt={dug ? 'Dug-Dug' : 'Ben'}
+          <img src={dug ? DUG_DUG : h.img} alt={dug ? 'Dug-Dug' : h.name}
                className={dug ? 'vgb-motion vgb-bubble-img' : 'vgb-bubble-img'}
-               style={{ position: 'absolute', left: 6, bottom: 0, height: dug ? 92 : 108, filter: 'drop-shadow(0 0 2px #fbf1e4) drop-shadow(0 6px 10px rgba(0,0,0,.25))',
+               style={{ position: 'absolute', left: 6, bottom: 0, height: dug || host === 'dug' ? 92 : 108, filter: 'drop-shadow(0 0 2px #fbf1e4) drop-shadow(0 6px 10px rgba(0,0,0,.25))',
                         animation: dug && said.word ? 'vgb-hop .7s ease-out .1s 2 both' : undefined }} />
-          <span style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: dug ? HONEY : '#f3c98b', display: 'block', marginBottom: 4 }}>
-            {dug ? 'Dug-Dug reveals' : 'Ben says'}
+          <span style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: dug ? HONEY : host === 'bee' ? '#6b4d0e' : host === 'dug' ? HONEY : '#f3c98b', display: 'block', marginBottom: 4 }}>
+            {dug ? 'Dug-Dug reveals' : `${h.name} says`}
           </span>
           <span style={{ fontSize: 13, lineHeight: 1.55 }}>{said.text}</span>
           {said.word && (
@@ -201,7 +206,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
               ))}
             </span>
           )}
-          <span aria-hidden style={{ position: 'absolute', bottom: -7, left: '50%', width: 14, height: 14, background: dug ? '#2f2452' : AUTUMN_DARK, transform: 'translateX(-50%) rotate(45deg)' }} />
+          <span aria-hidden style={{ position: 'absolute', bottom: -7, left: '50%', width: 14, height: 14, background: dug ? '#2f2452' : HINT[1], transform: 'translateX(-50%) rotate(45deg)' }} />
         </div>
       )}
       {disabled ? (
@@ -214,12 +219,12 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
             <button type="button" onClick={ask} disabled={wait > 0} className="hover:-translate-y-0.5"
               style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 18px 6px 8px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit',
                        cursor: wait > 0 ? 'not-allowed' : 'pointer', border: 'none', borderRadius: 999,
-                       background: wait > 0 ? '#ead9c6' : AUTUMN, color: wait > 0 ? AUTUMN_DARK : '#fbf1e4', boxShadow: wait > 0 ? 'none' : '0 6px 16px rgba(122,59,22,.3)', transition: 'transform .15s, background .3s' }}>
+                       background: wait > 0 ? '#e6e1e1' : HINT[0], color: wait > 0 ? '#787878' : HINT[2], boxShadow: wait > 0 ? 'none' : `0 6px 16px ${HINT[1]}55`, transition: 'transform .15s, background .3s' }}>
               <span style={{ width: 34, height: 34, borderRadius: '50%', background: '#fbf1e4', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', flexShrink: 0 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={BEN} alt="" style={{ height: 40, marginBottom: -4, filter: wait > 0 ? 'grayscale(1)' : 'none' }} />
+                <img src={h.img} alt="" style={{ height: 40, marginBottom: -4, filter: wait > 0 ? 'grayscale(1)' : 'none' }} />
               </span>
-              {wait > 0 ? `Ben is thinking… ${wait}s` : 'Ask Ben for a hint'}
+              {wait > 0 ? `${h.name} is thinking… ${wait}s` : `Ask ${h.name} for a hint`}
             </button>
 
             {revealsReady > 0 && (

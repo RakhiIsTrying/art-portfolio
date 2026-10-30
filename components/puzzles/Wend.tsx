@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { CENTERED, HintButton, BEN_IMG, DugDug, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, BEN_IMG, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 // Ben's autumn browns
 const TRAIL = '#d9935a', TRAIL_DONE = '#7a3b16', AUTUMN = '#a0521d'
@@ -96,15 +96,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           })}
         </svg>
 
-        {/* Ben leads the walk, with Dug-Dug trotting one step behind */}
-        {path.length > 1 && (() => {
-          const [x, y] = centre(path[path.length - 2])
-          return (
-            <div style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: `${100 / size * .66}%`, pointerEvents: 'none', transition: 'left .12s, top .12s' }}>
-              <DugDug size="100%" />
-            </div>
-          )
-        })()}
+        {/* Ben runs along at the end of the route */}
         {path.length > 0 && (() => {
           const [x, y] = centre(path[path.length - 1])
           return (
@@ -125,7 +117,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           </span>
         </div>
       )}
-      <HintButton date={date} game="wend" disabled={solved}
+      <HintButton host="ben" date={date} game="wend" disabled={solved}
         getHint={n => {
           // Clue: where the path went wrong, or which way to go next
           let same = 0

@@ -149,7 +149,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
         </div>
       )}
 
-      <HintButton date={date} game="sudoku" disabled={solved}
+      <HintButton host="bee" date={date} game="sudoku" disabled={solved}
         getHint={n => {
           // Clue: point out a mistake's row, or a square where only one number fits
           const wrong = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).find(({ r, c, v }) => !puzzle[r][c] && v && v !== solution[r][c])

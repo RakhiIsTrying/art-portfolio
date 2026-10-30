@@ -13,7 +13,7 @@ const points = (w: string, letters: string) => (w.length === 4 ? 1 : w.length) +
 
 export default function Bee({ date, letters, center, answers, onSolved }: Props) {
   const [found, setFound] = useDailyState<string[]>(date, 'bee', [])
-  // The word behind Ben's latest hint; Dug-Dug's reveal gives exactly this word
+  // The word behind Bee's latest hint; Dug-Dug's reveal gives exactly this word
   const [benWord, setBenWord] = useDailyState<string | null>(date, 'bee-ben-word', null)
   const [outer, setOuter] = useState(() => [...letters].filter(l => l !== center))
   const [word, setWord] = useState('')
@@ -142,9 +142,9 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
         </div>
       </div>
 
-      <HintButton date={date} game="bee" disabled={genius && found.length === answers.length}
+      <HintButton host="bee" date={date} game="bee" disabled={genius && found.length === answers.length}
         getHint={n => {
-          // Ben builds up one word over three hints: first letter, then two, then three. Dug-Dug's reveal then gives it.
+          // Bee builds up one word over three hints: first letter, then two, then three. Dug-Dug's reveal then gives it.
           const left = answers.filter(w => !found.includes(w))
           if (!left.length) return null
           const step = n % 3
@@ -161,12 +161,12 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
             : `Same word, it starts with “${start}”…`
         }}
         getReveal={() => {
-          // The answer to Ben's latest hint, for them to type in (never a new word)
-          if (!benWord) return 'Ask Ben for a hint first, then I’ll tell you his word!'
-          if (found.includes(benWord)) return `You already found Ben’s word, “${benWord.toUpperCase()}”! Ask Ben for a new hint.`
+          // The answer to Bee's latest hint, for them to type in (never a new word)
+          if (!benWord) return 'Ask Bee for a hint first, then I’ll sniff out the word!'
+          if (found.includes(benWord)) return `You already found Bee’s word, “${benWord.toUpperCase()}”! Ask Bee for a new hint.`
           setSniff({ word: benWord, key: Date.now() })
           setTimeout(() => setSniff(null), 4000)
-          return { text: 'Sniff sniff… Dug-Dug sniffed out Ben’s word! Type it in to add it:', word: benWord }
+          return { text: 'Sniff sniff… Dug-Dug sniffed out Bee’s word! Type it in to add it:', word: benWord }
         }} />
 
       {genius && <SolvedBanner title="Genius! Bee is buzzing 🐝" detail={`${found.length} words, ${score} points. Keep going to find them all.`} artIndex={6} />}

@@ -123,7 +123,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
         </div>
       )}
 
-      <HintButton date={date} game="wordle" disabled={done}
+      <HintButton host="ben" date={date} game="wordle" disabled={done}
         getHint={n => {
           // Clue: a letter that's in the word but hasn't shown up yet
           const seen = new Set(guesses.flatMap(g => [...g].filter(l => answer.includes(l))))

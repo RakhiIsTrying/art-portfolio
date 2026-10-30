@@ -12,7 +12,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
   const N = size * size
   const [found, setFound] = useDailyState<Word[]>(date, 'dig', [])
   const [path, setPath] = useState<number[]>([])
-  // Ben's clue: which hidden word, and how many of its first letters are lit
+  // Dug-Dug's clue: which hidden word, and how many of its first letters are lit
   const [clue, setClue] = useDailyState<{ word: number; show: number } | null>(date, 'dig-clue', null)
   const [flash, setFlash] = useState<string | null>(null)
   const [dugUp, setDugUp] = useState(0)      // restarts the dig-up animation on each reveal
@@ -183,9 +183,9 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
         </div>
       )}
 
-      <HintButton date={date} game="dig" disabled={solved}
+      <HintButton host="dug" date={date} game="dig" disabled={solved}
         getHint={n => {
-          // Ben lights up one word's first letter, then two, then three. Dug-Dug's reveal then shows it all.
+          // Dug-Dug lights up one word's first letter, then two, then three. Dug-Dug's reveal then shows it all.
           if (!left.length) return null
           const step = n % 3
           let target = clue?.word
@@ -193,16 +193,16 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
           setClue({ word: target, show: step + 1 })
           const w = words[target].word
           return step === 0
-            ? `Look for a ${w.length}-letter word. Ben circled where it starts.`
-            : `Same word, Ben circled its first ${step + 1} letters.`
+            ? `Woof! Look for a ${w.length}-letter word. I circled where it starts.`
+            : `Same word, I circled its first ${step + 1} letters.`
         }}
         getReveal={() => {
-          // Lights up the whole of Ben's word for them to trace
+          // Lights up the whole of the hinted word for them to trace
           const target = clue && left.includes(clue.word) ? clue.word : null
-          if (target === null) return 'Ask Ben for a hint first, then I’ll dig up his word!'
+          if (target === null) return 'Ask me for a hint first, then I’ll dig up the word!'
           setClue({ word: target, show: words[target].word.length })
           setDugUp(Date.now())
-          return { text: 'Dig dig dig… Dug-Dug dug up Ben’s word! Now trace it on the board:', word: words[target].word }
+          return { text: 'Dig dig dig… I dug up the whole word! Now trace it on the board:', word: words[target].word }
         }} />
 
       {solved && <SolvedBanner title="All dug up! 🦴" detail={`Every ${theme.toLowerCase()} word found.`} artIndex={4} />}
