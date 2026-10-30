@@ -5,8 +5,10 @@ import { createClient } from '@supabase/supabase-js'
 
 const links = [
   { href: '/admin/artworks', label: 'Artworks', color: '#7a3040' },
+  { href: '/admin/arrange',  label: 'Arrange art', color: '#7a3040' },
+  { href: '/admin/featured', label: 'Front page', color: '#1a6060' },
   { href: '/admin/videos',   label: 'Videos',   color: '#1e3a8a' },
-  { href: '/admin/featured', label: 'Featured', color: '#1a6060' },
+  { href: '/admin/shop',     label: 'Shop settings', color: '#a0521d' },
   { href: '/admin/content',  label: 'Content',  color: '#7a5020' },
   { href: '/admin/print-club', label: 'Print Club', color: '#4a3a7a' },
   { href: '/admin/club-boxes', label: 'Club Boxes', color: '#4a3a7a' },

@@ -1,9 +1,12 @@
 import { Suspense } from 'react'
 import InquireForm from '@/components/InquireForm'
 import { planForVisitor } from '@/lib/printClubServer'
+import { getSettings } from '@/lib/settings'
+import { ShopSettingsProvider } from '@/components/shop/ShopSettings'
 
 export default async function InquirePage() {
   const currency = (await planForVisitor()) === 'india' ? 'inr' : 'usd'
+  const settings = await getSettings()
 
   return (
     <div style={{ maxWidth: 640, margin: '0 auto', padding: '36px 36px 60px' }}>
@@ -21,7 +24,9 @@ export default async function InquirePage() {
       </div>
 
       <Suspense fallback={null}>
-        <InquireForm currency={currency} />
+        <ShopSettingsProvider sizes={settings.printSizes} greetings={settings.greetings}>
+          <InquireForm currency={currency} />
+        </ShopSettingsProvider>
       </Suspense>
 
     </div>

@@ -1,6 +1,9 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import ScreeningRoom from '@/components/videos/ScreeningRoom'
 import type { Video } from '@/lib/types'
+import { arrange, getSettings } from '@/lib/settings'
+
+export const dynamic = 'force-dynamic'
 
 export default async function VideosPage() {
   const supabase = await getSupabaseServerClient()
@@ -18,5 +21,7 @@ export default async function VideosPage() {
     )
   }
 
-  return <ScreeningRoom videos={videos as Video[]} />
+  // Order set in Admin → Videos; the first one is "Now showing"
+  const { videoOrder } = await getSettings()
+  return <ScreeningRoom videos={arrange(videos as Video[], videoOrder)} />
 }

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { PLANS, planForCountry, type PlanId } from '@/lib/printClub'
+import { planForCountry, type PlanId, type Plans } from '@/lib/printClub'
 
 type FormState = {
   name: string; email: string; phone: string; birthday: string; birthday_request: string
@@ -71,7 +71,7 @@ const inputStyle = (hasError: boolean): React.CSSProperties => ({
   outline: 'none', fontFamily: 'inherit',
 })
 
-export default function PrintClubForm({ defaultPlan }: { defaultPlan: PlanId }) {
+export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPlan: PlanId; plans: Plans }) {
   const [form, setForm]     = useState<FormState>(EMPTY)
   const [errors, setErrors] = useState<Errors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')

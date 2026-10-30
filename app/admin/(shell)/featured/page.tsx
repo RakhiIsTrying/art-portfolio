@@ -1,5 +1,7 @@
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import FeaturedPicker from '@/components/admin/FeaturedPicker'
+import FrontPageEditor from '@/components/admin/FrontPageEditor'
+import { getSettings } from '@/lib/settings'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,6 +11,9 @@ export default async function AdminFeaturedPage() {
     .from('artworks')
     .select('*')
     .order('title', { ascending: true })
+  const { heroArtworkId } = await getSettings()
+  // Until a front-page piece is chosen, the site shows KATSEYE
+  const defaultHeroId = (artworks ?? []).find(a => a.title === 'KATSEYE')?.id ?? null
 
   return (
     <div style={{ padding: '32px 36px', maxWidth: 900, display: 'flex', flexDirection: 'column', gap: 32 }}>
@@ -18,13 +23,14 @@ export default async function AdminFeaturedPage() {
         <div style={{ width: 3, background: '#1a6060', marginRight: 16, flexShrink: 0 }} />
         <div>
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#1a6060', marginBottom: 6 }}>Manage</p>
-          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Featured Grid</h1>
+          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Front page</h1>
           <p style={{ fontSize: 11, letterSpacing: '.2em', fontWeight: 300, color: '#a0a0a0', marginTop: 8 }}>
-            Select up to 9 artworks to show on the homepage
+            Choose the big front-page piece, the Featured pieces (up to 9) and their order
           </p>
         </div>
       </div>
 
+      <FrontPageEditor artworks={artworks ?? []} heroId={heroArtworkId} defaultHeroId={defaultHeroId} />
       <FeaturedPicker artworks={artworks ?? []} />
     </div>
   )

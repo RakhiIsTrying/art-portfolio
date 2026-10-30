@@ -1,6 +1,8 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
+import { requireAdmin } from '@/lib/adminAuth'
+import { saveSettings } from '@/lib/settings'
 
 export async function toggleFeatured(artworkId: string, currentlyFeatured: boolean) {
   const admin = getSupabaseAdminClient()
@@ -45,4 +47,22 @@ export async function toggleFeatured(artworkId: string, currentlyFeatured: boole
   revalidatePath('/admin/featured')
   revalidatePath('/')
   return null
+}
+
+/** Save the order of the featured collage on the front page. */
+export async function reorderFeatured(ids: string[]) {
+  const admin = await requireAdmin()
+  for (const [i, id] of ids.entries()) {
+    await admin.from('artworks').update({ featured_order: i + 1 }).eq('id', id).eq('featured', true)
+  }
+  revalidatePath('/admin/featured')
+  revalidatePath('/')
+}
+
+/** Choose the big front-page piece ('latest' = newest upload). */
+export async function setHero(id: string) {
+  await requireAdmin()
+  await saveSettings({ heroArtworkId: id })
+  revalidatePath('/')
+  revalidatePath('/admin/featured')
 }

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getResendClient } from '@/lib/resend'
-import { PLANS, planForCountry } from '@/lib/printClub'
+import { planForCountry } from '@/lib/printClub'
+import { getSettings } from '@/lib/settings'
 
 const REQUIRED = ['name', 'email', 'phone', 'address_line1', 'city', 'region', 'postal_code', 'country'] as const
 const OPTIONAL = ['birthday', 'birthday_request', 'address_line2'] as const
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest) {
   }
 
   const plan = planForCountry(row.country!)
+  const PLANS = (await getSettings()).plans
   const admin = getSupabaseAdminClient()
   const { error } = await admin.from('print_club_signups').insert({ ...row, plan })
 

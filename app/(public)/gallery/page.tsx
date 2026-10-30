@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { COLLECTIONS } from '@/lib/collections'
+import { arrange, getSettings } from '@/lib/settings'
 import type { Artwork } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
 
@@ -22,16 +23,18 @@ const categoryDesc: Record<string, string> = {
 
 export default async function GalleryPage() {
   const supabase = await getSupabaseServerClient()
+  const settings = await getSettings()
   const previews: Record<string, Artwork[]> = {}
   const totals: Record<string, number> = {}
   await Promise.all(
     COLLECTIONS.map(async col => {
-      const { data, count } = await supabase
-        .from('artworks').select('*', { count: 'exact' })
+      const { data } = await supabase
+        .from('artworks').select('*')
         .eq('collection_slug', col.slug)
-        .order('created_at', { ascending: false }).limit(3)
-      previews[col.slug] = (data ?? []) as Artwork[]
-      totals[col.slug] = count ?? 0
+        .order('created_at', { ascending: false })
+      const arranged = arrange((data ?? []) as Artwork[], settings.artworkOrder[col.slug])
+      previews[col.slug] = arranged.slice(0, 3)
+      totals[col.slug] = arranged.length
     })
   )
 

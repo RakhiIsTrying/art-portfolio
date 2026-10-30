@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getCollection } from '@/lib/collections'
 import MasonryGrid from '@/components/MasonryGrid'
+import { arrange, getSettings } from '@/lib/settings'
 import type { Artwork } from '@/lib/types'
 
 const categoryColors: Record<string, string> = {
@@ -18,6 +19,7 @@ type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ art?: 
 export default async function CollectionPage({ params, searchParams }: Props) {
   const { slug } = await params
   const { art } = await searchParams
+  const { artworkOrder } = await getSettings()
   const collection = getCollection(slug)
   if (!collection) notFound()
 
@@ -51,7 +53,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       </div>
 
       {artworks && artworks.length > 0 ? (
-        <MasonryGrid artworks={artworks as Artwork[]} initialId={art} />
+        <MasonryGrid artworks={arrange(artworks as Artwork[], artworkOrder[slug])} initialId={art} />
       ) : (
         <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
           No pieces here yet — check back soon.

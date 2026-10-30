@@ -3,9 +3,11 @@ import Link from 'next/link'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import ShopGrid from '@/components/shop/ShopGrid'
 import PrintStudio from '@/components/shop/PrintStudio'
-import { PRINT_SIZES, formatPrice, type Currency } from '@/lib/prints'
+import { formatPrice, type Currency } from '@/lib/prints'
 import type { Artwork } from '@/lib/types'
-import { PLANS } from '@/lib/printClub'
+import { getSettings, arrange } from '@/lib/settings'
+import { COLLECTIONS } from '@/lib/collections'
+import { ShopSettingsProvider } from '@/components/shop/ShopSettings'
 import { planForVisitor } from '@/lib/printClubServer'
 
 export const metadata: Metadata = {
@@ -28,15 +30,18 @@ export default async function ShopPage() {
     .order('created_at', { ascending: false })
 
   const artworks = (data ?? []) as Artwork[]
+  const settings = await getSettings()
   // Columns may not exist yet on older databases: default to prints on, originals off
-  const prints    = artworks.filter(a => a.prints_available !== false)
+  // Prints follow the gallery arrangement: collection by collection, in the order set in Admin
+  const prints = COLLECTIONS.flatMap(c => arrange(artworks.filter(a => a.collection_slug === c.slug && a.prints_available !== false), settings.artworkOrder[c.slug]))
   const originals = artworks.filter(a => a.original_available === true)
   const plan = await planForVisitor()
-  const clubPrice = PLANS[plan].price
+  const clubPrice = settings.plans[plan].price
   // Prices show in rupees for visitors in India, dollars elsewhere
   const currency: Currency = plan === 'india' ? 'inr' : 'usd'
 
   return (
+    <ShopSettingsProvider sizes={settings.printSizes} greetings={settings.greetings}>
     <div style={{ maxWidth: 1200, margin: '0 auto' }} className="px-5 md:px-9 pt-9 pb-16">
 
       {/* Header */}
@@ -56,7 +61,7 @@ export default async function ShopPage() {
               </span>
             </h1>
             <p style={{ maxWidth: 440, marginTop: 16, fontSize: 13, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
-              Bring a piece home. Every print and card is made to order — pick a piece, see it at every size, and send your order.
+              {settings.shopIntro}
             </p>
           </div>
         </div>
@@ -96,7 +101,7 @@ export default async function ShopPage() {
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 18 }}>
           <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Prints &amp; cards</h2>
           <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
-            From {formatPrice(Math.min(...PRINT_SIZES.map(s => s[currency])), currency)}
+            From {formatPrice(Math.min(...settings.printSizes.map(s => s[currency])), currency)}
           </span>
         </div>
         {prints.length > 0 ? (
@@ -148,5 +153,6 @@ export default async function ShopPage() {
       </section>
 
     </div>
+    </ShopSettingsProvider>
   )
 }

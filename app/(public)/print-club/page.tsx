@@ -2,14 +2,15 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import PrintClubForm from '@/components/PrintClubForm'
-import { PLANS, type PlanId } from '@/lib/printClub'
+import { type PlanId } from '@/lib/printClub'
+import { getSettings } from '@/lib/settings'
 import { planForVisitor } from '@/lib/printClubServer'
 import type { Artwork } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
 
 export const metadata: Metadata = {
   title: 'Print Club — Van Gone Broke',
-  description: 'A new print in your mailbox every month. ₹750 / month in India, $16 / month internationally.',
+  description: 'A new Van Gone Broke print in your mailbox every month.',
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -37,6 +38,7 @@ export default async function PrintClubPage() {
     .limit(3)
   const pieces = (data ?? []) as Artwork[]
   const visitorPlan = await planForVisitor()
+  const PLANS = (await getSettings()).plans
 
   return (
     <div style={{ maxWidth: 1140, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
@@ -133,7 +135,7 @@ export default async function PrintClubPage() {
           </p>
         </div>
         <div className="p-7 md:p-10 md:pl-0">
-          <PrintClubForm defaultPlan={visitorPlan} />
+          <PrintClubForm defaultPlan={visitorPlan} plans={PLANS} />
         </div>
       </div>
 

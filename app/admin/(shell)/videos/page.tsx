@@ -1,6 +1,9 @@
 import Image from 'next/image'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import VideoAddForm from '@/components/admin/VideoAddForm'
+import VideoOrder from '@/components/admin/VideoOrder'
+import { arrange, getSettings } from '@/lib/settings'
+import type { Video } from '@/lib/types'
 import { deleteVideo } from './actions'
 
 export const dynamic = 'force-dynamic'
@@ -25,6 +28,8 @@ export default async function AdminVideosPage() {
       </div>
 
       <VideoAddForm />
+
+      {!!videos?.length && <VideoOrder videos={arrange(videos as Video[], (await getSettings()).videoOrder)} />}
 
       {/* Table */}
       <div style={{ border: '1px solid #d0d0d0', background: '#fff' }}>

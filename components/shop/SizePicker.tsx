@@ -1,19 +1,20 @@
 'use client'
-import { PRINT_SIZES, formatPrice, type Currency } from '@/lib/prints'
+import { formatPrice, type Currency, type PrintSize } from '@/lib/prints'
+import { useShopSettings } from './ShopSettings'
 
 export type Quantities = Record<string, number>
 
 /** Selected sizes with their quantities, total and which ones are under the free-shipping minimum. */
-export function summarise(qty: Quantities, currency: Currency) {
-  const lines = PRINT_SIZES.filter(s => (qty[s.id] ?? 0) > 0).map(s => ({ ...s, n: qty[s.id] }))
+export function summarise(sizes: PrintSize[], qty: Quantities, currency: Currency) {
+  const lines = sizes.filter(s => (qty[s.id] ?? 0) > 0).map(s => ({ ...s, n: qty[s.id] }))
   const total = lines.reduce((sum, l) => sum + l.n * l[currency], 0)
   const underMin = lines.filter(l => l.min && l.n < l.min)
   return { lines, total, underMin }
 }
 
 /** The order payload the inquiry email understands. */
-export function orderPayload(qty: Quantities, currency: Currency, greeting?: string) {
-  const { lines, total, underMin } = summarise(qty, currency)
+export function orderPayload(sizes: PrintSize[], qty: Quantities, currency: Currency, greeting?: string) {
+  const { lines, total, underMin } = summarise(sizes, qty, currency)
   if (!lines.length) return undefined
   return {
     lines: lines.map(l => `${l.n} × ${l.name} (${l.dims}) @ ${formatPrice(l[currency], currency)} = ${formatPrice(l.n * l[currency], currency)}`),
@@ -33,7 +34,8 @@ type Props = {
 }
 
 export default function SizePicker({ qty, onChange, currency, onCurrency }: Props) {
-  const { lines, total, underMin } = summarise(qty, currency)
+  const { sizes } = useShopSettings()
+  const { lines, total, underMin } = summarise(sizes, qty, currency)
   const step = (id: string, d: number) => onChange({ ...qty, [id]: Math.max(0, Math.min(99, (qty[id] ?? 0) + d)) })
 
   return (
@@ -46,7 +48,7 @@ export default function SizePicker({ qty, onChange, currency, onCurrency }: Prop
         </button>
       </div>
       <div style={{ border: '1px solid #ebebeb' }}>
-        {PRINT_SIZES.map((s, i) => {
+        {sizes.map((s, i) => {
           const n = qty[s.id] ?? 0
           return (
             <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderTop: i ? '1px solid #ebebeb' : 'none', background: n ? '#faf6f6' : '#fff' }}>

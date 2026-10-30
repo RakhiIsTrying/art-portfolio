@@ -3,6 +3,7 @@ import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import type { Currency } from '@/lib/prints'
 import SizePicker, { orderPayload, type Quantities } from '@/components/shop/SizePicker'
+import { useShopSettings } from '@/components/shop/ShopSettings'
 
 type FormState = { name: string; email: string; piece: string; message: string }
 type Errors    = Partial<Record<keyof FormState, string>>
@@ -29,7 +30,8 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
   const isPrint = (params.get('piece') ?? '').startsWith('Print')
   const [currency, setCurrency] = useState<Currency>(initialCurrency)
   const [qty, setQty] = useState<Quantities>({})
-  const order = orderPayload(qty, currency)
+  const { sizes } = useShopSettings()
+  const order = orderPayload(sizes, qty, currency)
   const [form, setForm]     = useState<FormState>({ name: '', email: '', message: '', piece: params.get('piece') ?? '' })
   const [errors, setErrors] = useState<Errors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')

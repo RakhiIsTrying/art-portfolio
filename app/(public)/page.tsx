@@ -1,4 +1,5 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getSettings } from '@/lib/settings'
 import Ticker from '@/components/Ticker'
 import Hero from '@/components/Hero'
 import FeaturedGrid from '@/components/FeaturedGrid'
@@ -7,8 +8,8 @@ import { COLLECTIONS } from '@/lib/collections'
 import type { Artwork } from '@/lib/types'
 
 const TOP_TICKER    = '✦ POP ART  ·  DIGITAL ART  ·  SKETCHBOOK  ·  MUSIC ICONS  ·  MOVIE ART  ·  COMICS  ·  BEE BEN & DUG-DUG  ·  STICKERS  ·  CHIBI  ·  ORIGINALS'
-// Piece pinned to the hero; set to null to show the latest upload instead
-const HERO_TITLE: string | null = 'KATSEYE'
+// Front-page piece: chosen in Admin → Front page ('latest' = newest upload). Until one is chosen, KATSEYE.
+const DEFAULT_HERO_TITLE = 'KATSEYE'
 
 const BOTTOM_TICKER = '✦ AVAILABLE FOR COMMISSIONS  ·  INQUIRE FOR PRICING  ·  ORIGINAL ART & PRINTS  ·  BEE BEN & DUG-DUG  ·  DAILY PUZZLES  ·  FAN ART & ORIGINALS'
 
@@ -23,9 +24,12 @@ export default async function HomePage() {
 
   const works = (artworks ?? []) as Artwork[]
 
-  const { data: pinned } = HERO_TITLE
-    ? await supabase.from('artworks').select('*').eq('title', HERO_TITLE).limit(1).maybeSingle()
-    : { data: null }
+  const { heroArtworkId } = await getSettings()
+  const { data: pinned } = heroArtworkId === 'latest'
+    ? { data: null }
+    : heroArtworkId
+    ? await supabase.from('artworks').select('*').eq('id', heroArtworkId).maybeSingle()
+    : await supabase.from('artworks').select('*').eq('title', DEFAULT_HERO_TITLE).limit(1).maybeSingle()
   const { data: latest } = pinned
     ? { data: null }
     : await supabase.from('artworks').select('*').order('created_at', { ascending: false }).limit(1).maybeSingle()

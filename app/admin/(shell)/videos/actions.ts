@@ -1,6 +1,8 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
+import { requireAdmin } from '@/lib/adminAuth'
+import { saveSettings } from '@/lib/settings'
 import { fetchYouTubeThumbnail } from '@/lib/youtube'
 
 export async function addVideo(
@@ -37,6 +39,14 @@ export async function addVideo(
 export async function deleteVideo(id: string) {
   const admin = getSupabaseAdminClient()
   await admin.from('videos').delete().eq('id', id)
+  revalidatePath('/admin/videos')
+  revalidatePath('/videos')
+}
+
+/** Save the order of reels on the Videos page; the first one is "Now showing". */
+export async function saveVideoOrder(ids: string[]) {
+  await requireAdmin()
+  await saveSettings({ videoOrder: ids })
   revalidatePath('/admin/videos')
   revalidatePath('/videos')
 }

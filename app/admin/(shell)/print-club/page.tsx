@@ -1,6 +1,7 @@
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
-import { PLANS, type PlanId } from '@/lib/printClub'
+import { type PlanId } from '@/lib/printClub'
+import { getSettings } from '@/lib/settings'
 import { monthKey, monthLabel } from '@/lib/printClubExport'
 
 export const dynamic = 'force-dynamic'
@@ -20,6 +21,7 @@ function daysUntilBirthday(iso: string, now = new Date()) {
 export default async function AdminPrintClubPage({ searchParams }: { searchParams: Promise<{ month?: string }> }) {
   const { month } = await searchParams
   const admin = getSupabaseAdminClient()
+  const PLANS = (await getSettings()).plans
   const { data: signups } = await admin
     .from('print_club_signups')
     .select('*')

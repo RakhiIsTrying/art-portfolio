@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Artwork } from '@/lib/types'
 import { formatPrice, lowestPrice, type Currency } from '@/lib/prints'
+import { useShopSettings } from './ShopSettings'
 import ArtFill from '@/components/ArtFill'
 
 export const CATEGORY_COLORS: Record<string, string> = {
@@ -26,6 +27,7 @@ type Props = {
 }
 
 export default function ShopCard({ artwork, kind, currency, collectionName, onSelect, selected, onExpand }: Props) {
+  const { sizes } = useShopSettings()
   const color = CATEGORY_COLORS[artwork.collection_slug] ?? '#1a1014'
 
   const inner = (
@@ -45,7 +47,7 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
         <p style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 5 }}>
           <span>{collectionName}</span>
           <span style={{ color: '#787878', letterSpacing: '.15em', whiteSpace: 'nowrap' }}>
-            {kind === 'original' ? 'Price on request' : `From ${formatPrice(lowestPrice(currency), currency)}`}
+            {kind === 'original' ? 'Price on request' : `From ${formatPrice(lowestPrice(sizes, currency), currency)}`}
           </span>
         </p>
         <p style={{

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { PRINT_SIZES, SAMPLE_GREETINGS, formatPrice, type Currency, type PrintSize } from '@/lib/prints'
+import { formatPrice, type Currency, type PrintSize } from '@/lib/prints'
+import { useShopSettings } from './ShopSettings'
 import type { Artwork } from '@/lib/types'
 import ShopGrid from './ShopGrid'
 import ArtViewer from '@/components/ArtViewer'
@@ -40,6 +41,7 @@ function Paper({ art, w, h, ppi, highlight, onView }: { art: Artwork; w: number;
 type Props = { artworks: Artwork[]; currency: Currency; initialTitle?: string }
 
 export default function PrintStudio({ artworks, currency: initialCurrency, initialTitle }: Props) {
+  const { sizes: PRINT_SIZES, greetings: SAMPLE_GREETINGS } = useShopSettings()
   const [art, setArt] = useState<Artwork>(() => artworks.find(a => a.title === initialTitle) ?? artworks[0])
   // The buyer picks portrait or landscape; until they do, we suggest one from the art's shape
   const [orientation, setOrientation] = useState<'portrait' | 'landscape' | null>(null)
@@ -65,7 +67,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
 
   const cards = qty.card ?? 0
   const greetingText = greetingMode === 'custom' && greeting.trim() ? greeting.trim() : SAMPLE_GREETINGS[sample % SAMPLE_GREETINGS.length]
-  const order = orderPayload(qty, currency, cards ? (greetingMode === 'custom' && greeting.trim() ? greeting.trim() : 'Surprise me (random greeting)') : undefined)
+  const order = orderPayload(PRINT_SIZES, qty, currency, cards ? (greetingMode === 'custom' && greeting.trim() ? greeting.trim() : 'Surprise me (random greeting)') : undefined)
 
   function pick(a: Artwork) {
     setArt(a)
