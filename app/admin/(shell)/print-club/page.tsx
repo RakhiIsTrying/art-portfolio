@@ -35,7 +35,7 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
   const shown = (signups ?? []).filter(s => !selected || monthKey(s.created_at) === selected)
 
   const tab = (active: boolean): React.CSSProperties => ({
-    padding: '6px 12px', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', textDecoration: 'none',
+    padding: '6px 12px', fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', textDecoration: 'none',
     border: `1px solid ${active ? '#4a3a7a' : '#d0d0d0'}`, background: active ? '#4a3a7a' : '#fff', color: active ? '#fff' : '#1a1014',
   })
 
@@ -46,13 +46,13 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
     .sort((a, b) => a.inDays - b.inDays)
 
   return (
-    <div style={{ padding: '32px 36px', maxWidth: 900, display: 'flex', flexDirection: 'column', gap: 32 }}>
+    <div className="w-full max-w-[1120px] mx-auto px-4 py-6 md:px-9 md:py-9" style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', paddingBottom: 20 }}>
         <div style={{ width: 3, background: '#4a3a7a', marginRight: 16, flexShrink: 0 }} />
         <div>
-          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#4a3a7a', marginBottom: 6 }}>Members</p>
+          <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#4a3a7a', marginBottom: 6 }}>Members</p>
           <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Print Club</h1>
         </div>
       </div>
@@ -60,13 +60,13 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
       {/* Upcoming birthdays */}
       <div style={{ border: '1px solid #d0d0d0', background: '#fff' }}>
         <div style={{ padding: '10px 20px', borderBottom: '1px solid #d0d0d0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafafa' }}>
-          <h2 style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.4em', textTransform: 'uppercase', color: '#1a1014' }}>
+          <h2 style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.4em', textTransform: 'uppercase', color: '#1a1014' }}>
             🎂 Upcoming birthdays
           </h2>
-          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>next 30 days</span>
+          <span style={{ fontSize: 11, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>next 30 days</span>
         </div>
         {upcoming.length === 0 ? (
-          <p style={{ padding: '16px 20px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
+          <p style={{ padding: '16px 20px', fontSize: 12, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
             None coming up.
           </p>
         ) : upcoming.map((s, i) => (
@@ -74,10 +74,10 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
             <span style={{ width: 70, flexShrink: 0, fontSize: 12, fontWeight: 500, color: '#7a3040' }}>{formatBirthday(s.birthday)}</span>
             <span style={{ flex: 1, fontSize: 13, color: '#1a1014' }}>
               {s.name}
-              {s.birthday_request && <span style={{ display: 'block', fontSize: 11, fontWeight: 300, fontStyle: 'italic', color: '#787878', marginTop: 2 }}>“{s.birthday_request}”</span>}
+              {s.birthday_request && <span style={{ display: 'block', fontSize: 12, fontWeight: 300, fontStyle: 'italic', color: '#787878', marginTop: 2 }}>“{s.birthday_request}”</span>}
             </span>
-            <a href={`mailto:${s.email}?subject=${encodeURIComponent('Happy birthday! 🎂')}`} style={{ fontSize: 11, color: '#1e3a8a' }}>{s.email}</a>
-            <span style={{ width: 70, textAlign: 'right', fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', color: s.inDays === 0 ? '#7a3040' : '#a0a0a0', fontWeight: s.inDays === 0 ? 500 : 300 }}>
+            <a href={`mailto:${s.email}?subject=${encodeURIComponent('Happy birthday! 🎂')}`} style={{ fontSize: 12, color: '#1e3a8a' }}>{s.email}</a>
+            <span style={{ width: 70, textAlign: 'right', fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: s.inDays === 0 ? '#7a3040' : '#a0a0a0', fontWeight: s.inDays === 0 ? 500 : 300 }}>
               {s.inDays === 0 ? 'Today' : `in ${s.inDays}d`}
             </span>
           </div>
@@ -86,16 +86,16 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
 
       <div style={{ border: '1px solid #d0d0d0', background: '#fff' }}>
         <div style={{ padding: '10px 20px', borderBottom: '1px solid #d0d0d0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafafa' }}>
-          <h2 style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.4em', textTransform: 'uppercase', color: '#1a1014' }}>
+          <h2 style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.4em', textTransform: 'uppercase', color: '#1a1014' }}>
             Sign-ups{selected && ` · ${monthLabel(selected)}`}
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
+            <span style={{ fontSize: 11, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
               {shown.length} {selected ? 'this month' : 'total'}
             </span>
             {shown.length > 0 && (
               <a href={`/admin/print-club/export${selected ? `?month=${selected}` : ''}`} download
-                 style={{ padding: '6px 12px', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', textDecoration: 'none', background: '#1a1014', color: '#fff' }}>
+                 style={{ padding: '6px 12px', fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', textDecoration: 'none', background: '#1a1014', color: '#fff' }}>
                 ↓ Download CSV
               </a>
             )}
@@ -114,7 +114,7 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
         )}
 
         {!shown.length && (
-          <p style={{ padding: '20px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
+          <p style={{ padding: '20px', fontSize: 12, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
             No sign-ups yet.
           </p>
         )}
@@ -125,18 +125,18 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
               <p style={{ fontSize: 13, fontWeight: 500, color: '#1a1014', marginBottom: 3 }}>
                 {s.name}
                 {PLANS[s.plan as PlanId] && (
-                  <span style={{ marginLeft: 10, fontSize: 10, letterSpacing: '.2em', fontWeight: 400, color: '#4a3a7a' }}>
+                  <span style={{ marginLeft: 10, fontSize: 11, letterSpacing: '.2em', fontWeight: 400, color: '#4a3a7a' }}>
                     {PLANS[s.plan as PlanId].price} / mo
                   </span>
                 )}
               </p>
-              <p style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px', fontSize: 11, letterSpacing: '.05em', fontWeight: 300 }}>
+              <p style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px', fontSize: 12, letterSpacing: '.05em', fontWeight: 300 }}>
                 <a href={`mailto:${s.email}`} style={{ color: '#1e3a8a' }}>{s.email}</a>
                 <a href={`tel:${s.phone}`} style={{ color: '#1e3a8a' }}>{s.phone}</a>
                 {s.birthday && <span style={{ color: '#787878' }}>🎂 {formatBirthday(s.birthday)}</span>}
               </p>
               {s.birthday_request && (
-                <p style={{ fontSize: 11, lineHeight: 1.6, fontWeight: 300, fontStyle: 'italic', color: '#787878', marginTop: 4 }}>
+                <p style={{ fontSize: 12, lineHeight: 1.6, fontWeight: 300, fontStyle: 'italic', color: '#787878', marginTop: 4 }}>
                   🎂 Birthday request: “{s.birthday_request}”
                 </p>
               )}
@@ -145,7 +145,7 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
                 {[s.city, s.region, s.postal_code].filter(Boolean).join(', ')} · {s.country}
               </p>
             </div>
-            <span style={{ flexShrink: 0, fontSize: 10, letterSpacing: '.2em', fontWeight: 300, color: '#a0a0a0' }}>
+            <span style={{ flexShrink: 0, fontSize: 11, letterSpacing: '.2em', fontWeight: 300, color: '#a0a0a0' }}>
               {new Date(s.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
             </span>
           </div>

@@ -4,9 +4,9 @@ import SortableList from './SortableList'
 import { reorderFeatured, setHero } from '@/app/admin/(shell)/featured/actions'
 import type { Artwork } from '@/lib/types'
 
-const btn = (dark?: boolean): React.CSSProperties => ({ padding: '8px 14px', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer', border: '1px solid #1a1014', background: dark ? '#1a1014' : '#fff', color: dark ? '#fff' : '#1a1014' })
+const btn = (dark?: boolean): React.CSSProperties => ({ padding: '8px 14px', fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer', border: '1px solid #1a1014', background: dark ? '#1a1014' : '#fff', color: dark ? '#fff' : '#1a1014' })
 const panel: React.CSSProperties = { border: '1px solid #d0d0d0', background: '#fff', padding: 18, display: 'flex', flexDirection: 'column', gap: 12 }
-const h2: React.CSSProperties = { fontSize: 11, fontWeight: 500, letterSpacing: '.35em', textTransform: 'uppercase', color: '#1a1014' }
+const h2: React.CSSProperties = { fontSize: 12, fontWeight: 500, letterSpacing: '.35em', textTransform: 'uppercase', color: '#1a1014' }
 
 /** Choose the big front-page piece and the order of the Featured collage. */
 export default function FrontPageEditor({ artworks, heroId, defaultHeroId }: { artworks: Artwork[]; heroId: string | null; defaultHeroId: string | null }) {
@@ -25,7 +25,7 @@ export default function FrontPageEditor({ artworks, heroId, defaultHeroId }: { a
         <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {heroArt ? <img src={heroArt.image_url} alt="" style={{ width: 72, height: 72, objectFit: 'contain', background: '#f4f2ef' }} />
-                   : <span style={{ width: 72, height: 72, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f4f2ef', fontSize: 10, color: '#787878', textAlign: 'center' }}>Newest upload</span>}
+                   : <span style={{ width: 72, height: 72, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f4f2ef', fontSize: 11, color: '#787878', textAlign: 'center' }}>Newest upload</span>}
           <select value={hero} onChange={e => setHeroState(e.target.value)} style={{ border: '1px solid #d0d0d0', padding: '8px', fontFamily: 'inherit', fontSize: 13, minWidth: 260 }}>
             <option value="latest">Always the newest upload</option>
             {[...artworks].sort((a, b) => a.title.localeCompare(b.title)).map(a => <option key={a.id} value={a.id}>{a.title}</option>)}

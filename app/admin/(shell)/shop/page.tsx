@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic'
 export default async function AdminShopPage() {
   const s = await getSettings()
   return (
-    <div style={{ padding: '32px 36px', maxWidth: 980, display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div className="w-full max-w-[1120px] mx-auto px-4 py-6 md:px-9 md:py-9" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', paddingBottom: 20 }}>
         <div style={{ width: 3, background: '#a0521d', marginRight: 16, flexShrink: 0 }} />
         <div>
-          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#a0521d', marginBottom: 6 }}>Shop</p>
+          <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#a0521d', marginBottom: 6 }}>Shop</p>
           <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Shop settings</h1>
           <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginTop: 8 }}>Print sizes and prices, greeting-card messages, Print Club prices and the shop intro.</p>
         </div>

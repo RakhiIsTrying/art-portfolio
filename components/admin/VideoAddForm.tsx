@@ -8,34 +8,34 @@ export default function VideoAddForm() {
   return (
     <form
       action={formAction}
-      className="border-4 border-ink shadow-[4px_4px_0_#1f1f1f] bg-cream"
+      className="border border-[#d0d0d0] bg-white"
     >
-      <div className="bg-rust px-5 py-3 border-b-4 border-ink">
-        <h2 className="text-sm font-black uppercase tracking-widest text-cream">
+      <div className="px-5 py-3 border-b border-[#d0d0d0] border-l-[3px] border-l-[#7a3040] bg-[#fafafa]">
+        <h2 className="text-[11px] font-medium uppercase tracking-[.4em] text-[#1a1014]">
           Add New Video
         </h2>
       </div>
 
       <div className="p-5 flex flex-col gap-4">
         {state?.error && (
-          <p className="text-rust font-black text-xs uppercase tracking-widest border-2 border-rust px-3 py-2">
+          <p className="text-rust text-xs uppercase tracking-widest border border-rust px-3 py-2">
             {state.error}
           </p>
         )}
 
         <div className="flex flex-col gap-1">
-          <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
+          <label className="text-[10px] font-medium uppercase tracking-[.3em] text-[#1a1014]">
             Title *
           </label>
           <input
             name="title"
             required
-            className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust"
+            className="border border-[#d0d0d0] px-3 py-2 bg-white text-sm text-[#1a1014] focus:outline-none focus:border-[#7a3040]"
           />
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
+          <label className="text-[10px] font-medium uppercase tracking-[.3em] text-[#1a1014]">
             YouTube URL *
           </label>
           <input
@@ -43,30 +43,30 @@ export default function VideoAddForm() {
             type="url"
             required
             placeholder="https://www.youtube.com/watch?v=..."
-            className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust"
+            className="border border-[#d0d0d0] px-3 py-2 bg-white text-sm text-[#1a1014] focus:outline-none focus:border-[#7a3040]"
           />
-          <p className="text-[9px] text-rose font-black uppercase tracking-widest">
+          <p className="text-[11px] text-[#7a3040]">
             Thumbnail will be fetched automatically
           </p>
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
+          <label className="text-[10px] font-medium uppercase tracking-[.3em] text-[#1a1014]">
             Description
           </label>
           <textarea
             name="description"
             rows={2}
-            className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust resize-none"
+            className="border border-[#d0d0d0] px-3 py-2 bg-white text-sm text-[#1a1014] focus:outline-none focus:border-[#7a3040] resize-none"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">
-            <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
+            <label className="text-[10px] font-medium uppercase tracking-[.3em] text-[#1a1014]">
               Category
             </label>
-            <select name="category" defaultValue="" className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust">
+            <select name="category" defaultValue="" className="border border-[#d0d0d0] px-3 py-2 bg-white text-sm text-[#1a1014] focus:outline-none focus:border-[#7a3040]">
               <option value="">None</option>
               <option value="movies">Movie Art</option>
               <option value="music">Music</option>
@@ -75,14 +75,14 @@ export default function VideoAddForm() {
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-[9px] font-black uppercase tracking-[4px] text-ink">
+            <label className="text-[10px] font-medium uppercase tracking-[.3em] text-[#1a1014]">
               Instagram Link
             </label>
             <input
               name="instagram_url"
               type="url"
               placeholder="https://www.instagram.com/reel/..."
-              className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust"
+              className="border border-[#d0d0d0] px-3 py-2 bg-white text-sm text-[#1a1014] focus:outline-none focus:border-[#7a3040]"
             />
           </div>
         </div>
@@ -90,10 +90,7 @@ export default function VideoAddForm() {
         <button
           type="submit"
           disabled={pending}
-          className="self-start bg-ink text-cream font-black uppercase tracking-widest text-sm
-                     px-6 py-3 border-2 border-ink shadow-[3px_3px_0_#b04a33]
-                     hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0_#b04a33]
-                     transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="self-start bg-[#1a1014] text-white font-medium uppercase tracking-[.3em] text-[11px] px-6 py-3 hover:bg-[#7a3040] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {pending ? 'Adding…' : 'Add Video →'}
         </button>

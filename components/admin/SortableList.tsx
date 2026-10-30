@@ -21,7 +21,7 @@ export default function SortableList<T>({ items, getId, onChange, renderItem }: 
     onChange(next)
   }
 
-  const arrow: React.CSSProperties = { width: 26, height: 22, border: '1px solid #d0d0d0', background: '#fff', cursor: 'pointer', fontSize: 11, lineHeight: 1, padding: 0 }
+  const arrow: React.CSSProperties = { width: 26, height: 22, border: '1px solid #d0d0d0', background: '#fff', cursor: 'pointer', fontSize: 12, lineHeight: 1, padding: 0 }
 
   return (
     <ol style={{ listStyle: 'none', border: '1px solid #d0d0d0', background: '#fff' }}>
@@ -35,7 +35,7 @@ export default function SortableList<T>({ items, getId, onChange, renderItem }: 
             style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', borderTop: i ? '1px solid #ebebeb' : 'none',
                      background: over === i && dragging !== i ? '#f3effa' : dragging === i ? '#fafafa' : '#fff', opacity: dragging === i ? .5 : 1 }}>
           <span aria-hidden title="Drag to move" style={{ cursor: 'grab', color: '#a0a0a0', fontSize: 16, userSelect: 'none' }}>⠿</span>
-          <span style={{ width: 22, fontSize: 11, color: '#a0a0a0', fontVariantNumeric: 'tabular-nums' }}>{i + 1}</span>
+          <span style={{ width: 22, fontSize: 12, color: '#a0a0a0', fontVariantNumeric: 'tabular-nums' }}>{i + 1}</span>
           <div style={{ flex: 1, minWidth: 0 }}>{renderItem(item, i)}</div>
           <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <button type="button" aria-label="Move up" style={arrow} onClick={() => move(i, i - 1)} disabled={i === 0}>↑</button>

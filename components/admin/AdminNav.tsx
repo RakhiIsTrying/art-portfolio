@@ -30,66 +30,59 @@ export default function AdminNav() {
     router.refresh()
   }
 
+  const linkRow = (vertical: boolean) => links.map(({ href, label, color }) => {
+    const active = pathname.startsWith(href)
+    return (
+      <Link key={href} href={href} aria-current={active ? 'page' : undefined}
+        style={vertical ? {
+          display: 'block', padding: '11px 18px', marginBottom: 1, textDecoration: 'none',
+          borderLeft: `3px solid ${active ? color : 'transparent'}`,
+          fontSize: 12, letterSpacing: '.28em', textTransform: 'uppercase', fontWeight: active ? 500 : 400,
+          color: active ? '#faf8f5' : 'rgba(250,248,245,.55)', background: active ? 'rgba(255,255,255,.06)' : 'transparent',
+        } : {
+          flexShrink: 0, padding: '11px 14px', textDecoration: 'none',
+          borderBottom: `3px solid ${active ? color : 'transparent'}`,
+          fontSize: 12, letterSpacing: '.18em', textTransform: 'uppercase', fontWeight: active ? 500 : 400,
+          color: active ? '#faf8f5' : 'rgba(250,248,245,.6)',
+        }}>
+        {label}
+      </Link>
+    )
+  })
+
+  const brand = (
+    <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 17, fontWeight: 700, color: '#faf8f5', lineHeight: 1.1 }}>
+      Van Gone <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#b07880' }}>Broke</span>
+      <span style={{ display: 'block', fontFamily: 'inherit', fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400, color: '#b07880', marginTop: 4 }}>Admin</span>
+    </p>
+  )
+  const small: React.CSSProperties = { fontSize: 12, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(250,248,245,.6)', textDecoration: 'none', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit', whiteSpace: 'nowrap' }
+
   return (
-    <aside style={{ width: 200, minHeight: '100svh', background: '#1a1014', display: 'flex', flexDirection: 'column', flexShrink: 0, borderRight: '1px solid rgba(255,255,255,.06)' }}>
+    <>
+      {/* Phones and iPads: a top bar, with tabs you can swipe sideways */}
+      <header className="lg:hidden" style={{ position: 'sticky', top: 0, zIndex: 40, background: '#1a1014' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '12px 16px 8px' }}>
+          {brand}
+          <div style={{ display: 'flex', gap: 16 }}>
+            <Link href="/" target="_blank" style={small}>View site ↗</Link>
+            <button onClick={handleLogout} style={small}>Sign out</button>
+          </div>
+        </div>
+        <nav style={{ display: 'flex', overflowX: 'auto', scrollbarWidth: 'none', borderTop: '1px solid rgba(255,255,255,.08)' }}>
+          {linkRow(false)}
+        </nav>
+      </header>
 
-      {/* Logo */}
-      <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
-        <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 6 }}>
-          Admin
-        </p>
-        <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 16, fontWeight: 700, color: '#faf8f5', lineHeight: 1.1 }}>
-          Van Gone<br />
-          <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#b07880' }}>Broke</span>
-        </p>
-      </div>
-
-      {/* Nav links */}
-      <nav style={{ flex: 1, padding: '12px 0' }}>
-        {links.map(({ href, label, color }) => {
-          const active = pathname.startsWith(href)
-          return (
-            <Link
-              key={href}
-              href={href}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 0,
-                textDecoration: 'none', overflow: 'hidden',
-                marginBottom: 2,
-              }}
-            >
-              <div style={{ width: 3, alignSelf: 'stretch', background: active ? color : 'transparent', flexShrink: 0, transition: 'background .2s' }} />
-              <div style={{
-                flex: 1, padding: '10px 16px',
-                fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: active ? 500 : 300,
-                color: active ? '#faf8f5' : 'rgba(250,248,245,.35)',
-                background: active ? 'rgba(255,255,255,.05)' : 'transparent',
-                transition: 'all .15s',
-              }}>
-                {label}
-              </div>
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* View site + sign out */}
-      <div style={{ padding: '12px 20px 20px', borderTop: '1px solid rgba(255,255,255,.06)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <Link
-          href="/"
-          target="_blank"
-          style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: 'rgba(250,248,245,.3)', textDecoration: 'none' }}
-        >
-          View Site →
-        </Link>
-        <button
-          onClick={handleLogout}
-          style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: 'rgba(250,248,245,.3)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0, fontFamily: 'inherit' }}
-        >
-          Sign Out
-        </button>
-      </div>
-
-    </aside>
+      {/* Laptops: a sidebar */}
+      <aside className="hidden lg:flex" style={{ width: 220, height: '100svh', position: 'sticky', top: 0, background: '#1a1014', flexDirection: 'column', flexShrink: 0 }}>
+        <div style={{ padding: '22px 20px 18px', borderBottom: '1px solid rgba(255,255,255,.08)' }}>{brand}</div>
+        <nav style={{ flex: 1, padding: '12px 0', overflowY: 'auto' }}>{linkRow(true)}</nav>
+        <div style={{ padding: '14px 20px 20px', borderTop: '1px solid rgba(255,255,255,.08)', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-start' }}>
+          <Link href="/" target="_blank" style={small}>View site ↗</Link>
+          <button onClick={handleLogout} style={small}>Sign out</button>
+        </div>
+      </aside>
+    </>
   )
 }

@@ -8,7 +8,7 @@ import type { Artwork, ClubBox } from '@/lib/types'
 
 type Piece = Pick<Artwork, 'id' | 'title' | 'image_url'>
 
-const small: React.CSSProperties = { fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400 }
+const small: React.CSSProperties = { fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400 }
 const button = (dark = false): React.CSSProperties => ({
   ...small, padding: '8px 14px', cursor: 'pointer', fontFamily: 'inherit',
   border: '1px solid #1a1014', background: dark ? '#1a1014' : '#fff', color: dark ? '#fff' : '#1a1014',
@@ -134,7 +134,7 @@ export default function ClubBoxEditor({ box, pieces }: { box: ClubBox; pieces: P
                         style={{ padding: 0, cursor: 'pointer', background: '#fff', border: `2px solid ${on ? '#4a3a7a' : 'transparent'}`, opacity: on ? 1 : .55, position: 'relative' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.image_url} alt={p.title} style={{ width: '100%', aspectRatio: '1', objectFit: 'contain', display: 'block' }} />
-                  {on && <span style={{ position: 'absolute', top: 3, right: 3, background: '#4a3a7a', color: '#fff', fontSize: 10, width: 16, height: 16, lineHeight: '16px' }}>✓</span>}
+                  {on && <span style={{ position: 'absolute', top: 3, right: 3, background: '#4a3a7a', color: '#fff', fontSize: 11, width: 16, height: 16, lineHeight: '16px' }}>✓</span>}
                 </button>
               )
             })}

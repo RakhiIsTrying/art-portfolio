@@ -14,13 +14,13 @@ export default async function AdminContentPage() {
   const about   = pages?.find(p => p.slug === 'about')
 
   return (
-    <div style={{ padding: '32px 36px', maxWidth: 800, display: 'flex', flexDirection: 'column', gap: 32 }}>
+    <div className="w-full max-w-[1120px] mx-auto px-4 py-6 md:px-9 md:py-9" style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', paddingBottom: 20 }}>
         <div style={{ width: 3, background: '#7a5020', marginRight: 16, flexShrink: 0 }} />
         <div>
-          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 6 }}>Manage</p>
+          <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 6 }}>Manage</p>
           <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Content Editor</h1>
         </div>
       </div>

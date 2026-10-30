@@ -3,10 +3,10 @@ import { useState, useTransition } from 'react'
 import { saveShopSettings, type ShopSettingsInput } from '@/app/admin/(shell)/shop/actions'
 
 const panel: React.CSSProperties = { border: '1px solid #d0d0d0', background: '#fff', padding: 18, display: 'flex', flexDirection: 'column', gap: 12 }
-const h2: React.CSSProperties = { fontSize: 11, fontWeight: 500, letterSpacing: '.35em', textTransform: 'uppercase', color: '#1a1014' }
+const h2: React.CSSProperties = { fontSize: 12, fontWeight: 500, letterSpacing: '.35em', textTransform: 'uppercase', color: '#1a1014' }
 const input: React.CSSProperties = { border: '1px solid #e0dcdc', padding: '6px 8px', fontSize: 13, fontFamily: 'inherit', background: '#fff', color: '#1a1014', width: '100%' }
-const th: React.CSSProperties = { fontSize: 9, letterSpacing: '.25em', textTransform: 'uppercase', color: '#787878', fontWeight: 500, textAlign: 'left', padding: '0 6px 6px' }
-const btn = (dark?: boolean): React.CSSProperties => ({ padding: '8px 14px', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer', border: '1px solid #1a1014', background: dark ? '#1a1014' : '#fff', color: dark ? '#fff' : '#1a1014' })
+const th: React.CSSProperties = { fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#787878', fontWeight: 500, textAlign: 'left', padding: '0 6px 6px' }
+const btn = (dark?: boolean): React.CSSProperties => ({ padding: '8px 14px', fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer', border: '1px solid #1a1014', background: dark ? '#1a1014' : '#fff', color: dark ? '#fff' : '#1a1014' })
 
 export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsInput }) {
   const [sizes, setSizes] = useState(initial.printSizes)

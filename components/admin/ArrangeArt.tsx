@@ -17,7 +17,7 @@ const SALE = {
 type Sale = keyof typeof SALE
 const saleOf = (a: Artwork): Sale => (a.prints_available !== false ? (a.original_available ? 'both' : 'prints') : a.original_available ? 'original' : 'display')
 
-const btn = (dark?: boolean): React.CSSProperties => ({ padding: '8px 14px', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer', border: '1px solid #1a1014', background: dark ? '#1a1014' : '#fff', color: dark ? '#fff' : '#1a1014' })
+const btn = (dark?: boolean): React.CSSProperties => ({ padding: '8px 14px', fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer', border: '1px solid #1a1014', background: dark ? '#1a1014' : '#fff', color: dark ? '#fff' : '#1a1014' })
 
 export default function ArrangeArt({ collections, initial }: Props) {
   const [tab, setTab] = useState(collections[0].slug)
@@ -93,7 +93,7 @@ export default function ArrangeArt({ collections, initial }: Props) {
           {(Object.keys(SALE) as Sale[]).map(k => <option key={k} value={k}>{SALE[k].label}</option>)}
         </select>
         <button type="button" onClick={applyToCollection} disabled={pending || !list.length} style={btn()}>Apply</button>
-        <span style={{ fontSize: 11, color: '#a0a0a0' }}>or change pieces one by one below</span>
+        <span style={{ fontSize: 12, color: '#a0a0a0' }}>or change pieces one by one below</span>
       </div>
 
       {list.length === 0 ? (
