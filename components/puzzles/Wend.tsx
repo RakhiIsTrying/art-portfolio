@@ -64,8 +64,8 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
 
   return (
     <div className="vgb-puzzle" style={CENTERED}>
-      <Rules who="ben" title="Ben’s Walkies" intro="Ben is taking Dug-Dug for walkies, and Dug-Dug insists on sniffing every single square."
-        steps={['Start on 1 and draw one path through every square.', <>Pass the numbers in order and finish on {last}.</>, 'Drag, or tap square by square.', 'Go back over the line to undo.']} />
+      <Rules who="ben" title="Benathon" intro="Ben’s training for a marathon and Dug-Dug is his running buddy. Every square counts!"
+        steps={['Start on 1 and run one route through every square.', <>Pass the checkpoints in order and cross the finish line on {last}.</>, 'Drag, or tap square by square.', 'Go back over the line to undo.']} />
 
       <div ref={boardRef} onPointerDown={down} onPointerMove={move} onPointerUp={() => (dragging.current = false)}
         style={{ position: 'relative', width: 'min(100%, 520px)', aspectRatio: '1', border: `2px solid ${INK}`, background: '#fff', touchAction: 'none', userSelect: 'none', cursor: solved ? 'default' : 'pointer' }}>
@@ -130,17 +130,17 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           // Clue: where the path went wrong, or which way to go next
           let same = 0
           while (same < path.length && path[same] === solution[same]) same++
-          if (same < path.length) return `The walk goes wrong after square ${same}. Go back and try another way.`
+          if (same < path.length) return `The route goes wrong after square ${same}. Go back and try another way.`
           // Nothing drawn yet: talk about the first step out of the 1
           const walked = path.length ? same : 1
           const from = path.length ? path[path.length - 1] : solution[0], to = solution[walked]
           const way = to === from - size ? 'up' : to === from + size ? 'down' : to === from - 1 ? 'left' : 'right'
-          if (n % 2 === 0) return path.length ? `From where Dug-Dug is now, head ${way}.` : `Start on the 1 and head ${way}.`
+          if (n % 2 === 0) return path.length ? `From where Ben is now, run ${way}.` : `Start on the 1 and run ${way}.`
           // Every other hint: how far the next number is along the route
           const nextNum = 1 + path.filter(i => numbers[i] !== undefined).length
           const target = path.length ? nextNum : 2
           const at = solution.findIndex((c, k) => k >= walked && numbers[c] === target)
-          return at === -1 ? `Head ${way} next.` : `Number ${target} is ${at - walked + 1} ${at - walked === 0 ? 'step' : 'steps'} away along the walk.`
+          return at === -1 ? `Run ${way} next.` : `Checkpoint ${target} is ${at - walked + 1} ${at - walked === 0 ? 'step' : 'steps'} away along the route.`
         }}
         getReveal={() => {
           // One step: move Dug-Dug to the next square (backing up first if the path went wrong)
@@ -151,7 +151,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           return backedUp ? `Backed up to square ${same} and took the right next step.` : 'Woof! One more square.'
         }} />
 
-      {solved && <SolvedBanner title="Walkies complete! 🐾" detail="Ben and Dug-Dug are happily tired." artIndex={5} />}
+      {solved && <SolvedBanner title="Finish line! 🏅" detail="Ben and Dug-Dug are happily puffed out." artIndex={5} />}
     </div>
   )
 }

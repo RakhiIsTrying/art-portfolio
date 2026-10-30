@@ -18,6 +18,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
   const [outer, setOuter] = useState(() => [...letters].filter(l => l !== center))
   const [word, setWord] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  const [fresh, setFresh] = useState<string | null>(null)   // the word just found, so it pops into the jar
   // Dug-Dug's reveal: which word he's sniffing out, and a key to restart the animation
   const [sniff, setSniff] = useState<{ word: string; key: number } | null>(null)
 
@@ -39,6 +40,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
     if (found.includes(w)) return flash('Already found')
     if (!answers.includes(w)) return flash('Not in word list')
     setFound(f => [...f, w])
+    setFresh(w)
     flash(isPangram(w, letters) ? 'Pangram! 🐝' : w.length === 4 ? 'Good!' : w.length < 7 ? 'Nice!' : 'Awesome!')
   }, [word, center, letters, found, answers, setFound])
 
@@ -107,17 +109,35 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
           </div>
         </div>
 
-        {/* Found words */}
-        <div style={{ border: '1px solid #d0d0d0', background: '#fff', padding: '14px 16px', minHeight: 120, width: 'min(100%, 620px)', textAlign: 'center' }}>
-          <p style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: '#a0a0a0', marginBottom: 10 }}>
-            You found {found.length} of {answers.length} {found.length === 1 ? 'word' : 'words'}
+        {/* Found words: Bee's honey jar */}
+        <div style={{ position: 'relative', width: 'min(100%, 620px)', padding: '16px 16px 18px', borderRadius: 14, textAlign: 'center',
+                      background: 'linear-gradient(180deg, #fff8e1 0%, #fdeec0 100%)', border: '2px solid #e8c55a', boxShadow: 'inset 0 -10px 0 rgba(232,197,90,.18), 0 8px 20px rgba(184,137,46,.15)' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/puzzles/bee.png" alt="" aria-hidden style={{ position: 'absolute', right: 10, top: -34, height: 58, filter: 'drop-shadow(0 0 2px #fff) drop-shadow(0 4px 6px rgba(0,0,0,.18))' }} />
+          <p style={{ fontFamily: PLAYFAIR, fontSize: 18, fontWeight: 700, color: '#8a6414', marginBottom: 2 }}>🍯 Bee’s honey jar</p>
+          <p style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: '#a78a3c', marginBottom: 12 }}>
+            {found.length} of {answers.length} {answers.length === 1 ? 'word' : 'words'} · {score} {score === 1 ? 'point' : 'points'}
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px 14px' }}>
-            {[...found].sort().map(w => (
-              <span key={w} style={{ fontSize: 13, textTransform: 'capitalize', color: INK, fontWeight: isPangram(w, letters) ? 700 : 300, borderBottom: '1px solid #ebebeb' }}>
-                {w}
-              </span>
-            ))}
+          {found.length === 0 && <p style={{ fontSize: 13, fontStyle: 'italic', color: '#a78a3c' }}>Empty for now. Every word you find drips in here!</p>}
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8 }}>
+            {[...found].sort().map(w => {
+              const pangram = isPangram(w, letters)
+              return (
+                <span key={w} className="vgb-motion" style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 8px 5px 10px', borderRadius: 999,
+                  fontSize: 14, fontWeight: 700, textTransform: 'capitalize', color: INK, whiteSpace: 'nowrap',
+                  background: pangram ? 'linear-gradient(135deg, #ffe680 0%, #f2b632 50%, #ffe680 100%)' : '#fff',
+                  border: `1.5px solid ${pangram ? '#c9901a' : '#ecd48a'}`, boxShadow: pangram ? '0 3px 0 #c9901a' : '0 2px 0 #ecd48a',
+                  animation: w === fresh ? 'vgb-tile-pop .55s cubic-bezier(.2,1.5,.4,1) both' : undefined,
+                }}>
+                  {pangram && <span aria-label="pangram">🐝</span>}
+                  {w}
+                  <span style={{ fontSize: 10, fontWeight: 700, color: pangram ? INK : '#8a6414', background: pangram ? 'rgba(255,255,255,.55)' : '#fdf0c4', borderRadius: 999, padding: '1px 6px' }}>
+                    +{points(w, letters)}
+                  </span>
+                </span>
+              )
+            })}
           </div>
         </div>
       </div>

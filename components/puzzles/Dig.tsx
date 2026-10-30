@@ -143,31 +143,43 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
         </div>
       </div>
 
-      {/* The hidden words: only their lengths until found */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10, marginTop: 16, width: 'min(100%, 560px)' }}>
-        {words.map((w, i) => {
-          const fi = found.findIndex(f => f.word === w.word)
-          const isFound = fi !== -1
-          return (
-            <button key={i} type="button" disabled={!isFound || solved} onClick={() => isFound && release(fi)}
-              title={isFound && !solved ? 'Tap to put this word back' : undefined}
-              style={{ display: 'flex', gap: 3, padding: 4, border: 'none', background: 'none', cursor: isFound && !solved ? 'pointer' : 'default' }}>
-              {[...w.word].map((ch, k) => (
-                <span key={k} style={{ width: 24, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, textTransform: 'uppercase',
-                  background: isFound ? COLOURS[fi % COLOURS.length] : '#fff', border: `1px solid ${isFound ? 'transparent' : '#d0d0d0'}`, color: INK }}>
-                  {isFound ? ch : ''}
-                </span>
-              ))}
-            </button>
-          )
-        })}
+      {/* The hidden words: dirt mounds until dug up, then a colourful bone tag each */}
+      <div style={{ position: 'relative', width: 'min(100%, 560px)', marginTop: 18, padding: '14px 14px 16px', borderRadius: 14, textAlign: 'center',
+                    background: 'linear-gradient(180deg, #f6efe4 0%, #eadcc6 100%)', border: '2px solid #c9a97e', boxShadow: 'inset 0 -8px 0 rgba(122,82,40,.08)' }}>
+        <p style={{ fontFamily: PLAYFAIR, fontSize: 18, fontWeight: 700, color: '#6b4524', marginBottom: 2 }}>🦴 Dug-Dug’s bone stash</p>
+        <p style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: '#9a7652', marginBottom: 12 }}>
+          {found.length} of {words.length} dug up{!solved && found.length ? ' · tap one to bury it again' : ''}
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10 }}>
+          {words.map((w, i) => {
+            const fi = found.findIndex(f => f.word === w.word)
+            const isFound = fi !== -1
+            const colour = isFound ? COLOURS[fi % COLOURS.length] : ''
+            return (
+              <button key={`${i}-${isFound}`} type="button" disabled={!isFound || solved} onClick={() => isFound && release(fi)}
+                title={isFound && !solved ? 'Tap to bury this word again' : `${w.word.length} letters`}
+                className={isFound ? 'vgb-motion' : undefined}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: isFound ? '5px 10px 5px 8px' : '6px 8px', borderRadius: 999, fontFamily: 'inherit',
+                         border: isFound ? '2px solid rgba(26,16,20,.15)' : '2px dashed #b48c62', background: isFound ? colour : 'rgba(122,82,40,.10)',
+                         boxShadow: isFound ? '0 3px 0 rgba(26,16,20,.18)' : 'none', cursor: isFound && !solved ? 'pointer' : 'default',
+                         animation: isFound ? 'vgb-dug .7s ease-out both' : undefined }}>
+                {isFound && <span aria-hidden style={{ fontSize: 14, marginRight: 2 }}>🦴</span>}
+                {[...w.word].map((ch, k) => (
+                  <span key={k} style={{ width: 20, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 800, textTransform: 'uppercase', color: INK,
+                    borderRadius: isFound ? 0 : '50% 50% 4px 4px', background: isFound ? 'transparent' : '#b48c62', opacity: isFound ? 1 : .55 }}>
+                    {isFound ? ch : ''}
+                  </span>
+                ))}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {!solved && (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 12 }}>
           <SmallButton bee="clear" onClick={() => setPath([])}>Clear word</SmallButton>
           <SmallButton bee="reset" onClick={() => { setFound([]); setPath([]) }}>Start over</SmallButton>
-          <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>{found.length} / {words.length} found</span>
         </div>
       )}
 

@@ -77,7 +77,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
 
   return (
     <div className="vgb-puzzle" style={CENTERED}>
-      <Rules who="ben" title="Benigma" intro="Ben is thinking of a five-letter word. Crack it in six tries!"
+      <Rules who="ben" title="Ben’s Dash" intro="Ben’s favourite sprint: a five-letter word, six tries. On your marks, get set, guess!"
         steps={['Type a five-letter word and press Enter.',
                 <>Tiles turn <b style={{ color: COLORS.hit }}>green</b> for the right letter in the right spot.</>,
                 <><b style={{ color: COLORS.near }}>Yellow</b> means it’s in the word, just somewhere else.</>,
@@ -144,8 +144,8 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
           return `Letter ${i + 1} is “${answer[i].toUpperCase()}”.`
         }} />
 
-      {won && <SolvedBanner title="Good human! Dug-Dug approves 🐾" detail={`Got it in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}.`} artIndex={2} />}
-      {lost && <SolvedBanner title={`The word was “${answer.toUpperCase()}”`} detail="Dug-Dug says try again tomorrow." artIndex={3} />}
+      {won && <SolvedBanner title="Personal best! Ben approves 🏃" detail={`Got it in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}.`} artIndex={2} />}
+      {lost && <SolvedBanner title={`The word was “${answer.toUpperCase()}”`} detail="Ben says: rest up, new race tomorrow." artIndex={3} />}
     </div>
   )
 }
