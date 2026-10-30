@@ -1,5 +1,5 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import { getSettings, collectionCutouts, cutoutByTitle, FEATURED_ORIGINAL_TITLE, ORIGINALS_TILE_FLOWER } from '@/lib/settings'
+import { getSettings, collectionCutouts, cutoutByTitle, FEATURED_ORIGINAL_TITLE, ORIGINALS_TILE_FLOWER, PRINTS_TILE_CUTOUT } from '@/lib/settings'
 import { planForVisitor } from '@/lib/printClubServer'
 import { formatPrice } from '@/lib/prints'
 import Ticker from '@/components/Ticker'
@@ -55,7 +55,8 @@ export default async function HomePage() {
     <>
       <Ticker text={TOP_TICKER} direction="left" variant="rust" />
       <Hero latest={hero ?? undefined} label={pinned ? 'Featured Work' : 'Latest Work'} stats={stats} cutouts={cutouts}
-        originalsTile={{ featured: koiRes.data ? { title: koiRes.data.title, url: koiRes.data.image_url } : null, flower: cutoutByTitle(ORIGINALS_TILE_FLOWER) }} />
+        originalsTile={{ featured: koiRes.data ? { title: koiRes.data.title, url: koiRes.data.image_url } : null, flower: cutoutByTitle(ORIGINALS_TILE_FLOWER) }}
+        printsCutout={cutoutByTitle(PRINTS_TILE_CUTOUT)} />
       <Ticker text={BOTTOM_TICKER} direction="right" variant="blush" />
 
       {/* ── Featured Work header ── */}

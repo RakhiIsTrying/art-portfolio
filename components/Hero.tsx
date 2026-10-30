@@ -20,9 +20,11 @@ type HeroProps = {
   cutouts?: Record<string, Cutout | null>
   /** Front-page Originals tile: the featured original (shown whole, framed) and a flower cut-out */
   originalsTile?: { featured: { title: string; url: string } | null; flower: Cutout | null }
+  /** Cut-out on the front-page Prints & cards tile */
+  printsCutout?: Cutout | null
 }
 
-export default function Hero({ latest, label = 'Latest Work', stats, cutouts, originalsTile }: HeroProps) {
+export default function Hero({ latest, label = 'Latest Work', stats, cutouts, originalsTile, printsCutout }: HeroProps) {
   return (
     // Phones: art on top at full width, words underneath. Tablets and up: side by side.
     <section className="grid grid-cols-1 md:grid-cols-[52px_1fr_1fr] md:h-[calc(100svh-82px)] md:min-h-[420px] md:max-h-[660px]"
@@ -166,7 +168,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts, or
           {[
             { href: '/originals', label: 'Originals for sale', sub: 'One of one, ask for price', color: '#b0552f', img: cutouts?.['bee-ben']?.url, extra: true },
             { href: '/gallery', label: 'Explore the gallery', sub: stats ? `${stats.works} works` : 'All collections', color: '#7a3040', img: cutouts?.music?.url ?? cutouts?.comics?.url },
-            { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: cutouts?.comics?.url ?? cutouts?.sketchbook?.url },
+            { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: printsCutout?.url ?? cutouts?.comics?.url },
             { href: '/print-club', label: 'Print Club', sub: stats ? `${stats.clubPrice} / month` : 'A print every month', color: '#9a5a64', img: cutouts?.movies?.url ?? cutouts?.comics?.url },
             { href: '/puzzles', label: 'Daily puzzles', sub: '5 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png', friends: true },
           ].map(t => (

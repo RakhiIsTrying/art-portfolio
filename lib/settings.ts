@@ -86,6 +86,8 @@ const CHOSEN_CUTOUTS: Record<string, string> = {
 export const FEATURED_ORIGINAL_TITLE = 'Koi Pond'
 /** The flower shown next to it on the front-page Originals tile. */
 export const ORIGINALS_TILE_FLOWER = 'Hibiscus'
+/** The cut-out on the front-page Prints & cards tile. */
+export const PRINTS_TILE_CUTOUT = 'Baby Penguins'
 
 /** A cut-out by the artwork's title, if one was made. */
 export function cutoutByTitle(title: string): Cutout | null {
