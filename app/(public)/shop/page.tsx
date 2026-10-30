@@ -23,7 +23,9 @@ const STEPS = [
   { n: '03', title: 'Confirm & pay', body: 'I’ll confirm the total, shipping and timing.' },
 ]
 
-export default async function ShopPage() {
+export default async function ShopPage({ searchParams }: { searchParams: Promise<{ piece?: string }> }) {
+  // ?piece=<title> opens the print window on that piece (from the Originals page)
+  const { piece } = await searchParams
   const supabase = await getSupabaseServerClient()
   const { data } = await supabase
     .from('artworks').select('*')
@@ -150,7 +152,7 @@ export default async function ShopPage() {
           </span>
         </div>
         {prints.length > 0 ? (
-          <PrintStudio artworks={prints} currency={currency} initialTitle="Happy Pupper Dug-Dug" />
+          <PrintStudio artworks={prints} currency={currency} initialTitle={piece ?? 'Happy Pupper Dug-Dug'} />
         ) : (
           <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
             Prints coming soon.

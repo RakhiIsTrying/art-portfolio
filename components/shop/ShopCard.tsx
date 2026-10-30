@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import OriginalChoice from './OriginalChoice'
 import type { Artwork } from '@/lib/types'
 import { formatPrice, lowestPrice, type Currency } from '@/lib/prints'
 import { useShopSettings } from './ShopSettings'
@@ -63,7 +64,7 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
             borderBottom: '1px solid #1a1014', paddingBottom: 1, transition: 'color .2s, border-color .2s',
           }}
         >
-          {onSelect ? (selected ? 'Selected ✓' : 'Choose this piece →') : kind === 'original' ? 'Ask for the price →' : 'Order a print →'}
+          {onSelect ? (selected ? 'Selected ✓' : 'Choose this piece →') : kind === 'original' ? 'Buy or ask →' : 'Order a print →'}
         </span>
       </div>
     </>
@@ -73,6 +74,8 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
                                      outline: selected ? '3px solid #4a3a7a' : 'none', outlineOffset: -3 }
   const card = onSelect
     ? <button type="button" className="group" onClick={() => onSelect(artwork)} aria-pressed={selected} style={box}>{inner}</button>
+    : kind === 'original'
+    ? <OriginalChoice artwork={artwork}>{open => <button type="button" className="group" onClick={open} style={box}>{inner}</button>}</OriginalChoice>
     : <Link href={inquireHref(artwork, kind)} className="group" style={box}>{inner}</Link>
   if (!onExpand) return card
   return (
@@ -84,3 +87,4 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
     </div>
   )
 }
+
