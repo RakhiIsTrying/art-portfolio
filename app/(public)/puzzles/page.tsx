@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { archiveDates, getDaily, todayKey } from '@/lib/puzzles/daily'
+import PuzzleLogo from '@/components/puzzles/PuzzleLogo'
 import PuzzleHub from '@/components/puzzles/PuzzleHub'
 
 // Puzzles change every day (India time), so render per request
@@ -33,19 +34,10 @@ export default async function PuzzlesPage({ searchParams }: { searchParams: Prom
   return (
     <div className="mx-auto max-w-[1120px] xl:max-w-[min(1280px,calc(100vw-400px))] px-4 sm:px-6 md:px-9 pt-8 md:pt-10 pb-16">
       <div style={{ paddingBottom: 22, borderBottom: '1px solid #d0d0d0', marginBottom: 22, textAlign: 'center' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/puzzles/dugdug.png" alt="Dug-Dug" style={{ height: 96, margin: '0 auto 12px', display: 'block', filter: 'drop-shadow(0 8px 12px rgba(26,16,20,.2))' }} />
-        <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#4a3a7a', marginBottom: 14 }}>
+        <PuzzleLogo />
+        <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#4a3a7a', marginTop: 14 }}>
           ✦ Play with Bee, Ben &amp; Dug-Dug
         </p>
-        <h1>
-          <span style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(40px, 6vw, 68px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.03em', lineHeight: .95, color: '#1a1014' }}>
-            Daily{' '}
-          </span>
-          <span style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(40px, 6vw, 68px)', fontWeight: 400, fontStyle: 'italic', lineHeight: 1.05, color: '#b07880' }}>
-            Puzzles
-          </span>
-        </h1>
       </div>
       <PuzzleHub daily={daily} art={art} theme={theme} dates={dates} today={today} />
     </div>

@@ -8,6 +8,7 @@ import Wend from './Wend'
 import Bee from './Bee'
 import Dig from './Dig'
 import Confetti from './Confetti'
+import { GameIcon } from './GameIcons'
 import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
 
 const GAMES = [
@@ -134,12 +135,15 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
           const on = g.id === active
           return (
             <button key={g.id} role="tab" aria-selected={on} type="button" onClick={() => setActive(g.id)}
-              style={{ position: 'relative', textAlign: 'center', padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              style={{ position: 'relative', textAlign: 'center', padding: '12px 10px 14px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                        background: on ? BEE_BEN : '#fff', color: on ? '#fff' : INK, transition: 'background .2s' }}>
-              <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(14px, 1.6vw, 17px)', fontWeight: 700, whiteSpace: 'nowrap' }}><span aria-hidden style={{ marginRight: 6 }}>{g.icon}</span>{g.name}</span>
-                {solved[g.id] && <span aria-label="solved" style={{ position: 'absolute', top: 8, right: 10, fontSize: 13 }}>✓</span>}
+              {/* A little drawing of the game, on a white tile so it pops on the purple tab too */}
+              <span className={on ? 'vgb-motion' : undefined} style={{ display: 'inline-flex', padding: 4, borderRadius: 10, background: '#fff', boxShadow: on ? '0 0 0 2px #e8c55a' : '0 1px 0 #e0dcdc',
+                                     marginBottom: 6, animation: on ? 'vgb-pop .4s cubic-bezier(.2,1.4,.4,1) both' : undefined }}>
+                <GameIcon id={g.id} size={34} />
               </span>
+              <span style={{ display: 'block', fontFamily: PLAYFAIR, fontSize: 'clamp(14px, 1.6vw, 17px)', fontWeight: 700, whiteSpace: 'nowrap' }}>{g.name}</span>
+              {solved[g.id] && <span aria-label="solved" style={{ position: 'absolute', top: 8, right: 10, fontSize: 13 }}>✓</span>}
               <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3, whiteSpace: 'nowrap', color: on ? 'rgba(255,255,255,.8)' : '#787878' }}>{g.blurb}</span>
             </button>
           )
