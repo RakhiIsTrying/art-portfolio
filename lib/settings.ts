@@ -82,6 +82,17 @@ const CHOSEN_CUTOUTS: Record<string, string> = {
   sketchbook: 'Pink Blossoms',
 }
 
+/** The featured original: top of the Originals page and on the front-page Originals tile. */
+export const FEATURED_ORIGINAL_TITLE = 'Koi Pond'
+/** The flower shown next to it on the front-page Originals tile. */
+export const ORIGINALS_TILE_FLOWER = 'Hibiscus'
+
+/** A cut-out by the artwork's title, if one was made. */
+export function cutoutByTitle(title: string): Cutout | null {
+  const c = CUTOUTS.find(x => x.title === title)
+  return c ? { url: c.url, title: c.title, collection: c.collection } : null
+}
+
 /** One cut-out per collection. The list of cut-outs lives in lib/cutouts.json. */
 export async function collectionCutouts(): Promise<Record<string, Cutout | null>> {
   return Object.fromEntries(Object.entries(CHOSEN_CUTOUTS).map(([slug, title]) => {

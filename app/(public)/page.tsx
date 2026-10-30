@@ -1,5 +1,5 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import { getSettings, collectionCutouts } from '@/lib/settings'
+import { getSettings, collectionCutouts, cutoutByTitle, FEATURED_ORIGINAL_TITLE, ORIGINALS_TILE_FLOWER } from '@/lib/settings'
 import { planForVisitor } from '@/lib/printClubServer'
 import { formatPrice } from '@/lib/prints'
 import Ticker from '@/components/Ticker'
@@ -21,12 +21,13 @@ const BOTTOM_TICKER = '✦ AVAILABLE FOR COMMISSIONS  ·  INQUIRE FOR PRICING  �
 export default async function HomePage() {
   const supabase = await getSupabaseServerClient()
   // Everything the page needs, fetched side by side rather than one after another
-  const [featuredRes, settings, cutouts, countRes, plan] = await Promise.all([
+  const [featuredRes, settings, cutouts, countRes, plan, koiRes] = await Promise.all([
     supabase.from('artworks').select('*').eq('featured', true).order('featured_order', { ascending: true }).limit(9),
     getSettings(),
     collectionCutouts(),
     supabase.from('artworks').select('id', { count: 'exact', head: true }),
     planForVisitor(),
+    supabase.from('artworks').select('title,image_url').eq('title', FEATURED_ORIGINAL_TITLE).limit(1).maybeSingle(),
   ])
   const works = (featuredRes.data ?? []) as Artwork[]
   const totalWorks = countRes.count
@@ -53,7 +54,8 @@ export default async function HomePage() {
   return (
     <>
       <Ticker text={TOP_TICKER} direction="left" variant="rust" />
-      <Hero latest={hero ?? undefined} label={pinned ? 'Featured Work' : 'Latest Work'} stats={stats} cutouts={cutouts} />
+      <Hero latest={hero ?? undefined} label={pinned ? 'Featured Work' : 'Latest Work'} stats={stats} cutouts={cutouts}
+        originalsTile={{ featured: koiRes.data ? { title: koiRes.data.title, url: koiRes.data.image_url } : null, flower: cutoutByTitle(ORIGINALS_TILE_FLOWER) }} />
       <Ticker text={BOTTOM_TICKER} direction="right" variant="blush" />
 
       {/* ── Featured Work header ── */}

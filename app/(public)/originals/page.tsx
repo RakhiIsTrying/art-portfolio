@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { COLLECTIONS } from '@/lib/collections'
-import { arrange, getSettings, collectionCutouts } from '@/lib/settings'
+import { arrange, getSettings, FEATURED_ORIGINAL_TITLE } from '@/lib/settings'
 import { planForVisitor } from '@/lib/printClubServer'
 import ShopGrid from '@/components/shop/ShopGrid'
 import { ShopSettingsProvider } from '@/components/shop/ShopSettings'
@@ -19,17 +19,18 @@ const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 
 export default async function OriginalsPage() {
   const supabase = await getSupabaseServerClient()
-  const [{ data }, settings, cutouts, plan] = await Promise.all([
+  const [{ data }, settings, plan] = await Promise.all([
     supabase.from('artworks').select('*').eq('original_available', true).order('created_at', { ascending: false }),
     getSettings(),
-    collectionCutouts(),
     planForVisitor(),
   ])
   const all = (data ?? []) as Artwork[]
   // Same order as the gallery: collection by collection, as arranged in Admin
-  const originals = COLLECTIONS.flatMap(c => arrange(all.filter(a => a.collection_slug === c.slug), settings.artworkOrder[c.slug]))
+  const arranged = COLLECTIONS.flatMap(c => arrange(all.filter(a => a.collection_slug === c.slug), settings.artworkOrder[c.slug]))
+  // The featured original leads the page and the list
+  const featured = arranged.find(a => a.title === FEATURED_ORIGINAL_TITLE) ?? null
+  const originals = featured ? [featured, ...arranged.filter(a => a !== featured)] : arranged
   const currency = plan === 'india' ? 'inr' : 'usd'
-  const hero = cutouts['bee-ben'] ?? cutouts.sketchbook
 
   return (
     <ShopSettingsProvider sizes={settings.printSizes} greetings={settings.greetings}>
@@ -47,14 +48,19 @@ export default async function OriginalsPage() {
               The hand-made pieces themselves, each one of a kind. Pick one and ask for the price, and I’ll get back to you with shipping and timing.
             </p>
           </div>
-          {hero && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={hero.url} alt={hero.title} className="hidden md:block" style={{ height: 210, maxWidth: 300, objectFit: 'contain', filter: 'drop-shadow(0 14px 18px rgba(26,16,20,.25))' }} />
+          {featured && (
+            <a href="#pieces" className="hidden md:block" style={{ textDecoration: 'none', transform: 'rotate(2deg)' }} aria-label={`Featured original: ${featured.title}`}>
+              <span style={{ display: 'block', background: '#fff', padding: 10, boxShadow: '0 16px 30px rgba(26,16,20,.22)' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={featured.image_url} alt={featured.title} style={{ display: 'block', height: 230, maxWidth: 320, objectFit: 'contain' }} />
+              </span>
+              <span style={{ display: 'block', marginTop: 10, textAlign: 'center', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: '#b0552f' }}>Featured · {featured.title}</span>
+            </a>
           )}
         </div>
 
         {originals.length ? (
-          <ShopGrid artworks={originals} kind="original" currency={currency} />
+          <div id="pieces" style={{ scrollMarginTop: 70 }}><ShopGrid artworks={originals} kind="original" currency={currency} /></div>
         ) : (
           <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 22, color: '#a0a0a0', padding: '40px 0' }}>New originals soon.</p>
         )}

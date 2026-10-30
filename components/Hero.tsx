@@ -18,9 +18,11 @@ type HeroProps = {
   /** Numbers for the tiles: total works, cheapest print, Print Club price */
   stats?: { works: number; printFrom: string; clubPrice: string }
   cutouts?: Record<string, Cutout | null>
+  /** Front-page Originals tile: the featured original (shown whole, framed) and a flower cut-out */
+  originalsTile?: { featured: { title: string; url: string } | null; flower: Cutout | null }
 }
 
-export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: HeroProps) {
+export default function Hero({ latest, label = 'Latest Work', stats, cutouts, originalsTile }: HeroProps) {
   return (
     // Phones: art on top at full width, words underneath. Tablets and up: side by side.
     <section className="grid grid-cols-1 md:grid-cols-[52px_1fr_1fr] md:h-[calc(100svh-82px)] md:min-h-[420px] md:max-h-[660px]"
@@ -180,13 +182,19 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
                   ))}
                 </span>
               )}
-              {/* Originals tile: one piece from each collection that's for sale */}
+              {/* Originals tile: the featured original, framed, with a flower beside it */}
               {'extra' in t && (
                 <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 8, top: 8, height: '84%', width: '58%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4%' }}>
-                  {[cutouts?.['bee-ben']?.url, cutouts?.sketchbook?.url].filter(Boolean).map((src, k) => (
+                  {originalsTile?.featured && (
+                    <span style={{ height: '92%', maxWidth: '52%', background: '#fff', padding: 4, transform: 'rotate(-3deg)', boxShadow: '0 8px 14px rgba(0,0,0,.35)', display: 'flex' }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={originalsTile.featured.url} alt="" style={{ height: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                    </span>
+                  )}
+                  {originalsTile?.flower && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img key={src} src={src} alt="" style={{ height: '100%', maxWidth: '48%', objectFit: 'contain', transform: `rotate(${k ? 3 : -3}deg)`, filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
-                  ))}
+                    <img src={originalsTile.flower.url} alt="" style={{ height: '100%', maxWidth: '44%', objectFit: 'contain', transform: 'rotate(3deg)', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
+                  )}
                 </span>
               )}
               {t.img && !('friends' in t) && !('extra' in t) && (
