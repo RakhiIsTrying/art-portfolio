@@ -116,7 +116,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
               <div key={run.id} style={{ position: 'absolute', left: `${(bc + 1.5) * cell}%`, top: `${(br + 1) * cell}%`, width: 0, height: 0, pointerEvents: 'none' }}>
                 <div className="vgb-motion" style={{ position: 'absolute', animation: 'vgb-orbit 1.5s linear both' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={DUG_DUG} alt="" className="vgb-motion" style={{ position: 'absolute', width: 46, left: 26, top: -23, animation: 'vgb-orbit-counter 1.5s linear both', filter: 'drop-shadow(0 3px 4px rgba(26,16,20,.35))' }} />
+                  <img src={DUG_DUG} alt="" className="vgb-motion" style={{ position: 'absolute', width: 60, maxWidth: 'none', left: 36, top: -30, animation: 'vgb-orbit-counter 1.5s linear both', filter: 'drop-shadow(0 3px 4px rgba(26,16,20,.35))' }} />
                 </div>
               </div>
             )
