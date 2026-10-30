@@ -23,5 +23,5 @@ export async function GET() {
     await timed('service settings', svc, 'pages?slug=eq.site-settings&select=slug'),
     await timed('service artworks', svc, 'artworks?select=id&limit=1'),
   ]
-  return NextResponse.json({ region: process.env.VERCEL_REGION ?? null, keyKind: svc.startsWith('ey') ? 'jwt' : 'other', strayCharacters: raw.length - svc.length, ...Object.fromEntries(rows) })
+  return NextResponse.json({ region: process.env.VERCEL_REGION ?? null, keyKind: svc.startsWith('ey') ? 'jwt' : 'other', strayCharacters: raw.length - svc.length, length: raw.length, oddCharPositions: [...raw].map((c, i) => (/[A-Za-z0-9._-]/.test(c) ? -1 : i)).filter(i => i >= 0), oddCharCodes: [...raw].filter(c => !/[A-Za-z0-9._-]/.test(c)).map(c => c.charCodeAt(0)), ...Object.fromEntries(rows) })
 }
