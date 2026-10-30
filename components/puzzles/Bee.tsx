@@ -119,15 +119,21 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
 
       <HintButton date={date} game="bee" disabled={genius && found.length === answers.length}
         getHint={n => {
-          // Clue: length and first two letters of a word not found yet (pangrams first)
+          // Ben builds up one word over three hints: first letter, then two, then three. Dug-Dug's reveal then gives it.
           const left = answers.filter(w => !found.includes(w))
           if (!left.length) return null
-          const pangram = left.find(x => isPangram(x, letters))
-          const w = n === 0 && pangram ? pangram : left[n % left.length]
-          setBenWord(w)
-          return isPangram(w, letters)
-            ? `There’s a pangram (uses all seven letters): ${w.length} letters, starting with “${w.slice(0, 2).toUpperCase()}”.`
-            : `Try a ${w.length}-letter word starting with “${w.slice(0, 2).toUpperCase()}”.`
+          const step = n % 3
+          let w = benWord
+          if (step === 0 || !w || found.includes(w)) {
+            const pangram = left.find(x => isPangram(x, letters))
+            w = n === 0 && pangram ? pangram : left[Math.floor(n / 3) % left.length]
+            setBenWord(w)
+          }
+          const start = w.slice(0, step + 1).toUpperCase()
+          const what = isPangram(w, letters) ? 'There’s a pangram (uses all seven letters)' : `Try a ${w.length}-letter word`
+          return step === 0
+            ? `${what}${isPangram(w, letters) ? `: ${w.length} letters,` : ''} starting with “${start}”.`
+            : `Same word, it starts with “${start}”…`
         }}
         getReveal={() => {
           // The answer to Ben's latest hint, for them to type in (never a new word)
