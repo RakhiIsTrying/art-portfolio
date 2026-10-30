@@ -8,8 +8,8 @@ import type { Artwork, ClubBox } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
 
 export const metadata: Metadata = {
-  title: 'Club Boxes — Van Gone Broke Print Club',
-  description: 'Every month’s Print Club box — photos, unboxing videos and the prints inside.',
+  title: 'Club Boxes | Van Gone Broke Print Club',
+  description: 'Every month’s Print Club box: photos, unboxing videos and the prints inside.',
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -68,7 +68,7 @@ export default async function ClubBoxesPage() {
 
       {boxes.length === 0 && (
         <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '48px 0' }}>
-          The first box is on its way — check back soon.
+          The first box is on its way. Check back soon.
         </p>
       )}
 

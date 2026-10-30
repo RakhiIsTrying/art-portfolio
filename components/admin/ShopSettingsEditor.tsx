@@ -22,7 +22,7 @@ export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsI
     start(async () => {
       try {
         await saveShopSettings({ printSizes: sizes, greetings: greetings.split('\n'), plans, shopIntro: intro })
-        setNote({ ok: true, text: 'Saved — the shop is updated ✓' })
+        setNote({ ok: true, text: 'Saved. The shop is updated ✓' })
       } catch (e) { setNote({ ok: false, text: e instanceof Error ? e.message : 'Could not save' }) }
     })
   }
@@ -31,7 +31,7 @@ export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsI
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div style={panel}>
         <h2 style={h2}>Print sizes &amp; prices</h2>
-        <p style={{ fontSize: 12, fontWeight: 300, color: '#787878' }}>Size in inches (portrait). “Free shipping from” is the quantity that ships free — leave empty if it always ships free.</p>
+        <p style={{ fontSize: 12, fontWeight: 300, color: '#787878' }}>Size in inches (portrait). “Free shipping from” is the quantity that ships free. Leave it empty if it always ships free.</p>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
             <thead><tr>
@@ -45,7 +45,7 @@ export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsI
                   <td style={{ padding: 4, width: 80 }}><input style={input} inputMode="decimal" value={s.h} onChange={e => setSize(i, { h: e.target.value })} /></td>
                   <td style={{ padding: 4, width: 90 }}><input style={input} inputMode="numeric" value={s.inr} onChange={e => setSize(i, { inr: e.target.value })} /></td>
                   <td style={{ padding: 4, width: 80 }}><input style={input} inputMode="numeric" value={s.usd} onChange={e => setSize(i, { usd: e.target.value })} /></td>
-                  <td style={{ padding: 4, width: 110 }}><input style={input} inputMode="numeric" placeholder="—" value={s.min ?? ''} onChange={e => setSize(i, { min: e.target.value ? Number(e.target.value.replace(/\D/g, '')) : undefined })} /></td>
+                  <td style={{ padding: 4, width: 110 }}><input style={input} inputMode="numeric" placeholder="None" value={s.min ?? ''} onChange={e => setSize(i, { min: e.target.value ? Number(e.target.value.replace(/\D/g, '')) : undefined })} /></td>
                   <td style={{ padding: 4, width: 50, textAlign: 'center' }}><input type="checkbox" aria-label="Greeting card" checked={!!s.card} onChange={e => setSize(i, { card: e.target.checked })} /></td>
                   <td style={{ padding: 4, width: 40 }}><button type="button" aria-label={`Remove ${s.name}`} onClick={() => setSizes(x => x.filter((_, j) => j !== i))} style={{ ...btn(), padding: '5px 9px' }}>✕</button></td>
                 </tr>

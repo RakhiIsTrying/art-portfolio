@@ -1,4 +1,4 @@
-// Daily puzzles — every visitor gets the same puzzles for the same (India-time) date.
+// Daily puzzles, every visitor gets the same puzzles for the same (India-time) date.
 // Word data: SCOWL word lists (see data/SCOWL-COPYRIGHT.txt).
 import wordleAnswers from './data/wordle-answers.json'
 import beePuzzles from './data/bee.json'

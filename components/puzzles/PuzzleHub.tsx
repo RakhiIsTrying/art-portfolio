@@ -82,7 +82,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
   // Remember which puzzle was open, so a refresh comes back to it
   const [active, setActive] = useDailyState<GameId>(daily.date, 'open-tab', 'sudoku')
   const [solved, setSolved, solvedLoaded] = useDailyState<Partial<Record<GameId, boolean>>>(daily.date, 'solved', {})
-  // Confetti only for a fresh win — not when reopening a puzzle solved earlier today
+  // Confetti only for a fresh win, not when reopening a puzzle solved earlier today
   const [burst, setBurst] = useState(0)
   const [celebrating, setCelebrating] = useState(false)
   const countdown = useCountdown(isToday)
@@ -138,11 +138,11 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
           return (
             <button key={g.id} role="tab" aria-selected={on} type="button" onClick={() => setActive(g.id)}
               className={g.id === 'bee' ? 'col-span-2 sm:col-span-1' : ''}
-              style={{ textAlign: 'left', padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              style={{ position: 'relative', textAlign: 'center', padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                        background: on ? BEE_BEN : '#fff', color: on ? '#fff' : INK, transition: 'background .2s' }}>
-              <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+              <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(14px, 1.6vw, 17px)', fontWeight: 700, whiteSpace: 'nowrap' }}><span aria-hidden style={{ marginRight: 6 }}>{g.icon}</span>{g.name}</span>
-                {solved[g.id] && <span aria-label="solved" style={{ fontSize: 13 }}>✓</span>}
+                {solved[g.id] && <span aria-label="solved" style={{ position: 'absolute', top: 8, right: 10, fontSize: 13 }}>✓</span>}
               </span>
               <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3, whiteSpace: 'nowrap', color: on ? 'rgba(255,255,255,.8)' : '#787878' }}>{g.blurb}</span>
             </button>

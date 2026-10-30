@@ -84,7 +84,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
     setError(null); setStatus('sending')
     const res = await fetch('/api/inquire', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: contact.name.trim(), email: contact.email.trim(), piece: `Print — ${art.title} (${landscape ? 'landscape' : 'portrait'})`, message: contact.note.trim(), order }),
+      body: JSON.stringify({ name: contact.name.trim(), email: contact.email.trim(), piece: `Print: ${art.title} (${landscape ? 'landscape' : 'portrait'})`, message: contact.note.trim(), order }),
     })
     setStatus(res.ok ? 'sent' : 'error')
   }
@@ -191,7 +191,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
               </div>
 
               {(error || status === 'error') && (
-                <p style={{ fontSize: 11, color: '#7a3040' }}>{error ?? 'Something went wrong — please try again.'}</p>
+                <p style={{ fontSize: 11, color: '#7a3040' }}>{error ?? 'Something went wrong. Please try again.'}</p>
               )}
               <button type="submit" disabled={status === 'sending'} className="hover:[background:#7a3040]"
                 style={{ padding: '14px 18px', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, background: INK, color: '#fff', opacity: status === 'sending' ? .6 : 1, transition: 'background .25s' }}>
@@ -209,7 +209,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>See it to scale</p>
           <h3 style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: INK, marginBottom: 18 }}>{art.title}, every size</h3>
           <p style={{ fontSize: 11, fontWeight: 300, color: '#787878', margin: '-12px 0 18px' }}>
-            {landscape ? '▭ Landscape' : '▯ Portrait'} — switch it in your order. Every size shows the whole artwork as large as it fits, with a small white margin.
+            {landscape ? '▭ Landscape' : '▯ Portrait'}: switch it in your order. Every size shows the whole artwork as large as it fits, with a small white margin.
           </p>
 
           <div ref={rowRef} className="no-scrollbar" style={{ overflowX: 'auto', paddingBottom: 6 }}>

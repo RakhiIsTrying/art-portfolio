@@ -7,7 +7,7 @@ import PuzzleHub from '@/components/puzzles/PuzzleHub'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Daily Puzzles — Van Gone Broke',
+  title: 'Daily Puzzles | Van Gone Broke',
   description: 'Mini Sudoku over a new drawing, Wordle, Dug-Dug Kings, Walkies and Bee’s Hive. New puzzles every day.',
 }
 

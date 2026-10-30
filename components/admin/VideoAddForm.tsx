@@ -67,7 +67,7 @@ export default function VideoAddForm() {
               Category
             </label>
             <select name="category" defaultValue="" className="border-2 border-ink px-3 py-2 bg-cream font-bold text-sm focus:outline-none focus:border-rust">
-              <option value="">—</option>
+              <option value="">None</option>
               <option value="movies">Movie Art</option>
               <option value="music">Music</option>
               <option value="comics">Comics</option>

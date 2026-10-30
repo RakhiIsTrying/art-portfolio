@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   const admin = getSupabaseAdminClient()
   const { error } = await admin.from('print_club_signups').insert({ ...row, plan })
 
-  // Unique violation: already signed up — treat as success so the visitor isn't confused
+  // Unique violation: already signed up, treat as success so the visitor isn't confused
   if (error && error.code !== '23505') {
     return NextResponse.json({ error: 'Could not save sign-up' }, { status: 500 })
   }

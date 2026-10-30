@@ -16,7 +16,7 @@ type Props = {
 }
 
 /**
- * Fills its (positioned) parent with the whole artwork — never cropped — and paints
+ * Fills its (positioned) parent with the whole artwork, never cropped, and paints
  * any space around it in the art's own border colour so it blends in.
  */
 export default function ArtFill({ src, alt = '', sizes, priority, unoptimized, fallback = '#fff', style, plain }: Props) {

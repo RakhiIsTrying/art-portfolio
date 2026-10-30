@@ -71,7 +71,7 @@ export default function SizePicker({ qty, onChange, currency, onCurrency }: Prop
         <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
           <p style={{ fontSize: 11, fontWeight: 300, color: underMin.length ? '#7a3040' : '#1a6060' }}>
             {underMin.length
-              ? `Shipping added — ${underMin.map(l => `${l.name} ships free from ${l.min}`).join(', ')}`
+              ? `Shipping added: ${underMin.map(l => `${l.name} ships free from ${l.min}`).join(', ')}`
               : 'Free shipping ✓'}
           </p>
           <p style={{ fontSize: 13, color: '#1a1014' }}>

@@ -21,7 +21,7 @@ export default async function AdminArrangePage() {
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 6 }}>Gallery &amp; shop</p>
           <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Arrange art</h1>
           <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginTop: 8 }}>
-            Drag pieces into the order you want — the gallery and the shop follow it. Edit titles, medium and year, or move a piece to another collection.
+            Drag pieces into the order you want; the gallery and the shop follow it. Edit titles, medium and year, move a piece to another collection, or choose how it’s offered in the shop (prints, original for sale, or display only).
           </p>
         </div>
       </div>

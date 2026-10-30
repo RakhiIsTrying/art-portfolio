@@ -127,7 +127,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
           if (missing.length) return `The word contains “${missing[n % missing.length].toUpperCase()}”.`
           // All letters found: say where one isn't, to help with order
           const misplaced = guesses.flatMap(g => [...g].map((l, i) => ({ l, i }))).filter(({ l, i }) => answer.includes(l) && answer[i] !== l)
-          if (!misplaced.length) return 'You’ve found every letter — now work out their order!'
+          if (!misplaced.length) return 'You’ve found every letter. Now work out their order!'
           const m = misplaced[n % misplaced.length]
           return `“${m.l.toUpperCase()}” is not letter ${m.i + 1}.`
         }}
@@ -135,7 +135,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
           // One step: put a letter in its right spot
           const known = new Set([...hinted, ...[0, 1, 2, 3, 4].filter(i => guesses.some(g => g[i] === answer[i]))])
           const i = [0, 1, 2, 3, 4].find(p => !known.has(p))
-          if (i === undefined) return 'Every letter is already in place — just type it in!'
+          if (i === undefined) return 'Every letter is already in place. Just type it in!'
           setHinted(h => [...h, i])
           return `Letter ${i + 1} is “${answer[i].toUpperCase()}”.`
         }} />

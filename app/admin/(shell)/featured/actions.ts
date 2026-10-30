@@ -30,7 +30,7 @@ export async function toggleFeatured(artworkId: string, currentlyFeatured: boole
       }
     }
   } else {
-    // Add to featured — find next available slot
+    // Add to featured, find next available slot
     const { count } = await admin
       .from('artworks')
       .select('id', { count: 'exact', head: true })

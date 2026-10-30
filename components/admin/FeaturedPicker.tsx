@@ -24,7 +24,7 @@ export default function FeaturedPicker({ artworks }: { artworks: Artwork[] }) {
       <div className="border-4 border-rust shadow-[4px_4px_0_#b04a33]">
         <div className="bg-rust px-5 py-3 border-b-4 border-ink">
           <h2 className="text-sm font-black uppercase tracking-widest text-cream">
-            Featured ({featured.length}/9) — shown on homepage
+            Featured ({featured.length}/9), shown on homepage
           </h2>
         </div>
         {featured.length === 0 && (
@@ -66,7 +66,7 @@ export default function FeaturedPicker({ artworks }: { artworks: Artwork[] }) {
       <div className="border-4 border-ink">
         <div className="bg-ink px-5 py-3 border-b-4 border-ink">
           <h2 className="text-sm font-black uppercase tracking-widest text-cream">
-            All Artworks — click to add to featured
+            All Artworks: click to add to featured
           </h2>
         </div>
         {unfeatured.length === 0 && featured.length > 0 && (

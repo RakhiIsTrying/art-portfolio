@@ -43,7 +43,7 @@ const CONTACT: FieldDef[] = [
   { id: 'email', label: 'Email',     autoComplete: 'email', type: 'email', half: true },
   { id: 'phone', label: 'Phone',     autoComplete: 'tel',   type: 'tel',   half: true },
   { id: 'birthday_request', label: 'Birthday request', autoComplete: 'off', optional: true, multiline: true,
-    hint: 'A favourite character, a dedication, something just for you — I’ll try to make it happen for your birthday.' },
+    hint: 'A favourite character, a dedication, something just for you. I’ll try to make it happen for your birthday.' },
 ]
 
 const ADDRESS: FieldDef[] = [
@@ -151,7 +151,7 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
 
       {status === 'error' && (
         <p className="col-span-2" style={{ fontSize: 11, letterSpacing: '.15em', color: '#7a3040' }}>
-          Something went wrong — please try again.
+          Something went wrong. Please try again.
         </p>
       )}
 
@@ -165,7 +165,7 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
           background: '#1a1014', color: '#fff', transition: 'background .25s', opacity: status === 'sending' ? .6 : 1,
         }}
       >
-        {status === 'sending' ? 'Sending…' : `Apply — ${plan.price} / month →`}
+        {status === 'sending' ? 'Sending…' : `Apply · ${plan.price} / month →`}
       </button>
 
       <p className="col-span-2" style={{ fontSize: 10, lineHeight: 1.7, fontWeight: 300, color: '#a0a0a0' }}>

@@ -10,8 +10,8 @@ import ArtFill from '@/components/ArtFill'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Gallery — Van Gone Broke',
-  description: 'Music, movies, comics & anime, Bee, Ben & Dug-Dug, and the sketchbook — every collection in one place.',
+  title: 'Gallery | Van Gone Broke',
+  description: 'Music, movies, comics & anime, Bee, Ben & Dug-Dug, and the sketchbook. Every collection in one place.',
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -28,6 +28,7 @@ export default async function GalleryPage() {
   const cutouts = await randomCutouts()
   const { data } = await supabase.from('artworks').select('*').order('created_at', { ascending: false })
   const all = (data ?? []) as Artwork[]
+  const originals = all.filter(a => a.original_available === true)
   const collections = COLLECTIONS.map(col => {
     const arranged = arrange(all.filter(a => a.collection_slug === col.slug), settings.artworkOrder[col.slug])
     return { ...col, pieces: arranged.slice(0, 3), total: arranged.length, color: categoryColors[col.slug] ?? '#1a1014', desc: categoryDesc[col.slug] ?? '', cut: cutouts[col.slug] }
@@ -47,7 +48,7 @@ export default async function GalleryPage() {
         </div>
         <div style={{ maxWidth: 380 }}>
           <p style={{ fontSize: 14, lineHeight: 1.8, fontWeight: 300, color: '#787878', marginBottom: 14 }}>
-            {all.length} pieces across five collections — pop culture, original characters and a sketchbook of everything in between.
+            {all.length} pieces across five collections: pop culture, original characters and a sketchbook of everything in between.
           </p>
           {/* Quick jump */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -61,7 +62,7 @@ export default async function GalleryPage() {
         </div>
       </div>
 
-      {/* Collections — the first one wide, the rest in pairs */}
+      {/* Collections, the first one wide, the rest in pairs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
         {collections.map((c, i) => (
           <Link key={c.slug} href={`/gallery/${c.slug}`}
@@ -109,6 +110,42 @@ export default async function GalleryPage() {
             </div>
           </Link>
         ))}
+
+        {/* Originals for sale: one-of-one pieces, chosen in Admin → Arrange art */}
+        <Link href="/shop#originals" className="group md:col-span-2 grid md:grid-cols-[1fr_1.1fr]"
+          style={{ position: 'relative', background: '#1a1014', color: '#fff', textDecoration: 'none', overflow: 'hidden', minHeight: 300 }}>
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(circle at 75% 40%, rgba(176,120,128,.28) 0%, transparent 55%)' }} />
+          <div style={{ position: 'relative', zIndex: 4, padding: 'clamp(22px, 3vw, 34px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 18 }}>
+            <div>
+              <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#b07880', marginBottom: 10 }}>
+                One of one · {originals.length ? `${originals.length} available` : 'coming soon'}
+              </p>
+              <h2 style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(28px, 4.4vw, 56px)', fontWeight: 700, lineHeight: 1.02, whiteSpace: 'nowrap' }}>Originals <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#b07880' }}>for sale</span></h2>
+              <p style={{ fontSize: 13, fontWeight: 300, color: 'rgba(255,255,255,.72)', marginTop: 10 }}>The hand-made pieces themselves, ready for a new home. Ask for the price.</p>
+            </div>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500 }}>
+              See the originals <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+            </span>
+          </div>
+          <div className="relative min-h-[260px]">
+            {originals.slice(0, 3).map((art, k) => {
+              const f = FAN[k + (FAN.length - Math.min(3, originals.length))]
+              return (
+                <div key={art.id} className="vgb-motion transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  style={{ position: 'absolute', left: '50%', top: '50%', width: '34%', aspectRatio: '4/5', zIndex: f.z,
+                           transform: `translate(calc(-50% + ${f.x}), calc(-50% + ${f.y})) rotate(${f.rotate}deg)`,
+                           background: '#fff', padding: '4%', boxShadow: '0 16px 34px rgba(0,0,0,.45)' }}>
+                  <div style={{ position: 'relative', width: '100%', height: '100%' }}><ArtFill src={art.image_url} sizes="240px" /></div>
+                </div>
+              )
+            })}
+            {!originals.length && (
+              <p style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 22, color: 'rgba(255,255,255,.35)' }}>
+                New originals soon
+              </p>
+            )}
+          </div>
+        </Link>
       </div>
     </div>
   )

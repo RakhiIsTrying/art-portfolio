@@ -61,7 +61,7 @@ export async function addMedia(boxId: string, kind: 'photo' | 'video', url: stri
   if (kind === 'photo') {
     await admin.from('club_boxes').update({ photo_urls: [...box.photo_urls, url] }).eq('id', boxId)
   } else {
-    // One unboxing video per month — replace the old one
+    // One unboxing video per month, replace the old one
     if (box.video_url) await admin.storage.from(BUCKET).remove([storagePath(box.video_url)])
     await admin.from('club_boxes').update({ video_url: url }).eq('id', boxId)
   }

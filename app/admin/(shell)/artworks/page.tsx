@@ -39,7 +39,7 @@ export default async function AdminArtworksPage() {
 
         {!artworks?.length && (
           <p style={{ padding: '20px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
-            No artworks yet — upload one above.
+            No artworks yet. Upload one above.
           </p>
         )}
 

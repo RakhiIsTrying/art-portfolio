@@ -14,7 +14,7 @@ export default function VideoTile({ video, index, onOpen, active }: Props) {
   const ref = useRef<HTMLVideoElement>(null)
   const [previewing, setPreviewing] = useState(false)
 
-  // Preview with sound on hover — only on devices with a real pointer. If the
+  // Preview with sound on hover, only on devices with a real pointer. If the
   // browser won't allow sound yet (no click on the page so far), preview silently.
   const startPreview = () => {
     const v = ref.current

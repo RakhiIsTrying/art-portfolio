@@ -8,7 +8,7 @@ import VideoTheater from './VideoTheater'
 import InstagramLink from './InstagramLink'
 import { useEdge } from '@/lib/useAspects'
 
-// Filter tabs, in display order — colours match the site's category stripes
+// Filter tabs, in display order, colours match the site's category stripes
 const FILTERS = [
   { slug: 'movies',  label: 'Movie Art',         color: '#1e3a8a' },
   { slug: 'music',   label: 'Music',             color: '#7a3040' },
@@ -100,7 +100,7 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
                 </span>
               </h1>
               <p style={{ maxWidth: 420, fontSize: 14, lineHeight: 1.8, fontWeight: 300, color: 'rgba(255,255,255,.55)', marginBottom: 44 }}>
-                Speed paints, fan art and the continuing adventures of Dug-Dug — drawn by hand, set in motion.
+                Speed paints, fan art and the continuing adventures of Dug-Dug, drawn by hand and set in motion.
               </p>
 
               <div style={{ borderTop: '1px solid rgba(255,255,255,.12)', paddingTop: 22, maxWidth: 420 }}>

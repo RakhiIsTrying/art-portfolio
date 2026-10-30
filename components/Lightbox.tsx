@@ -16,6 +16,11 @@ type Props = {
   onClose: () => void
 }
 
+const buyStyle: React.CSSProperties = {
+  flexShrink: 0, fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
+  background: '#1a1014', color: '#faf8f5', padding: '10px 18px', textDecoration: 'none',
+}
+
 export default function Lightbox({ artwork, onClose }: Props) {
   const color = categoryColors[artwork.collection_slug] ?? '#1a1014'
 
@@ -67,19 +72,22 @@ export default function Lightbox({ artwork, onClose }: Props) {
               </a>
             )}
           </div>
-          <Link
-            href={artwork.prints_available === false
-              ? `/inquire?piece=${encodeURIComponent(artwork.title)}`
-              : `/inquire?piece=${encodeURIComponent(`Print — ${artwork.title}`)}`}
-            style={{
-              flexShrink: 0,
-              fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
-              background: '#1a1014', color: '#faf8f5',
-              padding: '10px 18px', textDecoration: 'none',
-            }}
-          >
-            {artwork.prints_available === false ? 'Inquire →' : 'Get a print →'}
-          </Link>
+          {/* What visitors can buy follows Admin → Arrange art → "In the shop" */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'flex-end' }}>
+            {artwork.original_available && (
+              <Link href={`/inquire?piece=${encodeURIComponent(`Original: ${artwork.title}`)}`} style={{ ...buyStyle, background: '#7a3040' }}>
+                Buy the original →
+              </Link>
+            )}
+            {artwork.prints_available !== false && (
+              <Link href={`/inquire?piece=${encodeURIComponent(`Print: ${artwork.title}`)}`} style={buyStyle}>
+                Get a print →
+              </Link>
+            )}
+            {artwork.prints_available === false && !artwork.original_available && (
+              <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#787878', padding: '10px 0' }}>Display only</span>
+            )}
+          </div>
         </div>
       </div>
 

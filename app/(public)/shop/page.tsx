@@ -11,8 +11,8 @@ import { ShopSettingsProvider } from '@/components/shop/ShopSettings'
 import { planForVisitor } from '@/lib/printClubServer'
 
 export const metadata: Metadata = {
-  title: 'Originals & Prints — Van Gone Broke',
-  description: 'Prints and original pieces of pop culture art — music, movies, comics and Dug-Dug.',
+  title: 'Originals & Prints | Van Gone Broke',
+  description: 'Prints and original pieces of pop culture art: music, movies, comics and Dug-Dug.',
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
@@ -63,6 +63,12 @@ export default async function ShopPage() {
             <p style={{ maxWidth: 440, marginTop: 16, fontSize: 13, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
               {settings.shopIntro}
             </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
+              <a href="#prints" style={{ padding: '8px 14px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', background: '#1a1014', color: '#fff', textDecoration: 'none' }}>Prints &amp; cards ↓</a>
+              <a href="#originals" style={{ padding: '8px 14px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', background: '#7a3040', color: '#fff', textDecoration: 'none' }}>
+                Originals for sale{originals.length ? ` · ${originals.length}` : ''} ↓
+              </a>
+            </div>
           </div>
         </div>
 
@@ -96,8 +102,8 @@ export default async function ShopPage() {
         </span>
       </Link>
 
-      {/* Prints — order window on the left, scale previews on the right */}
-      <section style={{ marginBottom: 56 }}>
+      {/* Prints, order window on the left, scale previews on the right */}
+      <section id="prints" style={{ marginBottom: 56, scrollMarginTop: 60 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 18 }}>
           <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Prints &amp; cards</h2>
           <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
@@ -113,18 +119,18 @@ export default async function ShopPage() {
         )}
       </section>
 
-      {/* Originals */}
-      <section>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 18, paddingBottom: 12, borderBottom: '1px solid #d0d0d0' }}>
-          <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Originals</h2>
+      {/* Originals for sale: pieces marked "original for sale" in Admin → Arrange art */}
+      <section id="originals" style={{ scrollMarginTop: 60 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px 16px', marginBottom: 18, paddingBottom: 12, borderBottom: '1px solid #d0d0d0' }}>
+          <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Originals for sale</h2>
           <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
-            One of one · price on request
+            {originals.length ? `${originals.length} one-of-one ${originals.length === 1 ? 'piece' : 'pieces'} · price on request` : 'One of one · price on request'}
           </span>
         </div>
 
         {originals.length > 0 && <ShopGrid artworks={originals} kind="original" currency={currency} showFilters={false} />}
 
-        {/* Commission card — always offered */}
+        {/* Commission card, always offered */}
         <div className="grid md:grid-cols-[1fr_auto] gap-6 items-center" style={{ marginTop: originals.length ? 24 : 0, background: '#1a1014', padding: '28px 30px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: 'linear-gradient(180deg, #7a3040 25%, #1e3a8a 25% 50%, #1a6060 50% 75%, #7a5020 75%)' }} />
           <div>
@@ -132,14 +138,14 @@ export default async function ShopPage() {
               {originals.length ? 'Want something else?' : 'New originals coming soon'}
             </p>
             <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(22px, 2.6vw, 30px)', lineHeight: 1.2, color: '#fff', marginBottom: 8 }}>
-              Commission an original — your icon, your pet, your moment.
+              Commission an original: your icon, your pet, your moment.
             </p>
             <p style={{ fontSize: 12, fontWeight: 300, lineHeight: 1.7, color: 'rgba(255,255,255,.55)', maxWidth: 520 }}>
               Digital or traditional, drawn by hand from scratch. Tell me what you have in mind.
             </p>
           </div>
           <Link
-            href={`/inquire?piece=${encodeURIComponent('Commission — original piece')}`}
+            href={`/inquire?piece=${encodeURIComponent('Commission: original piece')}`}
             className="hover:[background:#b07880] hover:[border-color:#b07880]"
             style={{
               justifySelf: 'start', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500,

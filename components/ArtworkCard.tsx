@@ -33,7 +33,7 @@ export default function ArtworkCard({ artwork, onClick, size = 'medium' }: Props
         className="group-hover:[background:rgba(26,16,20,0.55)]"
       />
 
-      {/* Category colour bar — bottom */}
+      {/* Category colour bar, bottom */}
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, height: 3,
         background: color,
@@ -41,7 +41,7 @@ export default function ArtworkCard({ artwork, onClick, size = 'medium' }: Props
         transition: 'transform .3s',
       }} className="group-hover:[transform:translateY(0)]" />
 
-      {/* Title + category — revealed on hover */}
+      {/* Title + category, revealed on hover */}
       <div style={{
         position: 'absolute', bottom: 12, left: 12, right: 12,
         opacity: 0, transform: 'translateY(6px)',

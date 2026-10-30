@@ -2,7 +2,7 @@
 // `min` is the quantity for free shipping; smaller orders pay shipping on top.
 export type PrintSize = { id: string; name: string; dims: string; w: number; h: number; inr: number; usd: number; min?: number; card?: boolean }
 
-// Defaults — the live values come from Admin → Shop settings
+// Defaults, the live values come from Admin → Shop settings
 export const DEFAULT_PRINT_SIZES: PrintSize[] = [
   { id: 'mini',  name: 'Mini',          dims: '2.5" × 3.5"',  w: 2.5,  h: 3.5,  inr: 100,  usd: 1,  min: 10 },
   { id: 'a5',    name: 'A5',            dims: '5.8" × 8.3"',  w: 5.8,  h: 8.3,  inr: 500,  usd: 10, min: 2 },
@@ -22,5 +22,5 @@ export const DEFAULT_GREETINGS = [
   'Wishing you a day as happy as Dug-Dug at dinner time.',
   'Sending a big hug and a little art your way.',
   'May your day be full of zoomies and good things.',
-  'From our little pack to you — happy everything!',
+  'From our little pack to you: happy everything!',
 ]

@@ -45,7 +45,7 @@ export function SolvedBanner({ title, detail, artIndex = 0 }: { title: string; d
   const { arts } = useTheme()
   const art = arts.length ? arts[artIndex % arts.length] : null
   return (
-    <div style={{ marginTop: 22, width: 'min(100%, 520px)', background: '#fff', border: `1px solid #d0d0d0`, borderTop: `3px solid ${BEE_BEN}`, display: 'flex', alignItems: 'center', gap: 14, padding: 14, textAlign: 'left' }}>
+    <div style={{ marginTop: 22, width: 'min(100%, 520px)', background: '#fff', border: `1px solid #d0d0d0`, borderTop: `3px solid ${BEE_BEN}`, display: 'flex', alignItems: 'center', gap: 14, padding: 14, justifyContent: 'center', textAlign: 'center' }}>
       {art && (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={art.image_url} alt={art.title} style={{ width: 72, height: 72, objectFit: 'contain', flexShrink: 0, background: '#f4f2ef' }} />
@@ -130,7 +130,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
 
   function ask() {
     if (tick() > 0 || disabled) return
-    setSaid({ who: 'ben', text: getHint(used.hints) ?? 'Hmm, nothing left to tell you — you’ve got this!' })
+    setSaid({ who: 'ben', text: getHint(used.hints) ?? 'Hmm, nothing left to tell you. You’ve got this!' })
     setCount(c => c + 1)
     setUsed(u => ({ ...u, hints: u.hints + 1 }))
     try { localStorage.setItem(HINT_LOCK_KEY, String(Date.now() + HINT_COOLDOWN * 1000)) } catch {}
@@ -151,7 +151,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
       {said && (
         // Pops out each time someone speaks (the key restarts the animation)
         <div key={count} role="status" className="vgb-motion"
-             style={{ position: 'relative', alignSelf: 'stretch', marginTop: 34, padding: '14px 16px 14px 96px', textAlign: 'left',
+             style={{ position: 'relative', alignSelf: 'stretch', marginTop: 34, padding: '14px 16px 14px 96px', textAlign: 'center',
                       background: dug ? `linear-gradient(135deg, ${BEE_BEN} 0%, #2f2452 100%)` : `linear-gradient(135deg, ${AUTUMN} 0%, ${AUTUMN_DARK} 100%)`,
                       color: '#fbf1e4', boxShadow: '0 14px 30px rgba(26,16,20,.3)', borderRadius: 4,
                       transformOrigin: '50% 100%', animation: 'vgb-pop .45s cubic-bezier(.2,1.4,.4,1) both' }}>
@@ -167,7 +167,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
       )}
       {disabled ? (
         <span style={{ padding: '9px 16px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', border: '1px solid #d0d0d0', color: '#787878', background: '#fff' }}>
-          ✓ Solved — no hints needed
+          ✓ Solved, no hints needed
         </span>
       ) : (
         <>
@@ -208,9 +208,9 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
 // ── Bee calls out every erase / reset ─────────────────────────────────────
 export const BEE = '/puzzles/bee.png'   // Bee's cut-out, from the Day 2 "Me & Dug-Dug" drawing
 export const BEE_LINES = {
-  erase: ['Erased! Pick another one.', 'Poof — gone!', 'Rubbed it out for you.'],
-  reset: ['Fresh start! You’ve got this.', 'Wiped clean — round two!', 'Back to the beginning!'],
-  clear: ['Board cleared — Dug-Dug’s waiting!', 'All clear!', 'Clean slate, let’s go!'],
+  erase: ['Erased! Pick another one.', 'Poof, gone!', 'Rubbed it out for you.'],
+  reset: ['Fresh start! You’ve got this.', 'Wiped clean, round two!', 'Back to the beginning!'],
+  clear: ['Board cleared! Dug-Dug’s waiting.', 'All clear!', 'Clean slate, let’s go!'],
   undo:  ['Back one step!', 'Rewind!', 'Oops, undone.'],
 }
 

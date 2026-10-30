@@ -60,7 +60,7 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
           Message sent.
         </p>
         <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
-          Thank you — I&apos;ll get back to you soon.
+          Thank you! I&apos;ll get back to you soon.
         </p>
       </div>
     )
@@ -109,7 +109,7 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
 
       {status === 'error' && (
         <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#7a3040' }}>
-          Something went wrong — please try again.
+          Something went wrong. Please try again.
         </p>
       )}
 

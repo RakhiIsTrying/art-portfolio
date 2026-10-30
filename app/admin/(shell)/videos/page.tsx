@@ -44,7 +44,7 @@ export default async function AdminVideosPage() {
 
         {!videos?.length && (
           <p style={{ padding: '20px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
-            No videos yet — add one above.
+            No videos yet. Add one above.
           </p>
         )}
 

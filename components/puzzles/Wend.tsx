@@ -117,7 +117,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
           // Clue: where the path went wrong, or which way to go next
           let same = 0
           while (same < path.length && path[same] === solution[same]) same++
-          if (same < path.length) return `The walk goes wrong after square ${same} — go back and try another way.`
+          if (same < path.length) return `The walk goes wrong after square ${same}. Go back and try another way.`
           // Nothing drawn yet: talk about the first step out of the 1
           const walked = path.length ? same : 1
           const from = path.length ? path[path.length - 1] : solution[0], to = solution[walked]

@@ -26,7 +26,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
     <section className="grid grid-cols-1 md:grid-cols-[52px_1fr_1fr] md:h-[calc(100svh-82px)] md:min-h-[420px] md:max-h-[660px]"
       style={{ background: '#e6e6e6' }}>
 
-      {/* Sidebar — one coloured stripe per category */}
+      {/* Sidebar, one coloured stripe per category */}
       <div className="hidden md:flex" style={{ flexDirection: 'column', borderRight: '1px solid #d0d0d0', overflow: 'hidden' }}>
         {categories.map((cat, i) => (
           <Link
@@ -69,7 +69,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
         }} />
 
         {latest && (
-          <Link href={`/gallery/${latest.collection_slug}`} aria-label={`${latest.title} — view collection`} className="group" style={{ position: 'absolute', inset: 0, display: 'block' }}>
+          <Link href={`/gallery/${latest.collection_slug}`} aria-label={`${latest.title}, view collection`} className="group" style={{ position: 'absolute', inset: 0, display: 'block' }}>
             <ArtFill src={latest.image_url} alt={latest.title} priority sizes="(max-width: 768px) 100vw, 50vw" fallback="transparent" />
             {/* Scrims keep the labels legible over any artwork */}
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(20,16,16,.55) 0%, transparent 22%, transparent 70%, rgba(20,16,16,.75) 100%)' }} />
@@ -155,22 +155,31 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts }: 
             fontSize: 13, lineHeight: 1.8, fontWeight: 300, color: '#787878',
             marginBottom: 20,
           }}>
-            Pop culture art — music, cinema and comics, through an original hand-crafted lens.
+            Pop culture art: music, cinema and comics, through an original hand-crafted lens.
           </p>
         </div>
 
-        {/* Where to next — four colour tiles, each with a cut-out peeking in */}
+        {/* Where to next, four colour tiles, each with a cut-out peeking in */}
         <div className="grid grid-cols-2 grid-rows-2" style={{ gap: 8, marginTop: 22, flex: 1, minHeight: 230 }}>
           {[
             { href: '/gallery', label: 'Explore the gallery', sub: stats ? `${stats.works} works` : 'All collections', color: '#7a3040', img: cutouts?.music?.url ?? cutouts?.comics?.url },
             { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: cutouts?.comics?.url ?? cutouts?.movies?.url },
             { href: '/print-club', label: 'Print Club', sub: stats ? `${stats.clubPrice} / month` : 'A print every month', color: '#9a5a64', img: cutouts?.['bee-ben']?.url },
-            { href: '/puzzles', label: 'Daily puzzles', sub: '5 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png' },
+            { href: '/puzzles', label: 'Daily puzzles', sub: '5 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png', friends: true },
           ].map(t => (
             <Link key={t.href} href={t.href} className="group"
               style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 110,
                        padding: '12px 14px', background: t.color, color: '#fff', textDecoration: 'none', overflow: 'hidden' }}>
-              {t.img && (
+              {/* Puzzles tile: Bee, Ben and Dug-Dug together */}
+              {'friends' in t && (
+                <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 4, top: 8, height: '72%', width: '64%', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                  {['/puzzles/bee.png', '/puzzles/ben.png', '/puzzles/dugdug.png'].map((src, k) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img key={src} src={src} alt="" style={{ height: k === 2 ? '72%' : '100%', marginLeft: k ? '-9%' : 0, objectFit: 'contain', filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.35))', position: 'relative', zIndex: k === 2 ? 3 : 1 }} />
+                  ))}
+                </span>
+              )}
+              {t.img && !('friends' in t) && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={t.img} alt="" aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-[-3deg]"
                   style={{ position: 'absolute', right: -6, top: 8, height: '66%', maxWidth: '58%', objectFit: 'contain', opacity: .97,

@@ -7,6 +7,16 @@ import type { Artwork } from '@/lib/types'
 type Props = { collections: { slug: string; name: string }[]; initial: Record<string, Artwork[]> }
 
 const input: React.CSSProperties = { border: '1px solid #e0dcdc', padding: '5px 7px', fontSize: 12, fontFamily: 'inherit', background: '#fff', color: '#1a1014' }
+// The four ways a piece can be offered in the shop
+const SALE = {
+  prints:  { label: 'Prints',                     prints: true,  original: false },
+  both:    { label: 'Prints + original for sale', prints: true,  original: true },
+  original:{ label: 'Original only',              prints: false, original: true },
+  display: { label: 'Display only (not for sale)', prints: false, original: false },
+} as const
+type Sale = keyof typeof SALE
+const saleOf = (a: Artwork): Sale => (a.prints_available !== false ? (a.original_available ? 'both' : 'prints') : a.original_available ? 'original' : 'display')
+
 const btn = (dark?: boolean): React.CSSProperties => ({ padding: '8px 14px', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer', border: '1px solid #1a1014', background: dark ? '#1a1014' : '#fff', color: dark ? '#fff' : '#1a1014' })
 
 export default function ArrangeArt({ collections, initial }: Props) {
@@ -26,12 +36,14 @@ export default function ArrangeArt({ collections, initial }: Props) {
     })
   }
 
-  function saveRow(a: Artwork, fields: { title: string; medium: string; year: string; collection_slug: string }) {
+  function saveRow(a: Artwork, fields: { title: string; medium: string; year: string; collection_slug: string; sale: Sale }) {
     start(async () => {
       try {
-        await updateArtwork(a.id, { title: fields.title, medium: fields.medium || null, year: fields.year ? Number(fields.year) : null, collection_slug: fields.collection_slug })
+        await updateArtwork(a.id, { title: fields.title, medium: fields.medium || null, year: fields.year ? Number(fields.year) : null, collection_slug: fields.collection_slug,
+          prints_available: SALE[fields.sale].prints, original_available: SALE[fields.sale].original })
         setLists(prev => {
-          const updated = { ...a, title: fields.title.trim(), medium: fields.medium || null, year: fields.year ? Number(fields.year) : null, collection_slug: fields.collection_slug }
+          const updated = { ...a, title: fields.title.trim(), medium: fields.medium || null, year: fields.year ? Number(fields.year) : null, collection_slug: fields.collection_slug,
+            prints_available: SALE[fields.sale].prints, original_available: SALE[fields.sale].original }
           if (fields.collection_slug === a.collection_slug) return { ...prev, [tab]: prev[tab].map(x => (x.id === a.id ? updated : x)) }
           // Moved: take it out of this collection and add it to the end of the new one
           return { ...prev, [tab]: prev[tab].filter(x => x.id !== a.id), [fields.collection_slug]: [...(prev[fields.collection_slug] ?? []), updated] }
@@ -76,10 +88,10 @@ function confirmLeave() {
 
 function Row({ art, collections, onSave, disabled }: {
   art: Artwork; collections: { slug: string; name: string }[]; disabled: boolean
-  onSave: (f: { title: string; medium: string; year: string; collection_slug: string }) => void
+  onSave: (f: { title: string; medium: string; year: string; collection_slug: string; sale: Sale }) => void
 }) {
-  const [f, setF] = useState({ title: art.title, medium: art.medium ?? '', year: art.year ? String(art.year) : '', collection_slug: art.collection_slug })
-  const changed = f.title !== art.title || f.medium !== (art.medium ?? '') || f.year !== (art.year ? String(art.year) : '') || f.collection_slug !== art.collection_slug
+  const [f, setF] = useState({ title: art.title, medium: art.medium ?? '', year: art.year ? String(art.year) : '', collection_slug: art.collection_slug, sale: saleOf(art) })
+  const changed = f.title !== art.title || f.medium !== (art.medium ?? '') || f.year !== (art.year ? String(art.year) : '') || f.collection_slug !== art.collection_slug || f.sale !== saleOf(art)
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -89,6 +101,10 @@ function Row({ art, collections, onSave, disabled }: {
       <input aria-label="Year" placeholder="Year" inputMode="numeric" value={f.year} onChange={e => setF({ ...f, year: e.target.value.replace(/\D/g, '').slice(0, 4) })} style={{ ...input, width: 62 }} />
       <select aria-label="Collection" value={f.collection_slug} onChange={e => setF({ ...f, collection_slug: e.target.value })} style={{ ...input, width: 150 }}>
         {collections.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+      </select>
+      <select aria-label="In the shop" value={f.sale} onChange={e => setF({ ...f, sale: e.target.value as Sale })}
+              style={{ ...input, width: 200, background: f.sale === 'display' ? '#f4f2ef' : f.sale === 'prints' ? '#fff' : '#fbf1f3' }}>
+        {(Object.keys(SALE) as Sale[]).map(k => <option key={k} value={k}>{SALE[k].label}</option>)}
       </select>
       <button type="button" disabled={!changed || disabled} onClick={() => onSave(f)}
         style={{ ...btn(changed), padding: '6px 10px', opacity: changed ? 1 : .35 }}>Save</button>

@@ -23,7 +23,7 @@ export async function loginAction(
   redirect('/admin/artworks')
 }
 
-/** Emails a link to set a new password — only ever to the owner's address. */
+/** Emails a link to set a new password, only ever to the owner's address. */
 export async function forgotPasswordAction(
   _prev: { error?: string; sent?: string } | null,
   formData: FormData

@@ -152,7 +152,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
         getHint={n => {
           // Clue: point out a mistake's row, or a square where only one number fits
           const wrong = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).find(({ r, c, v }) => !puzzle[r][c] && v && v !== solution[r][c])
-          if (wrong) return `Something in row ${wrong.r + 1} isn’t right — take another look.`
+          if (wrong) return `Something in row ${wrong.r + 1} isn’t right. Take another look.`
           const empties = grid.flatMap((row, r) => row.map((v, c) => ({ r, c, v }))).filter(({ v }) => !v)
             .map(({ r, c }) => ({ r, c, n: [1, 2, 3, 4, 5, 6].filter(v => sudokuOk(grid, r, c, v)).length }))
             .sort((a, b) => a.n - b.n)
@@ -161,7 +161,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
           if (!t) return null
           setSel([t.r, t.c])
           return t.n === 1
-            ? `Look at row ${t.r + 1}, column ${t.c + 1} (I’ve selected it) — only one number can go there.`
+            ? `Look at row ${t.r + 1}, column ${t.c + 1} (I’ve selected it). Only one number can go there.`
             : `Try row ${t.r + 1}, column ${t.c + 1} next (I’ve selected it).`
         }}
         getReveal={() => {

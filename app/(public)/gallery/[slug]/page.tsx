@@ -56,7 +56,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
         <MasonryGrid artworks={arrange(artworks as Artwork[], artworkOrder[slug])} initialId={art} />
       ) : (
         <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
-          No pieces here yet — check back soon.
+          No pieces here yet. Check back soon.
         </p>
       )}
 

@@ -8,7 +8,7 @@ const cache = new Map<string, ArtMeta>()
 const pending = new Map<string, Promise<ArtMeta | null>>()
 
 /**
- * The art's border colour — but only when its corners are one flat colour (solid black,
+ * The art's border colour, but only when its corners are one flat colour (solid black,
  * red…). Shaded, textured or mixed edges return null, so the space stays plain white.
  */
 function edgeColour(img: HTMLImageElement) {

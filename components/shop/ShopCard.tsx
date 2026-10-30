@@ -13,7 +13,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
 }
 
 export function inquireHref(artwork: Artwork, kind: 'print' | 'original') {
-  const piece = `${kind === 'print' ? 'Print' : 'Original'} — ${artwork.title}`
+  const piece = `${kind === 'print' ? 'Print' : 'Original'}: ${artwork.title}`
   return `/inquire?piece=${encodeURIComponent(piece)}`
 }
 

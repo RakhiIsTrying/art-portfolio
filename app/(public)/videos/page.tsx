@@ -15,7 +15,7 @@ export default async function VideosPage() {
     return (
       <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 1100, margin: '0 auto' }}>
         <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
-          No videos yet — check back soon.
+          No videos yet. Check back soon.
         </p>
       </div>
     )

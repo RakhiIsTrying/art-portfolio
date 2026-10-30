@@ -18,8 +18,8 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: 'Van Gone Broke — Art Studio',
-  description: 'Pop culture digital and traditional art — music, movies, comics, originals.',
+  title: 'Van Gone Broke | Art Studio',
+  description: 'Pop culture digital and traditional art: music, movies, comics and originals.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

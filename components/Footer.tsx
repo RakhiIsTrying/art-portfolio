@@ -18,7 +18,7 @@ export default function Footer() {
   return (
     <footer className="flex-wrap gap-y-2 px-4 py-3 md:h-[38px] md:py-0 md:pr-6 md:pl-[76px]" style={{ background: '#1a1014', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
 
-      {/* Collection links — hidden on phones to keep the footer to one line */}
+      {/* Collection links, hidden on phones to keep the footer to one line */}
       <div className="hidden md:flex" style={{ alignItems: 'stretch', height: '100%' }}>
         {categories.map(({ label, color, href }) => (
           <Link

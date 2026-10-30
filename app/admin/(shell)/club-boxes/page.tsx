@@ -24,7 +24,7 @@ export default async function AdminClubBoxesPage() {
 
       {!boxes?.length && (
         <p style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0' }}>
-          No months yet — pick a month above and click “New month”.
+          No months yet. Pick a month above and click “New month”.
         </p>
       )}
 

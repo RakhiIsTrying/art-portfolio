@@ -69,7 +69,7 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
         getHint={n => {
           // Clue: which row Dug-Dug goes in for one colour area
           const open = solution.map((c, row) => row).filter(row => board[row][solution[row]] !== 2)
-          if (!open.length) return 'Every Dug-Dug is in place — check none of them are touching!'
+          if (!open.length) return 'Every Dug-Dug is in place. Check none of them are touching!'
           const r = open[n % open.length]
           return `In the ${REGION_NAMES[regions[r][solution[r]] % REGION_NAMES.length]} area, Dug-Dug goes in row ${r + 1}.`
         }}

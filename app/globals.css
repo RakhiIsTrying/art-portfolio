@@ -70,7 +70,7 @@
 .animate-ticker-left  { animation: ticker-left  24s linear infinite; }
 .animate-ticker-right { animation: ticker-right 28s linear infinite; }
 
-/* Videos — screening room */
+/* Videos: screening room */
 @keyframes vgb-rise {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: none; }

@@ -101,11 +101,11 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
         </div>
 
         {/* Found words */}
-        <div style={{ border: '1px solid #d0d0d0', background: '#fff', padding: '14px 16px', minHeight: 120, width: 'min(100%, 620px)', textAlign: 'left' }}>
+        <div style={{ border: '1px solid #d0d0d0', background: '#fff', padding: '14px 16px', minHeight: 120, width: 'min(100%, 620px)', textAlign: 'center' }}>
           <p style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: '#a0a0a0', marginBottom: 10 }}>
             You found {found.length} of {answers.length} {found.length === 1 ? 'word' : 'words'}
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px 14px' }}>
             {[...found].sort().map(w => (
               <span key={w} style={{ fontSize: 13, textTransform: 'capitalize', color: INK, fontWeight: isPangram(w, letters) ? 700 : 300, borderBottom: '1px solid #ebebeb' }}>
                 {w}
