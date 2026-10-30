@@ -9,9 +9,9 @@ const navItems = [
   { href: '/videos',   label: 'Videos',  color: '#1e3a8a' },
   { href: '/puzzles',  label: 'Puzzles', color: '#1a6060' },
   { href: '/about',    label: 'About',   color: '#7a5020' },
-  { href: '/inquire',  label: 'Inquire', color: '#4a3a7a' },
   { href: '/shop',     label: 'Shop',    color: '#1a1014' },
   { href: '/print-club', label: 'Print Club', color: '#9a5a64' },
+  { href: '/inquire',  label: 'Inquire', color: '#4a3a7a' },
 ]
 
 export default function Nav() {
