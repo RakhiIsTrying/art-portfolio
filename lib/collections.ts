@@ -29,4 +29,4 @@ export const categoryDesc: Record<string, string> = {
 }
 
 /** Categories the videos table accepts (its database check allows only these). */
-export const VIDEO_CATEGORIES = ['music', 'movies', 'comics', 'bee-ben'] as const
+export const VIDEO_CATEGORIES = ['music', 'movies', 'comics', 'bee-ben', 'sketchbook'] as const

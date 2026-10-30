@@ -14,6 +14,7 @@ const FILTERS = [
   { slug: 'music',   label: 'Music',             color: '#7a3040' },
   { slug: 'comics',  label: 'Comics',            color: '#1a6060' },
   { slug: 'bee-ben', label: 'Bee Ben & Dug-Dug', color: '#4a3a7a' },
+  { slug: 'sketchbook', label: 'Sketchbook',      color: '#3d4f45' },
 ]
 
 export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {

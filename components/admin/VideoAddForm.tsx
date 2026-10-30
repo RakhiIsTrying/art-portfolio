@@ -72,6 +72,7 @@ export default function VideoAddForm() {
               <option value="music">Music</option>
               <option value="comics">Comics</option>
               <option value="bee-ben">Bee Ben &amp; Dug-Dug</option>
+              <option value="sketchbook">Sketchbook</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
