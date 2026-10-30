@@ -32,10 +32,25 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   shopIntro: 'Bring a piece home. Every print and card is made to order — pick a piece, see it at every size, and send your order.',
 }
 
-export async function getSettings(): Promise<SiteSettings> {
-  const { data } = await getSupabaseAdminClient().from('pages').select('content_json').eq('slug', SLUG).maybeSingle()
+// Settings change rarely, so each server keeps a copy for up to a minute (saves clear it)
+const TTL_MS = 60_000
+let cached: { at: number; value: Promise<SiteSettings> } | null = null
+
+async function loadSettings(): Promise<SiteSettings> {
+  const { data, error } = await getSupabaseAdminClient().from('pages').select('content_json').eq('slug', SLUG).maybeSingle()
+  if (error) throw new Error(error.message)
   const saved = (data?.content_json ?? {}) as Partial<SiteSettings>
   return { ...DEFAULT_SETTINGS, ...saved, plans: { ...DEFAULT_SETTINGS.plans, ...(saved.plans ?? {}) } }
+}
+
+export async function getSettings(): Promise<SiteSettings> {
+  if (!cached || Date.now() - cached.at > TTL_MS) {
+    const value = loadSettings()
+    cached = { at: Date.now(), value }
+    // If the read fails, don't keep the failure around — and fall back to the defaults for this visit
+    value.catch(() => { if (cached?.value === value) cached = null })
+  }
+  return cached.value.catch(() => DEFAULT_SETTINGS)
 }
 
 export async function saveSettings(patch: Partial<SiteSettings>) {
@@ -44,6 +59,8 @@ export async function saveSettings(patch: Partial<SiteSettings>) {
   const { error } = await getSupabaseAdminClient().from('pages')
     .upsert({ slug: SLUG, content_json: next, updated_at: new Date().toISOString() })
   if (error) throw new Error(error.message)
+  cached = { at: Date.now(), value: Promise.resolve(next) }
+  cutoutMeta = null
   return next
 }
 
@@ -57,12 +74,26 @@ export function arrange<T extends { id: string }>(items: T[], order: string[] | 
 export type Cutout = { url: string; title: string; collection: string }
 
 /** One random cut-out per collection (different on every page load). */
-export async function randomCutouts(): Promise<Record<string, Cutout | null>> {
+let cutoutMeta: { at: number; value: Promise<Record<string, Cutout[]>> } | null = null
+
+async function loadCutoutsByCollection(): Promise<Record<string, Cutout[]>> {
   const { cutouts } = await getSettings()
   const ids = Object.keys(cutouts)
   if (!ids.length) return {}
-  const { data } = await getSupabaseAdminClient().from('artworks').select('id, title, collection_slug').in('id', ids)
+  const { data, error } = await getSupabaseAdminClient().from('artworks').select('id, title, collection_slug').in('id', ids)
+  if (error) throw new Error(error.message)
   const byCollection: Record<string, Cutout[]> = {}
   for (const a of data ?? []) (byCollection[a.collection_slug] ??= []).push({ url: cutouts[a.id], title: a.title, collection: a.collection_slug })
+  return byCollection
+}
+
+/** One random cut-out per collection (a fresh pick on every page load). */
+export async function randomCutouts(): Promise<Record<string, Cutout | null>> {
+  if (!cutoutMeta || Date.now() - cutoutMeta.at > TTL_MS) {
+    const value = loadCutoutsByCollection()
+    cutoutMeta = { at: Date.now(), value }
+    value.catch(() => { if (cutoutMeta?.value === value) cutoutMeta = null })
+  }
+  const byCollection = await cutoutMeta.value.catch(() => ({} as Record<string, Cutout[]>))
   return Object.fromEntries(Object.entries(byCollection).map(([slug, list]) => [slug, list[Math.floor(Math.random() * list.length)]]))
 }

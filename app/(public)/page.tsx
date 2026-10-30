@@ -20,16 +20,18 @@ const BOTTOM_TICKER = '✦ AVAILABLE FOR COMMISSIONS  ·  INQUIRE FOR PRICING  �
 
 export default async function HomePage() {
   const supabase = await getSupabaseServerClient()
-  const { data: artworks } = await supabase
-    .from('artworks')
-    .select('*')
-    .eq('featured', true)
-    .order('featured_order', { ascending: true })
-    .limit(9)
+  // Everything the page needs, fetched side by side rather than one after another
+  const [featuredRes, settings, cutouts, countRes, plan] = await Promise.all([
+    supabase.from('artworks').select('*').eq('featured', true).order('featured_order', { ascending: true }).limit(9),
+    getSettings(),
+    randomCutouts(),
+    supabase.from('artworks').select('id', { count: 'exact', head: true }),
+    planForVisitor(),
+  ])
+  const works = (featuredRes.data ?? []) as Artwork[]
+  const totalWorks = countRes.count
 
-  const works = (artworks ?? []) as Artwork[]
-
-  const settings = await getSettings()
+  // Front-page piece: the one chosen in Admin, or KATSEYE until then, or the newest upload
   const { heroArtworkId } = settings
   const { data: pinned } = heroArtworkId === 'latest'
     ? { data: null }
@@ -41,10 +43,6 @@ export default async function HomePage() {
     : await supabase.from('artworks').select('*').order('created_at', { ascending: false }).limit(1).maybeSingle()
   const hero = (pinned ?? latest) as Artwork | null
 
-  // A different random cut-out per collection on every visit, plus numbers for the front-page tiles
-  const cutouts = await randomCutouts()
-  const { count: totalWorks } = await supabase.from('artworks').select('id', { count: 'exact', head: true })
-  const plan = await planForVisitor()
   const currency = plan === 'india' ? 'inr' : 'usd'
   const stats = {
     works: totalWorks ?? 0,
