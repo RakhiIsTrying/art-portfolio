@@ -8,6 +8,7 @@ const PRIVATE = 'inbox'            // private bucket: the token and the review q
 const PUBLIC = 'artworks'          // public bucket: copied images and reels
 const STATE = 'instagram/state.json'
 const PENDING = 'instagram/pending/'
+const SKIPPED = 'instagram/skipped/'   // skipped in review; kept so they can still be published later
 const REFRESH_EVERY_DAYS = 7       // tokens last 60 days; refreshing weekly keeps them alive
 
 export type IgState = {
@@ -140,20 +141,31 @@ async function toPending(m: IgMedia): Promise<PendingPost | null> {
   return { ...base, kind: 'image', imageUrl: await copyToStorage(src, `instagram/${m.id}.jpg`, 'image/jpeg') }
 }
 
-export async function listPending(): Promise<PendingPost[]> {
-  const { data: files } = await store().from(PRIVATE).list(PENDING.slice(0, -1), { limit: 100 })
-  const posts = await Promise.all((files ?? []).filter(f => f.name.endsWith('.json'))
-    .map(f => readJson<PendingPost>(PRIVATE, `${PENDING}${f.name}`)))
+export type Folder = 'pending' | 'skipped'
+const dir = (f: Folder) => (f === 'pending' ? PENDING : SKIPPED)
+
+async function listFolder(f: Folder): Promise<PendingPost[]> {
+  const { data: files } = await store().from(PRIVATE).list(dir(f).slice(0, -1), { limit: 200 })
+  const posts = await Promise.all((files ?? []).filter(x => x.name.endsWith('.json'))
+    .map(x => readJson<PendingPost>(PRIVATE, `${dir(f)}${x.name}`)))
   return posts.filter((p): p is PendingPost => !!p).sort((a, b) => b.postedAt.localeCompare(a.postedAt))
 }
+export const listPending = () => listFolder('pending')
+export const listSkipped = () => listFolder('skipped')
 
-export async function getPending(id: string) {
-  return readJson<PendingPost>(PRIVATE, `${PENDING}${id}.json`)
+export async function getPost(id: string, f: Folder) {
+  return readJson<PendingPost>(PRIVATE, `${dir(f)}${id}.json`)
 }
 
-/** Remove from the queue; with dropMedia, also delete the copied files (when skipping). */
-export async function removePending(post: PendingPost, dropMedia: boolean) {
+/** Skipping keeps the post (and its copied files) in Skipped, so it can be published later. */
+export async function moveToSkipped(post: PendingPost) {
+  await writeJson(PRIVATE, `${SKIPPED}${post.id}.json`, post)
   await store().from(PRIVATE).remove([`${PENDING}${post.id}.json`])
+}
+
+/** Take a post out of a folder; with dropMedia, also delete its copied files (deleting for good). */
+export async function removePost(post: PendingPost, f: Folder, dropMedia: boolean) {
+  await store().from(PRIVATE).remove([`${dir(f)}${post.id}.json`])
   if (dropMedia) {
     const paths = post.kind === 'reel'
       ? [`instagram/reels/${post.id}.mp4`, `instagram/reels/posters/${post.id}.jpg`]

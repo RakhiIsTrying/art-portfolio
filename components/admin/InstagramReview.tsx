@@ -1,6 +1,6 @@
 'use client'
 import { useActionState, useState, useTransition } from 'react'
-import { checkNow, connectInstagram, publishPost, skipPost, type Sale } from '@/app/admin/(shell)/instagram/actions'
+import { checkNow, connectInstagram, deleteSkippedPost, publishPost, skipPost, type Sale } from '@/app/admin/(shell)/instagram/actions'
 import type { PendingPost } from '@/lib/instagram'
 import { VIDEO_CATEGORIES } from '@/lib/collections'
 
@@ -47,7 +47,7 @@ export function CheckNow() {
   )
 }
 
-export function PendingCard({ post, defaultTitle, collections }: { post: PendingPost; defaultTitle: string; collections: { slug: string; name: string }[] }) {
+export function PendingCard({ post, defaultTitle, collections, skipped = false }: { post: PendingPost; defaultTitle: string; collections: { slug: string; name: string }[]; skipped?: boolean }) {
   const [title, setTitle] = useState(defaultTitle)
   const [collection, setCollection] = useState(post.kind === 'image' ? 'sketchbook' : '')
   const [sale, setSale] = useState<Sale>('display')
@@ -102,13 +102,20 @@ export function PendingCard({ post, defaultTitle, collections }: { post: Pending
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <button type="button" disabled={pending} style={{ ...btn(true), opacity: pending ? .5 : 1 }}
-            onClick={() => run(() => publishPost(post.id, { title, collection, sale }), `Published “${title || 'Untitled'}” ✓`)}>
+            onClick={() => run(() => publishPost(post.id, { title, collection, sale }, skipped ? 'skipped' : 'pending'), `Published “${title || 'Untitled'}” ✓`)}>
             {post.kind === 'image' ? 'Publish to gallery' : 'Add to Videos'}
           </button>
-          <button type="button" disabled={pending} style={btn()}
-            onClick={() => { if (window.confirm('Skip this post? It won’t be added to the site.')) run(() => skipPost(post.id), 'Skipped') }}>
-            Skip
-          </button>
+          {skipped ? (
+            <button type="button" disabled={pending} style={{ ...btn(), color: '#7a3040', borderColor: '#7a3040' }}
+              onClick={() => { if (window.confirm('Delete this post for good? Its copied image or reel is removed too.')) run(() => deleteSkippedPost(post.id), 'Deleted') }}>
+              Delete for good
+            </button>
+          ) : (
+            <button type="button" disabled={pending} style={btn()}
+              onClick={() => run(() => skipPost(post.id), 'Skipped. You can still publish it from Admin → Skipped.')}>
+              Skip
+            </button>
+          )}
           {error && <span role="alert" style={{ fontSize: 12, color: '#7a3040' }}>{error}</span>}
         </div>
       </div>
