@@ -73,10 +73,19 @@ export function arrange<T extends { id: string }>(items: T[], order: string[] | 
 
 export type Cutout = { url: string; title: string; collection: string }
 
-/** One random cut-out per collection (different on every page load). */
-/** One random cut-out per collection (a fresh pick on every page load). The list lives in lib/cutouts.json. */
-export async function randomCutouts(): Promise<Record<string, Cutout | null>> {
-  const byCollection: Record<string, Cutout[]> = {}
-  for (const c of CUTOUTS) (byCollection[c.collection] ??= []).push({ url: c.url, title: c.title, collection: c.collection })
-  return Object.fromEntries(Object.entries(byCollection).map(([slug, list]) => [slug, list[Math.floor(Math.random() * list.length)]]))
+/** The cut-out shown for each collection, chosen by the artist (always the same, never random). */
+const CHOSEN_CUTOUTS: Record<string, string> = {
+  music: 'KATSEYE',
+  movies: 'Joker',
+  comics: 'Spirited Away',
+  'bee-ben': 'Distinguished Gentleman',   // 5th piece in the Bee, Ben & Dug-Dug gallery
+  sketchbook: 'Pink Blossoms',
+}
+
+/** One cut-out per collection. The list of cut-outs lives in lib/cutouts.json. */
+export async function collectionCutouts(): Promise<Record<string, Cutout | null>> {
+  return Object.fromEntries(Object.entries(CHOSEN_CUTOUTS).map(([slug, title]) => {
+    const c = CUTOUTS.find(x => x.collection === slug && x.title === title) ?? CUTOUTS.find(x => x.collection === slug)
+    return [slug, c ? { url: c.url, title: c.title, collection: c.collection } : null]
+  }))
 }

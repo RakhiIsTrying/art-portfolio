@@ -1,5 +1,5 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import { getSettings, randomCutouts } from '@/lib/settings'
+import { getSettings, collectionCutouts } from '@/lib/settings'
 import { planForVisitor } from '@/lib/printClubServer'
 import { formatPrice } from '@/lib/prints'
 import Ticker from '@/components/Ticker'
@@ -9,7 +9,7 @@ import CollectionsStrip from '@/components/CollectionsStrip'
 import { COLLECTIONS } from '@/lib/collections'
 import type { Artwork } from '@/lib/types'
 
-// New random cut-outs on every visit
+// Fresh data on every visit
 export const dynamic = 'force-dynamic'
 
 const TOP_TICKER    = '✦ POP ART  ·  DIGITAL ART  ·  SKETCHBOOK  ·  MUSIC ICONS  ·  MOVIE ART  ·  COMICS  ·  BEE BEN & DUG-DUG  ·  STICKERS  ·  CHIBI  ·  ORIGINALS'
@@ -24,7 +24,7 @@ export default async function HomePage() {
   const [featuredRes, settings, cutouts, countRes, plan] = await Promise.all([
     supabase.from('artworks').select('*').eq('featured', true).order('featured_order', { ascending: true }).limit(9),
     getSettings(),
-    randomCutouts(),
+    collectionCutouts(),
     supabase.from('artworks').select('id', { count: 'exact', head: true }),
     planForVisitor(),
   ])

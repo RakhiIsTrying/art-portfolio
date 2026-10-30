@@ -86,7 +86,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
   const [burst, setBurst] = useState(0)
   const [celebrating, setCelebrating] = useState(false)
   const countdown = useCountdown(isToday)
-  // Confetti for each puzzle: when it's solved, and whenever a solved puzzle is opened (or the page refreshed on it)
+  // Confetti once, at the moment a puzzle is solved (never again on reopening or reloading it)
   const celebrate = useCallback(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     setBurst(b => b + 1)
@@ -96,11 +96,6 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
     if (solvedLoaded && !solved[g]) celebrate()
     setSolved(s => (s[g] ? s : { ...s, [g]: true }))
   }, [setSolved, solved, solvedLoaded, celebrate])
-  useEffect(() => {
-    if (solvedLoaded && solved[active]) celebrate()
-    // Only when a puzzle is opened, not every time progress changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, solvedLoaded])
 
   useEffect(() => {
     if (!celebrating) return

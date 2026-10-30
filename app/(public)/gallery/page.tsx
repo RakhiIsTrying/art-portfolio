@@ -2,11 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { COLLECTIONS, categoryColors, categoryDesc } from '@/lib/collections'
-import { arrange, getSettings, randomCutouts } from '@/lib/settings'
+import { arrange, getSettings, collectionCutouts } from '@/lib/settings'
 import type { Artwork } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
 
-// New cut-outs on every visit
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
@@ -25,7 +24,7 @@ const FAN = [
 export default async function GalleryPage() {
   const supabase = await getSupabaseServerClient()
   const settings = await getSettings()
-  const cutouts = await randomCutouts()
+  const cutouts = await collectionCutouts()
   const { data } = await supabase.from('artworks').select('*').order('created_at', { ascending: false })
   const all = (data ?? []) as Artwork[]
   const originals = all.filter(a => a.original_available === true)

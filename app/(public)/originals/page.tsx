@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { COLLECTIONS } from '@/lib/collections'
-import { arrange, getSettings, randomCutouts } from '@/lib/settings'
+import { arrange, getSettings, collectionCutouts } from '@/lib/settings'
 import { planForVisitor } from '@/lib/printClubServer'
 import ShopGrid from '@/components/shop/ShopGrid'
 import { ShopSettingsProvider } from '@/components/shop/ShopSettings'
@@ -22,7 +22,7 @@ export default async function OriginalsPage() {
   const [{ data }, settings, cutouts, plan] = await Promise.all([
     supabase.from('artworks').select('*').eq('original_available', true).order('created_at', { ascending: false }),
     getSettings(),
-    randomCutouts(),
+    collectionCutouts(),
     planForVisitor(),
   ])
   const all = (data ?? []) as Artwork[]

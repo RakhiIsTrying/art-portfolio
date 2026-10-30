@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { COLLECTIONS, categoryColors, categoryDesc } from '@/lib/collections'
 import type { Cutout } from '@/lib/settings'
 
-/** Browse Collections: one colour block per collection, with a random cut-out of its art popping out. */
+/** Browse Collections: one colour block per collection, with a cut-out of its art popping out. */
 export default function CollectionsStrip({ cutouts = {} }: { cutouts?: Record<string, Cutout | null> }) {
   return (
     // One per row on small phones, two on big phones / iPad portrait, three on iPad landscape, all five on computers
