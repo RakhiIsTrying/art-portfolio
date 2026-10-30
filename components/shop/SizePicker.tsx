@@ -8,9 +8,13 @@ export type Quantities = Record<string, number>
 export function summarise(sizes: PrintSize[], qty: Quantities, currency: Currency) {
   const lines = sizes.filter(s => (qty[s.id] ?? 0) > 0).map(s => ({ ...s, n: qty[s.id] }))
   const total = lines.reduce((sum, l) => sum + l.n * l[currency], 0)
-  const underMin = lines.filter(l => l.min && l.n < l.min)
+  // Free shipping once the order reaches the threshold, in any mix of sizes; otherwise each size's own minimum applies
+  const underMin = total >= FREE_SHIPPING_FROM[currency] ? [] : lines.filter(l => l.min && l.n < l.min)
   return { lines, total, underMin }
 }
+
+/** Order total that ships free, whatever the sizes. */
+export const FREE_SHIPPING_FROM: Record<Currency, number> = { inr: 1000, usd: 10 }
 
 /** The order payload the inquiry email understands. */
 export function orderPayload(sizes: PrintSize[], qty: Quantities, currency: Currency, greeting?: string) {
