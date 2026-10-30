@@ -9,7 +9,7 @@ export default async function InquirePage() {
   const settings = await getSettings()
 
   return (
-    <div style={{ maxWidth: 640, margin: '0 auto', padding: '36px 36px 60px' }}>
+    <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 640, margin: '0 auto' }}>
 
       {/* Page header */}
       <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #d0d0d0' }}>

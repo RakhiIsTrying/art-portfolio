@@ -10,11 +10,11 @@ import Confetti from './Confetti'
 import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
 
 const GAMES = [
-  { id: 'sudoku', name: 'Mini Sudoku',  blurb: 'Uncover a Dug-Dug drawing', icon: '🎨' },
-  { id: 'wordle', name: 'Wordle',       blurb: 'Five letters, six tries',   icon: '🔤' },
-  { id: 'queens', name: 'Dug-Dug Kings', blurb: 'One pup per row & colour', icon: '🐶' },
-  { id: 'wend',   name: 'Walkies',      blurb: 'Walk Dug-Dug past every square', icon: '🐾' },
-  { id: 'bee',    name: 'Bee’s Hive',   blurb: 'Spelling Bee with 7 letters', icon: '🐝' },
+  { id: 'sudoku', name: 'Mini Sudoku',  blurb: 'Uncover a drawing', icon: '🎨' },
+  { id: 'wordle', name: 'Wordle',       blurb: '5 letters, 6 tries', icon: '🔤' },
+  { id: 'queens', name: 'Dug-Dug Kings', blurb: 'One pup per row', icon: '🐶' },
+  { id: 'wend',   name: 'Walkies',      blurb: 'Walk every square', icon: '🐾' },
+  { id: 'bee',    name: 'Bee’s Hive',   blurb: 'Spell with 7 letters', icon: '🐝' },
 ] as const
 type GameId = typeof GAMES[number]['id']
 
@@ -141,10 +141,10 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
               style={{ textAlign: 'left', padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                        background: on ? BEE_BEN : '#fff', color: on ? '#fff' : INK, transition: 'background .2s' }}>
               <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontFamily: PLAYFAIR, fontSize: 17, fontWeight: 700 }}><span aria-hidden style={{ marginRight: 6 }}>{g.icon}</span>{g.name}</span>
+                <span style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(14px, 1.6vw, 17px)', fontWeight: 700, whiteSpace: 'nowrap' }}><span aria-hidden style={{ marginRight: 6 }}>{g.icon}</span>{g.name}</span>
                 {solved[g.id] && <span aria-label="solved" style={{ fontSize: 13 }}>✓</span>}
               </span>
-              <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3, color: on ? 'rgba(255,255,255,.8)' : '#787878' }}>{g.blurb}</span>
+              <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3, whiteSpace: 'nowrap', color: on ? 'rgba(255,255,255,.8)' : '#787878' }}>{g.blurb}</span>
             </button>
           )
         })}

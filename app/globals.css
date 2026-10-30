@@ -122,3 +122,44 @@
 }
 @keyframes vgb-orbit         { from { transform: rotate(0deg); }   to { transform: rotate(360deg); } }
 @keyframes vgb-orbit-counter { from { transform: rotate(0deg); }   to { transform: rotate(-360deg); } }
+
+/* ── Text wrapping ─────────────────────────────────────────────────────────
+   Headings break into even lines; paragraphs avoid a lone last word.
+   Small capital-letter labels (tags, buttons, menu items) stay on one line,
+   with slightly tighter spacing on phones so they still fit. */
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+a[style*="text-transform:uppercase"],
+a[style*="text-transform: uppercase"],
+button[style*="text-transform:uppercase"],
+button[style*="text-transform: uppercase"],
+span[style*="text-transform:uppercase"],
+span[style*="text-transform: uppercase"],
+label[style*="text-transform:uppercase"],
+label[style*="text-transform: uppercase"] { white-space: nowrap; }
+@media (max-width: 640px) {
+[style*="text-transform:uppercase"][style*="letter-spacing:.4em"],
+[style*="text-transform:uppercase"][style*="letter-spacing: 0.4em"],
+[style*="text-transform:uppercase"][style*="letter-spacing:.45em"],
+[style*="text-transform:uppercase"][style*="letter-spacing: 0.45em"],
+[style*="text-transform:uppercase"][style*="letter-spacing:.5em"],
+[style*="text-transform:uppercase"][style*="letter-spacing: 0.5em"],
+[style*="text-transform:uppercase"][style*="letter-spacing:.55em"],
+[style*="text-transform:uppercase"][style*="letter-spacing: 0.55em"],
+[style*="text-transform: uppercase"][style*="letter-spacing:.4em"],
+[style*="text-transform: uppercase"][style*="letter-spacing: 0.4em"],
+[style*="text-transform: uppercase"][style*="letter-spacing:.45em"],
+[style*="text-transform: uppercase"][style*="letter-spacing: 0.45em"],
+[style*="text-transform: uppercase"][style*="letter-spacing:.5em"],
+[style*="text-transform: uppercase"][style*="letter-spacing: 0.5em"],
+[style*="text-transform: uppercase"][style*="letter-spacing:.55em"],
+[style*="text-transform: uppercase"][style*="letter-spacing: 0.55em"] { letter-spacing: .22em !important; }
+[style*="text-transform:uppercase"][style*="letter-spacing:.35em"],
+[style*="text-transform:uppercase"][style*="letter-spacing: 0.35em"],
+[style*="text-transform:uppercase"][style*="letter-spacing:.3em"],
+[style*="text-transform:uppercase"][style*="letter-spacing: 0.3em"],
+[style*="text-transform: uppercase"][style*="letter-spacing:.35em"],
+[style*="text-transform: uppercase"][style*="letter-spacing: 0.35em"],
+[style*="text-transform: uppercase"][style*="letter-spacing:.3em"],
+[style*="text-transform: uppercase"][style*="letter-spacing: 0.3em"] { letter-spacing: .18em !important; }
+}

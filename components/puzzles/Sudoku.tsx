@@ -81,7 +81,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
     <div style={CENTERED}>
       <Rules>Fill the grid so every row, column and 2×3 box has the numbers 1–6. Solve it to uncover today’s Bee, Ben &amp; Dug-Dug drawing.</Rules>
 
-      <div style={{ position: 'relative', width: 'min(100%, 420px)', aspectRatio: '1', background: '#fff', border: `2px solid ${INK}` }}>
+      <div style={{ position: 'relative', width: 'min(100%, 520px)', aspectRatio: '1', background: '#fff', border: `2px solid ${INK}` }}>
         {art && (
           <ArtFill src={art.image_url} alt={solved ? art.title : ''} sizes="420px" style={{ opacity: solved ? 1 : .35, transition: 'opacity 1.2s ease, background .4s' }} />
         )}

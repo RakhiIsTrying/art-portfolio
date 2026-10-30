@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ArtworkCard from '@/components/ArtworkCard'
 import Lightbox from '@/components/Lightbox'
 import type { Artwork } from '@/lib/types'
@@ -13,12 +13,20 @@ export default function MasonryGrid({ artworks, initialId }: Props) {
 
   // Each tile takes the artwork's own shape, so nothing is cropped or left empty
   const aspects = useAspects(artworks.map(a => a.image_url))
-  const columns: Artwork[][] = [[], [], []]
-  artworks.forEach((art, i) => columns[i % 3].push(art))
+  // Two columns on phones, three on wider screens
+  const [count, setCount] = useState(3)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)')
+    const set = () => setCount(mq.matches ? 2 : 3)
+    set(); mq.addEventListener('change', set)
+    return () => mq.removeEventListener('change', set)
+  }, [])
+  const columns: Artwork[][] = Array.from({ length: count }, () => [])
+  artworks.forEach((art, i) => columns[i % count].push(art))
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1px', background: '#d0d0d0', border: '1px solid #d0d0d0' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${count}, 1fr)`, gap: '1px', background: '#d0d0d0', border: '1px solid #d0d0d0' }}>
         {columns.map((col, ci) => (
           <div key={ci} style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: '#d0d0d0' }}>
             {col.map(art => (

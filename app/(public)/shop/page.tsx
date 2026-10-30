@@ -45,7 +45,7 @@ export default async function ShopPage() {
     <div style={{ maxWidth: 1200, margin: '0 auto' }} className="px-5 md:px-9 pt-9 pb-16">
 
       {/* Header */}
-      <div className="grid md:grid-cols-[1fr_auto] gap-8 items-end" style={{ paddingBottom: 28, marginBottom: 28, borderBottom: '1px solid #d0d0d0' }}>
+      <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-end" style={{ paddingBottom: 28, marginBottom: 28, borderBottom: '1px solid #d0d0d0' }}>
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
           <div style={{ width: 3, background: '#1a1014', marginRight: 18, flexShrink: 0 }} />
           <div>
@@ -67,7 +67,7 @@ export default async function ShopPage() {
         </div>
 
         {/* How it works */}
-        <ol className="grid grid-cols-3 md:w-[480px]" style={{ listStyle: 'none', border: '1px solid #d0d0d0', background: '#d0d0d0', gap: 1 }}>
+        <ol className="grid grid-cols-1 sm:grid-cols-3 lg:w-[480px]" style={{ listStyle: 'none', border: '1px solid #d0d0d0', background: '#d0d0d0', gap: 1 }}>
           {STEPS.map(s => (
             <li key={s.n} style={{ background: '#e6e6e6', padding: '14px 14px 16px' }}>
               <p style={{ fontSize: 10, letterSpacing: '.3em', color: '#b07880', marginBottom: 8 }}>{s.n}</p>

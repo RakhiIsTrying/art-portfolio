@@ -56,6 +56,7 @@ export default function ArtworkCard({ artwork, onClick, size = 'medium' }: Props
         <p style={{
           fontSize: 13, fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)',
           fontStyle: 'italic', fontWeight: 400, color: '#fff', lineHeight: 1.2,
+          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
         }}>
           {artwork.title}
         </p>

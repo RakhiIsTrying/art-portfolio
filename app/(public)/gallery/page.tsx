@@ -39,7 +39,7 @@ export default async function GalleryPage() {
   )
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 36px 60px' }}>
+    <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 1100, margin: '0 auto' }}>
 
       {/* Page header */}
       <PageHeader color="#7a3040" label="Browse" title="Collections" />

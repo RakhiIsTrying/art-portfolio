@@ -64,7 +64,7 @@ export default function Wend({ date, size, numbers, last, solution, onSolved }: 
       <Rules>Take Dug-Dug for walkies! Start at 1 and draw one path through every square, passing the numbers in order and finishing on {last}. Drag, or tap square by square; go back over the line to undo.</Rules>
 
       <div ref={boardRef} onPointerDown={down} onPointerMove={move} onPointerUp={() => (dragging.current = false)}
-        style={{ position: 'relative', width: 'min(100%, 420px)', aspectRatio: '1', border: `2px solid ${INK}`, background: '#fff', touchAction: 'none', userSelect: 'none', cursor: solved ? 'default' : 'pointer' }}>
+        style={{ position: 'relative', width: 'min(100%, 520px)', aspectRatio: '1', border: `2px solid ${INK}`, background: '#fff', touchAction: 'none', userSelect: 'none', cursor: solved ? 'default' : 'pointer' }}>
         <div style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: `repeat(${size}, 1fr)` }}>
           {Array.from({ length: N }).map((_, i) => (
             <div key={i} style={{

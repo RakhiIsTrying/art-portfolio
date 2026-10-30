@@ -20,7 +20,8 @@ const categoryDesc: Record<string, string> = {
 
 export default function CollectionsStrip() {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${COLLECTIONS.length}, 1fr)` }}>
+    // One per row on small phones, two on big phones / iPad portrait, three on iPad landscape, all five on computers
+    <div className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       {COLLECTIONS.map((col) => {
         const color = categoryColors[col.slug] ?? '#1a1014'
         const desc  = categoryDesc[col.slug] ?? ''
@@ -33,7 +34,7 @@ export default function CollectionsStrip() {
               position: 'relative',
               display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
               padding: '24px 20px 20px',
-              minHeight: 180,
+              minHeight: 150,
               background: color,
               borderRight: '1px solid rgba(255,255,255,.08)',
               textDecoration: 'none',
@@ -53,7 +54,7 @@ export default function CollectionsStrip() {
             {/* Name */}
             <span style={{
               fontSize: 11, fontWeight: 500, letterSpacing: '.4em', textTransform: 'uppercase',
-              color: '#fff', display: 'block', marginBottom: 6, lineHeight: 1.3,
+              color: '#fff', display: 'block', marginBottom: 6, lineHeight: 1.3, whiteSpace: 'normal',
             }}>
               {col.name}
             </span>

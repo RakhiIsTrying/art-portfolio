@@ -32,7 +32,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
   const color = categoryColors[slug] ?? '#1a1014'
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '36px 36px 60px' }}>
+    <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 1200, margin: '0 auto' }}>
 
       {/* Page header */}
       <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #d0d0d0' }}>
@@ -41,7 +41,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
           <Link href="/gallery" style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', textDecoration: 'none', display: 'block', marginBottom: 6 }}>
             ← Collections
           </Link>
-          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 30, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>
+          <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(22px, 6vw, 30px)', fontWeight: 700, color: '#1a1014', lineHeight: 1, whiteSpace: 'nowrap' }}>
             {collection.name}
           </h1>
         </div>

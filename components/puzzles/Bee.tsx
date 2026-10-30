@@ -57,7 +57,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
       <Rules>Help Bee fill the hive! Make words of 4+ letters that use the centre letter. Letters can repeat. A pangram uses all seven. Reach Genius to solve.</Rules>
 
       {/* Rank */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '0 auto 16px', width: 'min(100%, 420px)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '0 auto 16px', width: 'min(100%, 520px)' }}>
         <span style={{ fontFamily: PLAYFAIR, fontWeight: 700, fontSize: 16, color: INK, minWidth: 92 }}>{RANKS[rankIndex][0]}</span>
         <div style={{ flex: 1, height: 2, background: '#d0d0d0', position: 'relative' }}>
           <div style={{ position: 'absolute', left: 0, top: 0, height: 2, width: `${Math.min(100, (score / (RANKS.at(-1)![1] * max)) * 100)}%`, background: '#b8892e', transition: 'width .4s' }} />
@@ -101,7 +101,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
         </div>
 
         {/* Found words */}
-        <div style={{ border: '1px solid #d0d0d0', background: '#fff', padding: '14px 16px', minHeight: 120, width: 'min(100%, 520px)', textAlign: 'left' }}>
+        <div style={{ border: '1px solid #d0d0d0', background: '#fff', padding: '14px 16px', minHeight: 120, width: 'min(100%, 620px)', textAlign: 'left' }}>
           <p style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: '#a0a0a0', marginBottom: 10 }}>
             You found {found.length} of {answers.length} {found.length === 1 ? 'word' : 'words'}
           </p>

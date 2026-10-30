@@ -79,7 +79,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
     <div style={CENTERED}>
       <Rules>Guess the five-letter word in six tries. <b style={{ color: COLORS.hit }}>Green</b> is the right letter in the right spot, <b style={{ color: COLORS.near }}>yellow</b> is in the word but somewhere else, <b style={{ color: COLORS.miss }}>red</b> is not in the word.</Rules>
 
-      <div style={{ position: 'relative', display: 'grid', gap: 5, width: 'min(100%, 330px)' }}>
+      <div style={{ position: 'relative', display: 'grid', gap: 5, width: 'min(100%, 380px)' }}>
         {message && (
           <div style={{ position: 'absolute', top: -6, left: '50%', transform: 'translate(-50%, -100%)', background: INK, color: '#fff', fontSize: 11, padding: '6px 12px', whiteSpace: 'nowrap', zIndex: 2 }}>
             {message}
@@ -108,7 +108,7 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
       </div>
 
       {!done && (
-        <div style={{ display: 'grid', gap: 6, marginTop: 18, width: 'min(100%, 480px)' }}>
+        <div style={{ display: 'grid', gap: 6, marginTop: 18, width: 'min(100%, 560px)' }}>
           {ROWS.map((row, i) => (
             <div key={row} style={{ display: 'flex', gap: 5, justifyContent: 'center' }}>
               {i === 2 && <Key label="Enter" wide onClick={() => press('enter')} />}

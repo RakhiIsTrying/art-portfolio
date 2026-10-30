@@ -43,7 +43,7 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
       <Rules>Place one Dug-Dug in every row, every column and every colour. No two pups can touch, not even diagonally (he doesn’t share treats). Tap once for ×, twice for Dug-Dug.</Rules>
 
       {/* Fixed rows and columns, so placing a piece never changes the board's size */}
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, gridTemplateRows: `repeat(${n}, minmax(0, 1fr))`, width: 'min(100%, 420px)', aspectRatio: '1', border: `2px solid ${INK}` }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, gridTemplateRows: `repeat(${n}, minmax(0, 1fr))`, width: 'min(100%, 520px)', aspectRatio: '1', border: `2px solid ${INK}` }}>
         {board.map((row, r) => row.map((v, c) => (
           <button key={`${r}-${c}`} type="button" onClick={() => tap(r, c)} aria-label={`Row ${r + 1} column ${c + 1}`}
             style={{

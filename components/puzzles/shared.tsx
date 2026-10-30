@@ -45,7 +45,7 @@ export function SolvedBanner({ title, detail, artIndex = 0 }: { title: string; d
   const { arts } = useTheme()
   const art = arts.length ? arts[artIndex % arts.length] : null
   return (
-    <div style={{ marginTop: 22, width: 'min(100%, 420px)', background: '#fff', border: `1px solid #d0d0d0`, borderTop: `3px solid ${BEE_BEN}`, display: 'flex', alignItems: 'center', gap: 14, padding: 14, textAlign: 'left' }}>
+    <div style={{ marginTop: 22, width: 'min(100%, 520px)', background: '#fff', border: `1px solid #d0d0d0`, borderTop: `3px solid ${BEE_BEN}`, display: 'flex', alignItems: 'center', gap: 14, padding: 14, textAlign: 'left' }}>
       {art && (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={art.image_url} alt={art.title} style={{ width: 72, height: 72, objectFit: 'contain', flexShrink: 0, background: '#f4f2ef' }} />
@@ -59,8 +59,12 @@ export function SolvedBanner({ title, detail, artIndex = 0 }: { title: string; d
   )
 }
 
+/** Keeps names like “Dug-Dug” from splitting across two lines (non-breaking hyphen). */
+const keepTogether = (node: React.ReactNode): React.ReactNode =>
+  typeof node === 'string' ? node.replace(/Dug-Dug/g, 'Dug\u2011Dug') : Array.isArray(node) ? node.map(keepTogether) : node
+
 export function Rules({ children }: { children: React.ReactNode }) {
-  return <p style={{ fontSize: 12, lineHeight: 1.7, fontWeight: 300, color: '#787878', margin: '0 auto 18px', maxWidth: 440, textAlign: 'center' }}>{children}</p>
+  return <p style={{ fontSize: 12.5, lineHeight: 1.7, fontWeight: 300, color: '#787878', margin: '0 auto 18px', maxWidth: 780, textAlign: 'center' }}>{keepTogether(children)}</p>
 }
 
 export function SmallButton({ onClick, children, dark, bee }: { onClick: () => void; children: React.ReactNode; dark?: boolean; bee?: keyof typeof BEE_LINES }) {
@@ -143,7 +147,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled }: HintPro
 
   const dug = said?.who === 'dug'
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 18, width: 'min(100%, 420px)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 18, width: 'min(100%, 520px)' }}>
       {said && (
         // Pops out each time someone speaks (the key restarts the animation)
         <div key={count} role="status" className="vgb-motion"

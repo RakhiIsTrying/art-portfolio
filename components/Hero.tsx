@@ -13,17 +13,12 @@ const categories = [
 
 export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwork; label?: string }) {
   return (
-    <section style={{
-      display: 'grid',
-      gridTemplateColumns: '52px 1fr 1fr',
-      height: 'calc(100svh - 44px - 38px)',
-      minHeight: '420px',
-      maxHeight: '660px',
-      background: '#e6e6e6',
-    }}>
+    // Phones: art on top at full width, words underneath. Tablets and up: side by side.
+    <section className="grid grid-cols-1 md:grid-cols-[52px_1fr_1fr] md:h-[calc(100svh-82px)] md:min-h-[420px] md:max-h-[660px]"
+      style={{ background: '#e6e6e6' }}>
 
       {/* Sidebar — one coloured stripe per category */}
-      <div style={{ display: 'flex', flexDirection: 'column', borderRight: '1px solid #d0d0d0', overflow: 'hidden' }}>
+      <div className="hidden md:flex" style={{ flexDirection: 'column', borderRight: '1px solid #d0d0d0', overflow: 'hidden' }}>
         {categories.map((cat, i) => (
           <Link
             key={cat.label}
@@ -52,7 +47,7 @@ export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwo
       </div>
 
       {/* Art panel */}
-      <div style={{ position: 'relative', borderRight: '1px solid #d0d0d0', overflow: 'hidden', background: '#141010' }}>
+      <div className="h-[min(110vw,560px)] md:h-auto" style={{ position: 'relative', borderRight: '1px solid #d0d0d0', overflow: 'hidden', background: '#141010' }}>
         {/* Atmospheric gradient */}
         <div style={{
           position: 'absolute', inset: 0,
@@ -151,8 +146,7 @@ export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwo
             fontSize: 13, lineHeight: 1.8, fontWeight: 300, color: '#787878',
             marginBottom: 20,
           }}>
-            Pop culture art — music, cinema and comics,<br />
-            through an original hand-crafted lens.
+            Pop culture art — music, cinema and comics, through an original hand-crafted lens.
           </p>
         </div>
 
@@ -183,7 +177,7 @@ export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwo
             </Link>
           ))}
 
-          <div style={{ marginTop: 16 }}>
+          <div style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: '12px 20px' }}>
             <Link
               href="/gallery"
               style={{
@@ -198,7 +192,7 @@ export default function Hero({ latest, label = 'Latest Work' }: { latest?: Artwo
             <Link
               href="/shop"
               style={{
-                display: 'inline-block', marginLeft: 22,
+                display: 'inline-block',
                 fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
                 color: '#7a3040', borderBottom: '1px solid #7a3040', paddingBottom: 1,
                 textDecoration: 'none',

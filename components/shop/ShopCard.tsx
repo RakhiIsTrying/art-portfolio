@@ -45,7 +45,7 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
 
       <div style={{ padding: '12px 14px 14px', borderTop: `2px solid ${color}` }}>
         <p style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 5 }}>
-          <span>{collectionName}</span>
+          <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{collectionName}</span>
           <span style={{ color: '#787878', letterSpacing: '.15em', whiteSpace: 'nowrap' }}>
             {kind === 'original' ? 'Price on request' : `From ${formatPrice(lowestPrice(sizes, currency), currency)}`}
           </span>
