@@ -27,3 +27,6 @@ export const categoryDesc: Record<string, string> = {
   'bee-ben':'Original characters',
   sketchbook: 'Pencil, watercolor & still life',
 }
+
+/** Categories the videos table accepts (its database check allows only these). */
+export const VIDEO_CATEGORIES = ['music', 'movies', 'comics', 'bee-ben'] as const

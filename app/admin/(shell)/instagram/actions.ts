@@ -2,7 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { requireAdmin } from '@/lib/adminAuth'
 import { connect, getPending, removePending, syncInstagram } from '@/lib/instagram'
-import { getCollection } from '@/lib/collections'
+import { getCollection, VIDEO_CATEGORIES } from '@/lib/collections'
 
 type State = { error?: string; ok?: string } | null
 
@@ -35,8 +35,14 @@ const SALE = {
 } as const
 export type Sale = keyof typeof SALE
 
-/** Put a reviewed post on the site: images into a gallery collection, reels onto the Videos page. */
-export async function publishPost(id: string, fields: { title: string; collection: string; sale: Sale }) {
+/** Put a reviewed post on the site: images into a gallery collection, reels onto the Videos page.
+ *  Returns an error message rather than throwing, so the real reason shows in Admin. */
+export async function publishPost(id: string, fields: { title: string; collection: string; sale: Sale }): Promise<{ error?: string }> {
+  try { await publish(id, fields); return {} }
+  catch (e) { return { error: e instanceof Error ? e.message : 'Could not publish' } }
+}
+
+async function publish(id: string, fields: { title: string; collection: string; sale: Sale }) {
   const admin = await requireAdmin()
   const post = await getPending(id)
   if (!post) throw new Error('This post was already handled.')
@@ -53,7 +59,7 @@ export async function publishPost(id: string, fields: { title: string; collectio
   } else {
     const { error } = await admin.from('videos').insert({
       title, video_url: post.videoUrl, thumbnail_url: post.imageUrl || null, instagram_url: post.permalink,
-      category: getCollection(fields.collection) ? fields.collection : null,
+      category: (VIDEO_CATEGORIES as readonly string[]).includes(fields.collection) ? fields.collection : null,
     })
     if (error) throw new Error(error.message)
   }
@@ -61,9 +67,12 @@ export async function publishPost(id: string, fields: { title: string; collectio
   revalidatePath('/', 'layout')
 }
 
-export async function skipPost(id: string) {
-  await requireAdmin()
-  const post = await getPending(id)
-  if (post) await removePending(post, true)
-  revalidatePath('/admin/instagram')
+export async function skipPost(id: string): Promise<{ error?: string }> {
+  try {
+    await requireAdmin()
+    const post = await getPending(id)
+    if (post) await removePending(post, true)
+    revalidatePath('/admin/instagram')
+    return {}
+  } catch (e) { return { error: e instanceof Error ? e.message : 'Could not skip' } }
 }

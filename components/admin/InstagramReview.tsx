@@ -2,6 +2,7 @@
 import { useActionState, useState, useTransition } from 'react'
 import { checkNow, connectInstagram, publishPost, skipPost, type Sale } from '@/app/admin/(shell)/instagram/actions'
 import type { PendingPost } from '@/lib/instagram'
+import { VIDEO_CATEGORIES } from '@/lib/collections'
 
 const input: React.CSSProperties = { border: '1px solid #d0d0d0', background: '#fff', padding: '7px 10px', fontSize: 13, color: '#1a1014', fontFamily: 'inherit', width: '100%' }
 const btn = (dark = false): React.CSSProperties => ({ fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', padding: '9px 14px', cursor: 'pointer', fontFamily: 'inherit',
@@ -55,9 +56,12 @@ export function PendingCard({ post, defaultTitle, collections }: { post: Pending
   const [pending, start] = useTransition()
 
   if (done) return <p style={{ fontSize: 13, color: '#1a6060', padding: '10px 0' }}>{done}</p>
-  const run = (fn: () => Promise<unknown>, msg: string) => start(async () => {
+  const run = (fn: () => Promise<{ error?: string }>, msg: string) => start(async () => {
     setError(null)
-    try { await fn(); setDone(msg) } catch (e) { setError(e instanceof Error ? e.message : 'Something went wrong') }
+    try {
+      const r = await fn()
+      if (r.error) setError(r.error); else setDone(msg)
+    } catch { setError('Something went wrong. Please try again.') }
   })
 
   return (
@@ -84,7 +88,8 @@ export function PendingCard({ post, defaultTitle, collections }: { post: Pending
           <label style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: '#1a1014' }}>{post.kind === 'image' ? 'Collection' : 'Category'}
             <select value={collection} onChange={e => setCollection(e.target.value)} style={{ ...input, marginTop: 4, textTransform: 'none', letterSpacing: 0 }}>
               {post.kind === 'reel' && <option value="">None</option>}
-              {collections.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+              {collections.filter(c => post.kind === 'image' || (VIDEO_CATEGORIES as readonly string[]).includes(c.slug))
+                .map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
             </select>
           </label>
           {post.kind === 'image' && (
