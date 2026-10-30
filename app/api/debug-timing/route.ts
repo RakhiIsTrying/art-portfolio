@@ -16,7 +16,7 @@ async function timed(label: string, key: string, path: string) {
 
 export async function GET() {
   const raw = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
-  const svc = raw.trim(), anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+  const svc = raw.replace(/\s+/g, ''), anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
   const rows = [
     await timed('anon about', anon, 'pages?slug=eq.about&select=slug'),
     await timed('anon settings', anon, 'pages?slug=eq.site-settings&select=slug'),

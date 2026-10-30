@@ -1,5 +1,7 @@
-// Supabase settings from the environment, with stray spaces / line breaks removed
-// (a key pasted with a trailing newline makes every request fail).
-export const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').trim()
-export const SUPABASE_ANON_KEY = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '').trim()
-export const serviceRoleKey = () => (process.env.SUPABASE_SERVICE_ROLE_KEY ?? '').trim()
+// Supabase settings from the environment, with any spaces / line breaks removed.
+// Keys never contain whitespace; one pasted with a line break in it makes every request fail.
+const clean = (v: string | undefined) => (v ?? '').replace(/\s+/g, '')
+
+export const SUPABASE_URL = clean(process.env.NEXT_PUBLIC_SUPABASE_URL)
+export const SUPABASE_ANON_KEY = clean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+export const serviceRoleKey = () => clean(process.env.SUPABASE_SERVICE_ROLE_KEY)
