@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
-import { getResendClient } from '@/lib/resend'
+import { notifyArtist } from '@/lib/notify'
 import { planForCountry } from '@/lib/printClub'
 import { getSettings } from '@/lib/settings'
 
@@ -46,12 +46,12 @@ export async function POST(req: NextRequest) {
     const address = [row.address_line1, row.address_line2, [row.city, row.region, row.postal_code].filter(Boolean).join(', '), row.country]
       .filter(Boolean).join('\n')
     // Best effort: the sign-up is already saved, so a mail failure shouldn't fail the request
-    await getResendClient().emails.send({
-      from:    'noreply@resend.dev',
-      to:      process.env.INQUIRE_TO_EMAIL!,
-      subject: `New Print Club sign-up — ${row.name}`,
-      text:    `Plan: ${PLANS[plan].price} / month (${PLANS[plan].region})\n\nName: ${row.name}\nEmail: ${row.email}\nPhone: ${row.phone}${row.birthday ? `\nBirthday: ${row.birthday}` : ''}${row.birthday_request ? `\nBirthday request: ${row.birthday_request}` : ''}\n\nAddress:\n${address}`,
-    }).catch(() => {})
+    await notifyArtist({
+      kind: 'Print Club',
+      subject: `${row.name}, ${PLANS[plan].price} / month`,
+      text: `Plan: ${PLANS[plan].price} / month (${PLANS[plan].region})\n\nName: ${row.name}\nEmail: ${row.email}\nPhone: ${row.phone}${row.birthday ? `\nBirthday: ${row.birthday}` : ''}${row.birthday_request ? `\nBirthday request: ${row.birthday_request}` : ''}\n\nAddress:\n${address}`,
+      replyTo: row.email!,
+    })
   }
 
   // Separate payment links per plan, once configured

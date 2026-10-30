@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getResendClient } from '@/lib/resend'
+import { notifyArtist } from '@/lib/notify'
 
 type InquireBody = {
   name: string
@@ -22,22 +22,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  const resend = getResendClient()
-  const { error } = await resend.emails.send({
-    from:    'noreply@resend.dev',
-    to:      process.env.INQUIRE_TO_EMAIL!,
-    subject: `Inquiry from ${body.name}${body.piece ? ` — "${body.piece}"` : ''}`,
-    text: [
-      `Name: ${body.name}`,
-      `Email: ${body.email}`,
-      body.piece ? `Piece: ${body.piece}` : '',
-      order ? `\nOrder:\n${order.lines.map(l => `  ${String(l).slice(0, 200)}`).join('\n')}\nTotal: ${String(order.total).slice(0, 40)}\n${String(order.shipping).slice(0, 300)}${order.greeting ? `\nGreeting card message: ${String(order.greeting).slice(0, 400)}` : ''}` : '',
-      body.message ? `\n${body.message}` : '',
-    ].filter(Boolean).join('\n'),
-  })
+  const text = [
+    `Name: ${body.name}`,
+    `Email: ${body.email}`,
+    body.piece ? `Piece: ${body.piece}` : '',
+    order ? `\nOrder:\n${order.lines.map(l => `  ${String(l).slice(0, 200)}`).join('\n')}\nTotal: ${String(order.total).slice(0, 40)}\n${String(order.shipping).slice(0, 300)}${order.greeting ? `\nGreeting card message: ${String(order.greeting).slice(0, 400)}` : ''}` : '',
+    body.message ? `\n${body.message}` : '',
+  ].filter(Boolean).join('\n')
 
-  if (error) {
-    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+  const { saved, emailed } = await notifyArtist({
+    kind: order ? 'Print order' : 'Inquiry',
+    subject: `${body.name}${body.piece ? `, ${body.piece}` : ''}`,
+    text,
+    replyTo: body.email,
+  })
+  if (!saved && !emailed) {
+    return NextResponse.json({ error: 'Could not send your message' }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })

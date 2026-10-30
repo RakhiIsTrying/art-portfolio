@@ -3,6 +3,8 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { isAdminEmail } from '@/lib/adminEmail'
+import { createClient } from '@supabase/supabase-js'
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase/env'
 
 export async function loginAction(
   _prev: { error?: string; sent?: string } | null,
@@ -32,7 +34,9 @@ export async function forgotPasswordAction(
 
   const h = await headers()
   const origin = `${h.get('x-forwarded-proto') ?? 'https'}://${h.get('host')}`
-  const supabase = await getSupabaseServerClient()
+  // "Implicit" links carry the sign-in in the link itself, so they work on any device
+  // (the default kind only works in the same browser that asked for it)
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { flowType: 'implicit', persistSession: false, autoRefreshToken: false } })
   await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/admin/reset` })
   return done
 }
