@@ -15,6 +15,7 @@ export type Daily = {
   wend: { size: number; numbers: Record<string, number>; last: number; solution: number[] }  // solution: one valid path
   wordle: { answer: string }
   bee: { letters: string; center: string; answers: string[] }
+  dig: { size: number; theme: string; letters: string; words: { word: string; cells: number[] }[] }   // words along one path through every cell
 }
 
 // A new set of puzzles starts at 12:01 am India time
@@ -147,7 +148,8 @@ function countQueens(regions: number[][], n: number) {
 }
 
 // ── Wend: draw one path through every cell, hitting the numbers in order ────
-function wend(rng: Rng, size = 6) {
+/** One route through every cell of a size×size grid, moving up/down/left/right. */
+function walkEverySquare(rng: Rng, size: number) {
   const N = size * size
   let path: number[] = []
   while (path.length !== N) {
@@ -168,10 +170,59 @@ function wend(rng: Rng, size = 6) {
       path.push(next); seen.add(next)
     }
   }
+  return path
+}
+
+function wend(rng: Rng, size = 6) {
+  const N = size * size
+  const path = walkEverySquare(rng, size)
   const checkpoints = [0, ...shuffle(rng, [...Array(N - 2).keys()].map(i => i + 1)).slice(0, 6).sort((a, b) => a - b), N - 1]
   const numbers: Record<string, number> = {}
   checkpoints.forEach((idx, k) => { numbers[path[idx]] = k + 1 })
   return { size, numbers, last: checkpoints.length, solution: path }
+}
+
+// ── Dug's Dig: hidden themed words that use every letter of the grid once ──
+const DIG_THEMES: Record<string, string[]> = {
+  'Dug-Dug’s day': ['bone', 'leash', 'fetch', 'puppy', 'treat', 'bark', 'walk', 'ball', 'tail', 'sniff', 'paws', 'collar', 'kibble', 'belly', 'zoomies', 'squirrel', 'park', 'bath', 'howl', 'cuddle', 'snooze', 'biscuit'],
+  'In the sketchbook': ['paint', 'brush', 'canvas', 'sketch', 'pencil', 'easel', 'palette', 'eraser', 'charcoal', 'crayon', 'marker', 'pastel', 'doodle', 'shade', 'frame', 'gouache', 'studio', 'artist', 'ink'],
+  'Coffee break': ['latte', 'mocha', 'beans', 'brew', 'roast', 'crema', 'espresso', 'filter', 'kettle', 'mug', 'sugar', 'milk', 'froth', 'cookie', 'decaf', 'cup', 'grinder'],
+  'Trip to Japan': ['tokyo', 'sushi', 'ramen', 'temple', 'kimono', 'sakura', 'bento', 'matcha', 'kyoto', 'fuji', 'osaka', 'train', 'tofu', 'origami', 'shrine', 'anime', 'manga', 'udon'],
+  'Movie night': ['popcorn', 'ticket', 'screen', 'sequel', 'actor', 'villain', 'hero', 'trailer', 'cinema', 'drama', 'scene', 'script', 'director', 'camera', 'comedy', 'plot', 'film'],
+  'Music': ['guitar', 'drums', 'piano', 'chorus', 'melody', 'rhythm', 'lyric', 'album', 'vinyl', 'stage', 'encore', 'tempo', 'singer', 'bass', 'band', 'song', 'tune'],
+  'Picnic': ['basket', 'blanket', 'sandwich', 'lemonade', 'apple', 'grapes', 'cheese', 'berries', 'meadow', 'sunshine', 'napkin', 'cake', 'juice', 'shade'],
+  'Cosy home': ['sofa', 'candle', 'pillow', 'lamp', 'kettle', 'books', 'slippers', 'rug', 'plant', 'window', 'quilt', 'teapot', 'blanket', 'socks'],
+  'Rainy day': ['umbrella', 'puddle', 'cloud', 'thunder', 'drizzle', 'boots', 'raincoat', 'storm', 'rainbow', 'splash', 'gloomy', 'drops'],
+}
+
+function dig(rng: Rng, day: number, size = 5) {
+  const N = size * size
+  const themes = Object.keys(DIG_THEMES)
+  const theme = themes[day % themes.length]
+  // Pick 4–6 words whose letters add up to exactly the grid (no word starting another)
+  const pool = shuffle(rng, DIG_THEMES[theme].filter(w => w.length >= 3 && w.length <= 9))
+  let chosen: string[] = []
+  const go = (start: number, left: number, picked: string[]): boolean => {
+    if (left === 0) { if (picked.length >= 4) { chosen = picked; return true } return false }
+    if (picked.length === 6) return false
+    for (let i = start; i < pool.length; i++) {
+      const w = pool[i]
+      if (w.length > left || picked.some(p => p.startsWith(w) || w.startsWith(p))) continue
+      if (go(i + 1, left - w.length, [...picked, w])) return true
+    }
+    return false
+  }
+  go(0, N, [])
+  const path = walkEverySquare(rng, size)
+  const letters = Array<string>(N).fill('')
+  let at = 0
+  const words = chosen.map(word => {
+    const cells = path.slice(at, at + word.length)
+    cells.forEach((c, k) => { letters[c] = word[k] })
+    at += word.length
+    return { word, cells }
+  })
+  return { size, theme, letters: letters.join(''), words }
 }
 
 export function getDaily(date = todayKey()): Daily {
@@ -184,5 +235,6 @@ export function getDaily(date = todayKey()): Daily {
     wend: wend(rngFrom('wend:' + date)),
     wordle: { answer: wordleAnswers[day % wordleAnswers.length] },
     bee: beePuzzles[day % beePuzzles.length],
+    dig: dig(rngFrom('dig:' + date), day),
   }
 }

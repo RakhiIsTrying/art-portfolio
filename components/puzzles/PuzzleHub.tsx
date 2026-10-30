@@ -6,6 +6,7 @@ import Wordle from './Wordle'
 import Queens from './Queens'
 import Wend from './Wend'
 import Bee from './Bee'
+import Dig from './Dig'
 import Confetti from './Confetti'
 import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
 
@@ -15,6 +16,7 @@ const GAMES = [
   { id: 'queens', name: 'Dug-Dug Kings', blurb: 'One pup per row', icon: '🐶' },
   { id: 'wend',   name: 'Walkies',      blurb: 'Walk every square', icon: '🐾' },
   { id: 'bee',    name: 'Bee’s Hive',   blurb: 'Spell with 7 letters', icon: '🐝' },
+  { id: 'dig',    name: 'Dug’s Dig',    blurb: 'Find the hidden words', icon: '🦴' },
 ] as const
 type GameId = typeof GAMES[number]['id']
 
@@ -67,7 +69,7 @@ function Archive({ dates, current, today }: { dates: string[]; current: string; 
               <span style={{ fontSize: 9, letterSpacing: '.2em', textTransform: 'uppercase', opacity: .65, marginRight: 6 }}>{d === today ? 'Today' : weekday(d)}</span>
               {label(d)}
             </span>
-            <span style={{ fontSize: 10, whiteSpace: 'nowrap', color: on ? '#fff' : n === 5 ? '#3f8f4f' : '#a0a0a0' }}>{n === 5 ? '★ 5/5' : `${n}/5`}</span>
+            <span style={{ fontSize: 10, whiteSpace: 'nowrap', color: on ? '#fff' : n === GAMES.length ? '#3f8f4f' : '#a0a0a0' }}>{n === GAMES.length ? `★ ${n}/${GAMES.length}` : `${n}/${GAMES.length}`}</span>
           </a>
         )
       })}
@@ -113,7 +115,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
       {/* Date strip */}
       <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2" style={{ marginBottom: 18, textAlign: 'center' }}>
         <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878' }}>
-          {pretty} · No. {daily.number} · {solvedCount}/5 solved
+          {pretty} · No. {daily.number} · {solvedCount}/{GAMES.length} solved
         </p>
         {isToday ? (
           <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
@@ -127,7 +129,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
       </div>
 
       {/* Game picker */}
-      <div role="tablist" className="grid grid-cols-2 sm:grid-cols-5" style={{ gap: 1, background: '#d0d0d0', border: '1px solid #d0d0d0', marginBottom: 28 }}>
+      <div role="tablist" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6" style={{ gap: 1, background: '#d0d0d0', border: '1px solid #d0d0d0', marginBottom: 28 }}>
         {GAMES.map(g => {
           const on = g.id === active
           return (
@@ -150,6 +152,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
       {active === 'queens' && <Queens date={daily.date} regions={daily.queens.regions} solution={daily.queens.solution} onSolved={done('queens')} />}
       {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} solution={daily.wend.solution} onSolved={done('wend')} />}
       {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} onSolved={done('bee')} />}
+      {active === 'dig'    && <Dig date={daily.date} size={daily.dig.size} theme={daily.dig.theme} letters={daily.dig.letters} words={daily.dig.words} onSolved={done('dig')} />}
       <BeeCallout />
       {celebrating && <Confetti burst={burst} />}
     </ThemeContext.Provider>

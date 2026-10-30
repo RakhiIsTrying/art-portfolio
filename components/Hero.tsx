@@ -170,7 +170,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts, or
             { href: '/gallery', label: 'Explore the gallery', sub: stats ? `${stats.works} works` : 'All collections', color: '#7a3040', img: cutouts?.music?.url ?? cutouts?.comics?.url },
             { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: printsCutout?.url ?? cutouts?.comics?.url },
             { href: '/print-club', label: 'Print Club', sub: stats ? `${stats.clubPrice} / month` : 'A print every month', color: '#9a5a64', img: cutouts?.movies?.url ?? cutouts?.comics?.url },
-            { href: '/puzzles', label: 'Daily puzzles', sub: '5 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png', friends: true },
+            { href: '/puzzles', label: 'Daily puzzles', sub: '6 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png', friends: true },
           ].map(t => (
             <Link key={t.href} href={t.href} className={`group ${'extra' in t ? 'col-span-2' : ''}`}
               style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 110,
