@@ -13,6 +13,8 @@ const points = (w: string, letters: string) => (w.length === 4 ? 1 : w.length) +
 
 export default function Bee({ date, letters, center, answers, onSolved }: Props) {
   const [found, setFound] = useDailyState<string[]>(date, 'bee', [])
+  // The word behind Ben's latest hint; Dug-Dug's reveal gives exactly this word
+  const [benWord, setBenWord] = useDailyState<string | null>(date, 'bee-ben-word', null)
   const [outer, setOuter] = useState(() => [...letters].filter(l => l !== center))
   const [word, setWord] = useState('')
   const [message, setMessage] = useState<string | null>(null)
@@ -122,16 +124,16 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
           if (!left.length) return null
           const pangram = left.find(x => isPangram(x, letters))
           const w = n === 0 && pangram ? pangram : left[n % left.length]
+          setBenWord(w)
           return isPangram(w, letters)
             ? `There’s a pangram (uses all seven letters): ${w.length} letters, starting with “${w.slice(0, 2).toUpperCase()}”.`
             : `Try a ${w.length}-letter word starting with “${w.slice(0, 2).toUpperCase()}”.`
         }}
         getReveal={() => {
-          // One step: tell them a whole word; they type it in themselves
-          const left = answers.filter(w => !found.includes(w))
-          if (!left.length) return null
-          const w = left.find(x => !isPangram(x, letters)) ?? left[0]
-          return `Here’s one: “${w.toUpperCase()}”. Type it in to add it!`
+          // The answer to Ben's latest hint, for them to type in (never a new word)
+          if (!benWord) return 'Ask Ben for a hint first, then I’ll tell you his word!'
+          if (found.includes(benWord)) return `You already found Ben’s word, “${benWord.toUpperCase()}”! Ask Ben for a new hint.`
+          return `Ben’s word is “${benWord.toUpperCase()}”. Type it in to add it!`
         }} />
 
       {genius && <SolvedBanner title="Genius! Bee is buzzing 🐝" detail={`${found.length} words, ${score} points. Keep going to find them all.`} artIndex={6} />}
