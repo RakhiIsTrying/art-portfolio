@@ -15,12 +15,13 @@ async function timed(label: string, key: string, path: string) {
 }
 
 export async function GET() {
-  const svc = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '', anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+  const raw = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
+  const svc = raw.trim(), anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
   const rows = [
     await timed('anon about', anon, 'pages?slug=eq.about&select=slug'),
     await timed('anon settings', anon, 'pages?slug=eq.site-settings&select=slug'),
     await timed('service settings', svc, 'pages?slug=eq.site-settings&select=slug'),
     await timed('service artworks', svc, 'artworks?select=id&limit=1'),
   ]
-  return NextResponse.json({ region: process.env.VERCEL_REGION ?? null, keyKind: svc.startsWith('sb_') ? 'new' : svc.startsWith('ey') ? 'jwt' : 'missing', ...Object.fromEntries(rows) })
+  return NextResponse.json({ region: process.env.VERCEL_REGION ?? null, keyKind: svc.startsWith('ey') ? 'jwt' : 'other', strayCharacters: raw.length - svc.length, ...Object.fromEntries(rows) })
 }

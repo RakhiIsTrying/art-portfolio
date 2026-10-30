@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase/env'
 
 const links = [
   { href: '/admin/artworks', label: 'Artworks', color: '#7a3040' },
@@ -20,8 +21,8 @@ export default function AdminNav() {
 
   async function handleLogout() {
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
     )
     await supabase.auth.signOut()
     router.push('/admin/login')
