@@ -33,12 +33,12 @@ export default function OriginalChoice({ artwork, children }: { artwork: Artwork
             </div>
             <p style={{ padding: '14px 16px 4px', fontSize: 13, color: '#787878' }}>What would you like to do?</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '8px 16px 16px' }}>
-              <Link href={`/inquire?piece=${encodeURIComponent(`Original: ${artwork.title}`)}`} style={{ ...choice, background: '#1a1014', color: '#fff' }}>
+              <Link href={`/inquire?piece=${encodeURIComponent(`Original: ${artwork.title}`)}`} onClick={() => setOpen(false)} style={{ ...choice, background: '#1a1014', color: '#fff' }}>
                 <span style={{ display: 'block', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 500 }}>Ask about the original →</span>
                 <span style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,.65)', marginTop: 4, whiteSpace: 'normal' }}>The hand-made piece itself. I’ll reply with the price.</span>
               </Link>
               {printable && (
-                <Link href={`/shop?piece=${encodeURIComponent(artwork.title)}#prints`} style={{ ...choice, border: '1px solid #1a1014', color: '#1a1014' }}>
+                <Link href={`/shop?piece=${encodeURIComponent(artwork.title)}#prints`} onClick={() => setOpen(false)} style={{ ...choice, border: '1px solid #1a1014', color: '#1a1014' }}>
                   <span style={{ display: 'block', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 500 }}>Shop prints &amp; cards →</span>
                   <span style={{ display: 'block', fontSize: 12, color: '#787878', marginTop: 4, whiteSpace: 'normal' }}>Order a print or greeting card of this piece.</span>
                 </Link>

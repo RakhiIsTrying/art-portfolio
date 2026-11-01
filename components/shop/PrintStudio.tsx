@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { formatPrice, type Currency, type PrintSize } from '@/lib/prints'
 import { useShopSettings } from './ShopSettings'
 import type { Artwork } from '@/lib/types'
@@ -43,6 +44,9 @@ type Props = { artworks: Artwork[]; currency: Currency; initialTitle?: string }
 export default function PrintStudio({ artworks, currency: initialCurrency, initialTitle }: Props) {
   const { sizes: PRINT_SIZES, greetings: SAMPLE_GREETINGS } = useShopSettings()
   const [art, setArt] = useState<Artwork>(() => artworks.find(a => a.title === initialTitle) ?? artworks[0])
+  // ?piece=<title> can change while this stays on screen (choosing prints of an original on the Shop page)
+  const wanted = useSearchParams().get('piece')
+  const [lastWanted, setLastWanted] = useState(wanted)
   // The buyer picks portrait or landscape; until they do, we suggest one from the art's shape
   const [orientation, setOrientation] = useState<'portrait' | 'landscape' | null>(null)
   const [viewing, setViewing] = useState<Artwork | null>(null)
@@ -57,6 +61,18 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
   const topRef = useRef<HTMLDivElement>(null)
   const rowRef = useRef<HTMLDivElement>(null)
   const [rowWidth, setRowWidth] = useState(0)
+  if (wanted !== lastWanted) {
+    setLastWanted(wanted)
+    const next = artworks.find(a => a.title === wanted)
+    if (next) { setArt(next); setOrientation(null) }
+  }
+  // The browser only jumps to #prints when the address's hash changes, so bring the order window into view here
+  const seenWanted = useRef(wanted)
+  useEffect(() => {
+    if (wanted === seenWanted.current) return
+    seenWanted.current = wanted
+    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [wanted])
   useEffect(() => {
     const el = rowRef.current
     if (!el) return
@@ -72,6 +88,8 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
   function pick(a: Artwork) {
     setArt(a)
     setOrientation(null)
+    // Keep the address in step, so choosing an original's prints afterwards always counts as a change
+    window.history.replaceState(null, '', `/shop?piece=${encodeURIComponent(a.title)}#prints`)
     topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
@@ -107,7 +125,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
   }
 
   return (
-    <div ref={topRef} style={{ scrollMarginTop: 60 }}>
+    <div ref={topRef} style={{ scrollMarginTop: 84 }}>
       <div className="grid lg:grid-cols-[380px_1fr] gap-8 lg:gap-10 items-start">
 
         {/* ── Order window ── */}
