@@ -24,7 +24,7 @@ describe('POST /api/print-club', () => {
   it('saves the chosen tier and tells the artist its price', async () => {
     expect((await post({ ...signup, tier: 'broke' })).status).toBe(200)
     expect(insert.mock.calls[0][0]).toMatchObject({ tier: 'broke', plan: 'india' })
-    expect(notifyArtist.mock.calls[0][0].subject).toBe('Maya, Fresh Canvas, ₹499 / month')
+    expect(notifyArtist.mock.calls[0][0].subject).toBe('Maya, Van Gogh-Getter, ₹499 / month')
   })
 
   it('keeps birthday details only for Gone Baroque', async () => {
@@ -45,7 +45,7 @@ describe('POST /api/print-club', () => {
     insert.mockResolvedValueOnce({ error: { code: 'PGRST204' } })
     expect((await post({ ...signup, tier: 'broke' })).status).toBe(200)
     expect(insert.mock.calls[1][0]).not.toHaveProperty('tier')
-    expect(notifyArtist.mock.calls[0][0].subject).toContain('Fresh Canvas')
+    expect(notifyArtist.mock.calls[0][0].subject).toContain('Van Gogh-Getter')
   })
 
   it('never sends the lower tier to the higher tier’s payment link', async () => {

@@ -2,7 +2,7 @@
 export type PlanId = 'india' | 'international'
 export type TierId = 'broke' | 'baroque'
 
-/** `price` is the Gone Baroque price, `basicPrice` the Fresh Canvas price. */
+/** `price` is the Gone Baroque price, `basicPrice` the Van Gogh-Getter price. */
 export type Plans = Record<PlanId, { price: string; basicPrice: string; region: string }>
 
 // Defaults, the live prices come from Admin → Shop settings
@@ -17,7 +17,7 @@ const CANCEL_PERK = { title: 'Cancel anytime', body: 'No commitment. Stay as lon
 // What members get, edit freely
 export const TIERS: Record<TierId, { name: string; tagline: string; perks: { title: string; body: string }[] }> = {
   broke: {
-    name: 'Fresh Canvas',
+    name: 'Van Gogh-Getter',
     tagline: 'Art in your mailbox instead of bills.',
     perks: [PRINT_PERK, CANCEL_PERK],
   },
