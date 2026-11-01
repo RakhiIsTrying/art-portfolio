@@ -38,7 +38,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   const prints = COLLECTIONS.flatMap(c => arrange(artworks.filter(a => a.collection_slug === c.slug && a.prints_available !== false), settings.artworkOrder[c.slug]))
   const originals = artworks.filter(a => a.original_available === true)
   const plan = await planForVisitor()
-  const clubPrice = settings.plans[plan].price
+  const clubPrice = settings.plans[plan].basicPrice
   // Prices show in rupees for visitors in India, dollars elsewhere
   const currency: Currency = plan === 'india' ? 'inr' : 'usd'
 
@@ -93,7 +93,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         style={{ marginBottom: 40, padding: '18px 22px', background: '#fff', border: '1px solid #d0d0d0', borderLeft: '4px solid #7a3040', textDecoration: 'none' }}
       >
         <span style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>
-          {clubPrice}<span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}> / mo</span>
+          <span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}>From </span>{clubPrice}<span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}> / mo</span>
         </span>
         <span>
           <span style={{ display: 'block', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', marginBottom: 4 }}>Print Club</span>

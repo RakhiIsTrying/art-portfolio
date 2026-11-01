@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import { planForCountry, type PlanId, type Plans } from '@/lib/printClub'
+import { useSearchParams } from 'next/navigation'
+import { isTierId, planForCountry, tierPrice, TIER_IDS, TIERS, type PlanId, type Plans, type TierId } from '@/lib/printClub'
 
 type FormState = {
   name: string; email: string; phone: string; birthday: string; birthday_request: string
@@ -75,8 +76,17 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
   const [form, setForm]     = useState<FormState>(EMPTY)
   const [errors, setErrors] = useState<Errors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  // The tier cards above link here with ?tier=
+  const wanted = useSearchParams().get('tier')
+  const [tier, setTier] = useState<TierId>(isTierId(wanted) ? wanted : 'broke')
+  const [lastWanted, setLastWanted] = useState(wanted)
+  if (wanted !== lastWanted) {
+    setLastWanted(wanted)
+    if (isTierId(wanted)) setTier(wanted)
+  }
   // Price follows the shipping country once it's entered
   const plan = PLANS[form.country.trim() ? planForCountry(form.country) : defaultPlan]
+  const birthdayPerk = tier === 'baroque'
 
   function update(field: Field) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -87,10 +97,12 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const errs = validate(form)
+    // Anything typed into the birthday fields before switching tier doesn't count
+    const details = birthdayPerk ? form : { ...form, birthday: '', birthday_request: '' }
+    const errs = validate(details)
     if (Object.keys(errs).length) { setErrors(errs); return }
     setStatus('sending')
-    const res = await fetch('/api/print-club', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
+    const res = await fetch('/api/print-club', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...details, tier }) })
     if (!res.ok) { setStatus('error'); return }
     const { checkoutUrl } = await res.json()
     // Once a payment link is configured, members go straight to checkout
@@ -135,7 +147,7 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
           Application received.
         </p>
         <p style={{ fontSize: 12, lineHeight: 1.7, fontWeight: 300, color: '#787878' }}>
-          Thanks, {form.name.trim().split(' ')[0]}. I&apos;ll email you to set up your membership.
+          Thanks, {form.name.trim().split(' ')[0]}. I&apos;ll email you to set up your {TIERS[tier].name} membership.
         </p>
       </div>
     )
@@ -143,8 +155,24 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
 
   return (
     <form onSubmit={handleSubmit} noValidate className="grid grid-cols-2 gap-x-6 gap-y-5">
-      <p className="col-span-2" style={groupStyle}>Contact</p>
-      {CONTACT.map(renderField)}
+      <fieldset className="col-span-2" style={{ border: 'none', padding: 0, margin: 0 }}>
+        <legend style={{ ...groupStyle, width: '100%' }}>Your tier</legend>
+        <div className="grid sm:grid-cols-2 gap-2" style={{ marginTop: 10 }}>
+          {TIER_IDS.map(id => {
+            const on = tier === id
+            return (
+              <button key={id} type="button" aria-pressed={on} onClick={() => setTier(id)}
+                style={{ padding: '10px 12px', fontFamily: 'inherit', cursor: 'pointer', textAlign: 'left', border: `1px solid ${on ? '#4a3a7a' : '#d0d0d0'}`, background: on ? '#4a3a7a' : '#fff', color: on ? '#fff' : '#1a1014' }}>
+                <span style={{ display: 'block', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontStyle: 'italic', fontSize: 16, lineHeight: 1.2 }}>{TIERS[id].name}</span>
+                <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3 }}>{tierPrice(plan, id)} / month</span>
+              </button>
+            )
+          })}
+        </div>
+      </fieldset>
+
+      <p className="col-span-2" style={{ ...groupStyle, marginTop: 10 }}>Contact</p>
+      {CONTACT.filter(f => birthdayPerk || (f.id !== 'birthday' && f.id !== 'birthday_request')).map(renderField)}
 
       <p className="col-span-2" style={{ ...groupStyle, marginTop: 10 }}>Shipping address</p>
       {ADDRESS.map(renderField)}
@@ -165,7 +193,7 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
           background: '#1a1014', color: '#fff', transition: 'background .25s', opacity: status === 'sending' ? .6 : 1,
         }}
       >
-        {status === 'sending' ? 'Sending…' : `Apply · ${plan.price} / month →`}
+        {status === 'sending' ? 'Sending…' : `Apply · ${tierPrice(plan, tier)} / month →`}
       </button>
 
       <p className="col-span-2" style={{ fontSize: 10, lineHeight: 1.7, fontWeight: 300, color: '#a0a0a0' }}>

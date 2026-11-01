@@ -1,6 +1,6 @@
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
-import { type PlanId } from '@/lib/printClub'
+import { tierOf, tierPrice, TIERS, type PlanId } from '@/lib/printClub'
 import { getSettings } from '@/lib/settings'
 import { monthKey, monthLabel } from '@/lib/printClubExport'
 
@@ -126,7 +126,7 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
                 {s.name}
                 {PLANS[s.plan as PlanId] && (
                   <span style={{ marginLeft: 10, fontSize: 11, letterSpacing: '.2em', fontWeight: 400, color: '#4a3a7a' }}>
-                    {PLANS[s.plan as PlanId].price} / mo
+                    {TIERS[tierOf(s.tier)].name} · {tierPrice(PLANS[s.plan as PlanId], tierOf(s.tier))} / mo
                   </span>
                 )}
               </p>

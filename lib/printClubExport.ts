@@ -1,4 +1,6 @@
 // Month grouping + CSV export for Print Club sign-ups (months follow India time)
+import { DEFAULT_PLANS, tierOf, tierPrice, TIERS, type PlanId, type Plans } from './printClub'
+
 const TZ = 'Asia/Kolkata'
 
 /** "2026-10" for a timestamp, in India time. */
@@ -13,10 +15,11 @@ export const monthLabel = (key: string) =>
 
 type Signup = Record<string, unknown> & { created_at: string }
 
-const COLUMNS: [string, (s: Signup) => unknown][] = [
+const columns = (plans: Plans): [string, (s: Signup) => unknown][] => [
   ['Signed up',        s => new Date(s.created_at).toLocaleString('en-GB', { timeZone: TZ })],
   ['Name',             s => s.name],
-  ['Plan',             s => (s.plan === 'india' ? '₹750 / month' : '$16 / month')],
+  ['Tier',             s => TIERS[tierOf(s.tier)].name],
+  ['Plan',             s => `${tierPrice(plans[s.plan as PlanId] ?? plans.international, tierOf(s.tier))} / month`],
   ['Email',            s => s.email],
   ['Phone',            s => s.phone],
   ['Birthday',         s => s.birthday],
@@ -36,8 +39,9 @@ const cell = (v: unknown) => {
   return `"${(risky ? `'${s}` : s).replace(/"/g, '""')}"`
 }
 
-export function signupsToCsv(rows: Signup[]) {
-  const lines = [COLUMNS.map(([h]) => cell(h)).join(','), ...rows.map(r => COLUMNS.map(([, get]) => cell(get(r))).join(','))]
+export function signupsToCsv(rows: Signup[], plans: Plans = DEFAULT_PLANS) {
+  const cols = columns(plans)
+  const lines = [cols.map(([h]) => cell(h)).join(','), ...rows.map(r => cols.map(([, get]) => cell(get(r))).join(','))]
   // BOM so Excel reads ₹ and accents correctly
   return '﻿' + lines.join('\r\n')
 }

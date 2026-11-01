@@ -3,6 +3,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { isAdminEmail } from '@/lib/adminEmail'
 import { monthKey, signupsToCsv } from '@/lib/printClubExport'
+import { getSettings } from '@/lib/settings'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest) {
   if (error) return NextResponse.json({ error: 'Could not load sign-ups' }, { status: 500 })
 
   const rows = month ? data.filter(s => monthKey(s.created_at) === month) : data
-  return new NextResponse(signupsToCsv(rows), {
+  return new NextResponse(signupsToCsv(rows, (await getSettings()).plans), {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
       'Content-Disposition': `attachment; filename="print-club-${month ?? 'all'}.csv"`,

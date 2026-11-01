@@ -2,7 +2,7 @@
 // (slug 'site-settings'). Anything not saved yet falls back to these defaults.
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { DEFAULT_PRINT_SIZES, DEFAULT_GREETINGS, type PrintSize } from '@/lib/prints'
-import { DEFAULT_PLANS, type Plans } from '@/lib/printClub'
+import { DEFAULT_PLANS, mergePlans, type Plans } from '@/lib/printClub'
 import CUTOUTS from '@/lib/cutouts.json'
 
 export type SiteSettings = {
@@ -41,7 +41,7 @@ async function loadSettings(): Promise<SiteSettings> {
   const { data, error } = await getSupabaseAdminClient().from('pages').select('content_json').eq('slug', SLUG).maybeSingle()
   if (error) throw new Error(error.message)
   const saved = (data?.content_json ?? {}) as Partial<SiteSettings>
-  return { ...DEFAULT_SETTINGS, ...saved, plans: { ...DEFAULT_SETTINGS.plans, ...(saved.plans ?? {}) } }
+  return { ...DEFAULT_SETTINGS, ...saved, plans: mergePlans(saved.plans) }
 }
 
 export async function getSettings(): Promise<SiteSettings> {

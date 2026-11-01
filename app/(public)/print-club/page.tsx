@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import PrintClubForm from '@/components/PrintClubForm'
-import { type PlanId } from '@/lib/printClub'
+import { tierPrice, TIER_IDS, TIERS } from '@/lib/printClub'
 import { getSettings } from '@/lib/settings'
 import { planForVisitor } from '@/lib/printClubServer'
 import type { Artwork } from '@/lib/types'
@@ -14,14 +14,6 @@ export const metadata: Metadata = {
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
-
-// What members get, edit freely
-const PERKS = [
-  { title: 'A new print, every month', body: 'A fresh piece mailed to your door: music, movies, comics or Dug-Dug.' },
-  { title: 'First look',               body: 'See new work before it’s posted anywhere else.' },
-  { title: 'Birthday special 🎂',       body: 'Add your birthday and ask for a special request: a favourite character, a dedication, something just for you.' },
-  { title: 'Cancel anytime',           body: 'No commitment. Stay as long as the prints make you happy.' },
-]
 
 // Fanned stack of recent pieces
 const FAN = [
@@ -59,40 +51,10 @@ export default async function PrintClubPage() {
             </span>
           </h1>
 
-          {/* Pricing, the visitor's region first */}
-          <div style={{ display: 'flex', alignItems: 'stretch', gap: 0, marginBottom: 20, border: '1px solid #d0d0d0', width: 'fit-content' }}>
-            {(visitorPlan === 'india' ? ['india', 'international'] : ['international', 'india'] as PlanId[]).map((id, i) => {
-              const plan = PLANS[id as PlanId]
-              const primary = i === 0
-              return (
-                <div key={id} style={{ padding: '14px 20px', background: primary ? '#fff' : 'transparent', borderLeft: i ? '1px solid #d0d0d0' : 'none' }}>
-                  <p style={{ fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400, color: primary ? '#7a3040' : '#a0a0a0', marginBottom: 8 }}>
-                    {plan.region}
-                  </p>
-                  <p style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                    <span style={{ fontFamily: PLAYFAIR, fontSize: primary ? 40 : 26, fontWeight: 700, color: primary ? '#1a1014' : '#787878', lineHeight: 1 }}>{plan.price}</span>
-                    <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month</span>
-                  </p>
-                </div>
-              )
-            })}
-          </div>
-
           <p style={{ maxWidth: 440, fontSize: 14, lineHeight: 1.8, fontWeight: 300, color: '#787878', marginBottom: 30 }}>
             Art in your mailbox instead of bills. Join the club and get a new Van Gone Broke print every month.
           </p>
 
-          <ul style={{ listStyle: 'none', borderTop: '1px solid #d0d0d0' }}>
-            {PERKS.map((p, i) => (
-              <li key={p.title} style={{ display: 'flex', gap: 18, padding: '16px 0', borderBottom: '1px solid #d0d0d0' }}>
-                <span style={{ fontSize: 10, letterSpacing: '.3em', color: '#b07880', paddingTop: 2 }}>{String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <p style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 4 }}>{p.title}</p>
-                  <p style={{ fontSize: 12, lineHeight: 1.7, fontWeight: 300, color: '#787878' }}>{p.body}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
           <Link href="/print-club/boxes" className="group"
                 style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 20, fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', textDecoration: 'none' }}>
             See past boxes &amp; unboxings <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -120,8 +82,42 @@ export default async function PrintClubPage() {
         </div>
       </div>
 
+      {/* Tiers, priced for the visitor's region first */}
+      <section aria-label="Membership tiers" className="grid md:grid-cols-2 gap-5" style={{ marginBottom: 56 }}>
+        {TIER_IDS.map(id => {
+          const tier = TIERS[id]
+          const fancy = id === 'baroque'
+          const other = visitorPlan === 'india' ? 'international' : 'india'
+          return (
+            <div key={id} style={{ display: 'flex', flexDirection: 'column', padding: '24px 24px 22px', background: '#fff', border: '1px solid #d0d0d0', borderTop: `4px solid ${fancy ? '#7a3040' : '#1a6060'}` }}>
+              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(24px, 2.6vw, 30px)', lineHeight: 1.15, color: '#1a1014', marginBottom: 6 }}>{tier.name}</p>
+              <p style={{ fontSize: 13, fontWeight: 300, color: '#787878', marginBottom: 18 }}>{tier.tagline}</p>
+              <p style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
+                <span style={{ fontFamily: PLAYFAIR, fontSize: 40, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>{tierPrice(PLANS[visitorPlan], id)}</span>
+                <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month</span>
+              </p>
+              <p style={{ fontSize: 11, fontWeight: 300, color: '#a0a0a0', marginBottom: 18 }}>
+                {PLANS[visitorPlan].region}. {PLANS[other].region}: {tierPrice(PLANS[other], id)}
+              </p>
+              <ul style={{ listStyle: 'none', borderTop: '1px solid #d0d0d0', marginBottom: 20, flex: 1 }}>
+                {tier.perks.map(p => (
+                  <li key={p.title} style={{ padding: '12px 0', borderBottom: '1px solid #ebebeb' }}>
+                    <p style={{ fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 4 }}>{p.title}</p>
+                    <p style={{ fontSize: 12, lineHeight: 1.7, fontWeight: 300, color: '#787878' }}>{p.body}</p>
+                  </li>
+                ))}
+              </ul>
+              <Link href={`/print-club?tier=${id}#apply`} className="hover:[background:#7a3040]"
+                    style={{ textAlign: 'center', padding: '13px 18px', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, textDecoration: 'none', background: '#1a1014', color: '#fff', transition: 'background .25s' }}>
+                Choose {tier.name} →
+              </Link>
+            </div>
+          )
+        })}
+      </section>
+
       {/* Sign-up */}
-      <div className="grid md:grid-cols-[1fr_1.1fr] gap-10 md:gap-16" style={{ background: '#fff', border: '1px solid #d0d0d0', position: 'relative' }}>
+      <div id="apply" className="grid md:grid-cols-[1fr_1.1fr] gap-10 md:gap-16" style={{ background: '#fff', border: '1px solid #d0d0d0', position: 'relative', scrollMarginTop: 84 }}>
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, #7a3040 25%, #1e3a8a 25% 50%, #1a6060 50% 75%, #7a5020 75%)' }} />
         <div className="p-7 md:p-10 md:pr-0">
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
@@ -131,7 +127,7 @@ export default async function PrintClubPage() {
             A little art, every month.
           </p>
           <p style={{ fontSize: 12, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
-            {PLANS.india.price} a month in India, {PLANS.international.price} internationally. Cancel anytime. Fill in where to reach you and where to send your prints, and I’ll be in touch to get you set up.
+            From {PLANS.india.basicPrice} a month in India, {PLANS.international.basicPrice} internationally. Cancel anytime. Fill in where to reach you and where to send your prints, and I’ll be in touch to get you set up.
           </p>
         </div>
         <div className="p-7 md:p-10 md:pl-0">

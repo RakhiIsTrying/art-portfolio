@@ -1,6 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { saveShopSettings, type ShopSettingsInput } from '@/app/admin/(shell)/shop/actions'
+import { TIERS } from '@/lib/printClub'
 
 const panel: React.CSSProperties = { border: '1px solid #d0d0d0', background: '#fff', padding: 18, display: 'flex', flexDirection: 'column', gap: 12 }
 const h2: React.CSSProperties = { fontSize: 12, fontWeight: 500, letterSpacing: '.35em', textTransform: 'uppercase', color: '#1a1014' }
@@ -65,12 +66,12 @@ export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsI
       <div style={panel}>
         <h2 style={h2}>Print Club monthly price</h2>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-          {(['india', 'international'] as const).map(id => (
-            <label key={id} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, color: '#787878' }}>
-              {plans[id].region}
-              <input style={{ ...input, width: 140 }} value={plans[id].price} onChange={e => setPlans(p => ({ ...p, [id]: { ...p[id], price: e.target.value } }))} />
+          {(['india', 'international'] as const).flatMap(id => ([['basicPrice', TIERS.broke.name], ['price', TIERS.baroque.name]] as const).map(([field, name]) => (
+            <label key={`${id}-${field}`} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, color: '#787878' }}>
+              {name}, {plans[id].region}
+              <input style={{ ...input, width: 140 }} value={plans[id][field]} onChange={e => setPlans(p => ({ ...p, [id]: { ...p[id], [field]: e.target.value } }))} />
             </label>
-          ))}
+          )))}
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { notifyArtist } from '@/lib/notify'
-import { planForCountry } from '@/lib/printClub'
+import { isTierId, planForCountry, tierPrice, TIERS } from '@/lib/printClub'
 import { getSettings } from '@/lib/settings'
 
 const REQUIRED = ['name', 'email', 'phone', 'address_line1', 'city', 'region', 'postal_code', 'country'] as const
@@ -9,7 +9,7 @@ const OPTIONAL = ['birthday', 'birthday_request', 'address_line2'] as const
 type Field = typeof REQUIRED[number] | typeof OPTIONAL[number]
 
 export async function POST(req: NextRequest) {
-  let body: Partial<Record<Field, unknown>>
+  let body: Partial<Record<Field | 'tier', unknown>>
   try {
     body = await req.json()
   } catch {
@@ -32,10 +32,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid phone number' }, { status: 400 })
   }
 
+  // Requests from a page loaded before tiers existed have none: those visitors saw the higher price
+  const tier = body.tier === undefined ? 'baroque' : body.tier
+  if (!isTierId(tier)) return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
+  // The birthday special is a Gone Baroque perk
+  if (tier === 'broke') { row.birthday = null; row.birthday_request = null }
+
   const plan = planForCountry(row.country!)
   const PLANS = (await getSettings()).plans
+  const price = tierPrice(PLANS[plan], tier)
   const admin = getSupabaseAdminClient()
-  const { error } = await admin.from('print_club_signups').insert({ ...row, plan })
+  let { error } = await admin.from('print_club_signups').insert({ ...row, plan, tier })
+  // Until migration 010 has run there's no tier column. Keep the sign-up; the email below still names the tier.
+  if (error?.code === 'PGRST204' || error?.code === '42703') {
+    ({ error } = await admin.from('print_club_signups').insert({ ...row, plan }))
+  }
 
   // Unique violation: already signed up, treat as success so the visitor isn't confused
   if (error && error.code !== '23505') {
@@ -48,15 +59,15 @@ export async function POST(req: NextRequest) {
     // Best effort: the sign-up is already saved, so a mail failure shouldn't fail the request
     await notifyArtist({
       kind: 'Print Club',
-      subject: `${row.name}, ${PLANS[plan].price} / month`,
-      text: `Plan: ${PLANS[plan].price} / month (${PLANS[plan].region})\n\nName: ${row.name}\nEmail: ${row.email}\nPhone: ${row.phone}${row.birthday ? `\nBirthday: ${row.birthday}` : ''}${row.birthday_request ? `\nBirthday request: ${row.birthday_request}` : ''}\n\nAddress:\n${address}`,
+      subject: `${row.name}, ${TIERS[tier].name}, ${price} / month`,
+      text: `Tier: ${TIERS[tier].name}\nPlan: ${price} / month (${PLANS[plan].region})\n\nName: ${row.name}\nEmail: ${row.email}\nPhone: ${row.phone}${row.birthday ? `\nBirthday: ${row.birthday}` : ''}${row.birthday_request ? `\nBirthday request: ${row.birthday_request}` : ''}\n\nAddress:\n${address}`,
       replyTo: row.email!,
     })
   }
 
-  // Separate payment links per plan, once configured
-  const checkoutUrl = plan === 'india'
-    ? process.env.PRINT_CLUB_CHECKOUT_URL_INDIA
-    : process.env.PRINT_CLUB_CHECKOUT_URL_INTERNATIONAL
+  // Separate payment links per region and tier, once configured. A tier without its own link never uses the other's price.
+  const checkoutUrl = tier === 'broke'
+    ? (plan === 'india' ? process.env.PRINT_CLUB_CHECKOUT_URL_INDIA_BROKE : process.env.PRINT_CLUB_CHECKOUT_URL_INTERNATIONAL_BROKE)
+    : (plan === 'india' ? process.env.PRINT_CLUB_CHECKOUT_URL_INDIA : process.env.PRINT_CLUB_CHECKOUT_URL_INTERNATIONAL)
   return NextResponse.json({ ok: true, checkoutUrl: checkoutUrl || null })
 }

@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { requireAdmin } from '@/lib/adminAuth'
 import { saveSettings } from '@/lib/settings'
 import type { PrintSize } from '@/lib/prints'
-import type { Plans } from '@/lib/printClub'
+import type { PlanId, Plans } from '@/lib/printClub'
 
 export type ShopSettingsInput = { printSizes: PrintSize[]; greetings: string[]; plans: Plans; shopIntro: string }
 
@@ -28,11 +28,12 @@ export async function saveShopSettings(input: ShopSettingsInput) {
   if (new Set(sizes.map(s => s.id)).size !== sizes.length) throw new Error('Two sizes have the same name')
   const greetings = input.greetings.map(g => g.trim()).filter(Boolean).slice(0, 30)
   if (!greetings.length) throw new Error('Add at least one greeting')
-  if (!input.plans.india.price.trim() || !input.plans.international.price.trim()) throw new Error('Add both Print Club prices')
+  if ([input.plans.india, input.plans.international].some(p => !p.price.trim() || !p.basicPrice.trim())) throw new Error('Add every Print Club price')
+  const cleanPlan = (p: Plans[PlanId]) => ({ ...p, price: p.price.trim(), basicPrice: p.basicPrice.trim() })
 
   await saveSettings({
     printSizes: sizes, greetings,
-    plans: { india: { ...input.plans.india, price: input.plans.india.price.trim() }, international: { ...input.plans.international, price: input.plans.international.price.trim() } },
+    plans: { india: cleanPlan(input.plans.india), international: cleanPlan(input.plans.international) },
     shopIntro: input.shopIntro.trim().slice(0, 400),
   })
   revalidatePath('/', 'layout')
