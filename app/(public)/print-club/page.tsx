@@ -4,7 +4,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import PrintClubForm from '@/components/PrintClubForm'
 import { tierPrice, TIER_IDS, TIERS } from '@/lib/printClub'
 import { getSettings } from '@/lib/settings'
-import { planForVisitor } from '@/lib/printClubServer'
+import { countryForVisitor, planForVisitor } from '@/lib/printClubServer'
 import type { Artwork } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
 
@@ -30,6 +30,7 @@ export default async function PrintClubPage() {
     .limit(3)
   const pieces = (data ?? []) as Artwork[]
   const visitorPlan = await planForVisitor()
+  const visitorCountry = await countryForVisitor()
   const PLANS = (await getSettings()).plans
 
   return (
@@ -94,10 +95,10 @@ export default async function PrintClubPage() {
               <p style={{ fontSize: 13, fontWeight: 300, color: '#787878', marginBottom: 18 }}>{tier.tagline}</p>
               <p style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
                 <span style={{ fontFamily: PLAYFAIR, fontSize: 40, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>{tierPrice(PLANS[visitorPlan], id)}</span>
-                <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month</span>
+                <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month · {PLANS[visitorPlan].region}</span>
               </p>
               <p style={{ fontSize: 11, fontWeight: 300, color: '#a0a0a0', marginBottom: 18 }}>
-                {PLANS[visitorPlan].region}. {PLANS[other].region}: {tierPrice(PLANS[other], id)}
+                {PLANS[other].region}: {tierPrice(PLANS[other], id)} / month
               </p>
               <ul style={{ listStyle: 'none', borderTop: '1px solid #d0d0d0', marginBottom: 20, flex: 1 }}>
                 {tier.perks.map(p => (
@@ -131,7 +132,7 @@ export default async function PrintClubPage() {
           </p>
         </div>
         <div className="p-7 md:p-10 md:pl-0">
-          <PrintClubForm defaultPlan={visitorPlan} plans={PLANS} />
+          <PrintClubForm defaultPlan={visitorPlan} visitorCountry={visitorCountry} plans={PLANS} />
         </div>
       </div>
 

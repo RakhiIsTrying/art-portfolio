@@ -1,6 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import CountryCodePicker from '@/components/CountryCodePicker'
+import { countryByIso, findCountry } from '@/lib/countries'
+import { postcodeReady } from '@/lib/postcode'
 import { isTierId, planForCountry, tierPrice, TIER_IDS, TIERS, type PlanId, type Plans, type TierId } from '@/lib/printClub'
 
 type FormState = {
@@ -31,7 +34,7 @@ function validate(f: FormState): Errors {
   if (!f.address_line1.trim()) e.address_line1 = 'Address is required'
   if (!f.city.trim())          e.city          = 'City is required'
   if (!f.region.trim())        e.region        = 'State is required'
-  if (!f.postal_code.trim())   e.postal_code   = 'Postal code is required'
+  if (!f.postal_code.trim())   e.postal_code   = 'Pincode is required'
   if (!f.country.trim())       e.country       = 'Country is required'
   return e
 }
@@ -42,7 +45,7 @@ const CONTACT: FieldDef[] = [
   { id: 'name',     label: 'Full name', autoComplete: 'name', half: true },
   { id: 'birthday', label: 'Birthday',  autoComplete: 'bday', type: 'date', half: true, optional: true, hint: '🎂 Birthday perk: ask for a special request below' },
   { id: 'email', label: 'Email',     autoComplete: 'email', type: 'email', half: true },
-  { id: 'phone', label: 'Phone',     autoComplete: 'tel',   type: 'tel',   half: true },
+  { id: 'phone', label: 'Phone',     autoComplete: 'tel-national', type: 'tel', half: true },
   { id: 'birthday_request', label: 'Birthday request', autoComplete: 'off', optional: true, multiline: true,
     hint: 'A favourite character, a dedication, something just for you. I’ll try to make it happen for your birthday.' },
 ]
@@ -50,9 +53,9 @@ const CONTACT: FieldDef[] = [
 const ADDRESS: FieldDef[] = [
   { id: 'address_line1', label: 'Address',           autoComplete: 'address-line1' },
   { id: 'address_line2', label: 'Apt, suite, etc.',  autoComplete: 'address-line2', optional: true },
+  { id: 'postal_code',   label: 'Pincode / postal code', autoComplete: 'postal-code' },
   { id: 'city',          label: 'City',              autoComplete: 'address-level2', half: true },
   { id: 'region',        label: 'State',             autoComplete: 'address-level1', half: true },
-  { id: 'postal_code',   label: 'Postal code',       autoComplete: 'postal-code',    half: true },
   { id: 'country',       label: 'Country',           autoComplete: 'country-name',   half: true },
 ]
 
@@ -72,7 +75,9 @@ const inputStyle = (hasError: boolean): React.CSSProperties => ({
   outline: 'none', fontFamily: 'inherit',
 })
 
-export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPlan: PlanId; plans: Plans }) {
+const FALLBACK_COUNTRY = { iso: 'US', name: 'United States', dial: '+1' }
+
+export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLANS }: { defaultPlan: PlanId; visitorCountry: string | null; plans: Plans }) {
   const [form, setForm]     = useState<FormState>(EMPTY)
   const [errors, setErrors] = useState<Errors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -87,6 +92,39 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
   // Price follows the shipping country once it's entered
   const plan = PLANS[form.country.trim() ? planForCountry(form.country) : defaultPlan]
   const birthdayPerk = tier === 'baroque'
+  const [phoneCountry, setPhoneCountry] = useState(() => countryByIso(visitorCountry ?? (defaultPlan === 'india' ? 'IN' : 'US')) ?? FALLBACK_COUNTRY)
+
+  // A new pincode fills in city, state and country straight away; they can still be edited afterwards.
+  // The country to search comes from what's typed, else the phone's country code.
+  const lookupIso = findCountry(form.country)?.iso ?? phoneCountry.iso
+  const code = form.postal_code.trim()
+  const lookupKey = `${lookupIso}:${code}`
+  const lastLookup = useRef(lookupKey)
+  const [lookup, setLookup] = useState<{ key: string; result: 'looking' | 'found' | 'missed' } | null>(null)
+  useEffect(() => {
+    if (lookupKey === lastLookup.current || !postcodeReady(code, lookupIso)) return
+    const stop = new AbortController()
+    const timer = setTimeout(async () => {
+      lastLookup.current = lookupKey
+      setLookup({ key: lookupKey, result: 'looking' })
+      try {
+        const res = await fetch(`/api/postcode?code=${encodeURIComponent(code)}&country=${lookupIso}`, { signal: stop.signal })
+        if (!res.ok) return setLookup({ key: lookupKey, result: 'missed' })
+        const place: { city: string; state: string } = await res.json()
+        setForm(f => ({ ...f, city: place.city, region: place.state || f.region, country: countryByIso(lookupIso)?.name ?? f.country }))
+        setErrors(e => ({ ...e, city: undefined, region: undefined, country: undefined }))
+        setLookup({ key: lookupKey, result: 'found' })
+      } catch {
+        if (!stop.signal.aborted) setLookup({ key: lookupKey, result: 'missed' })
+      }
+    }, 350)
+    return () => { clearTimeout(timer); stop.abort() }
+  }, [lookupKey, code, lookupIso])
+  const lookupHint = lookup?.key !== lookupKey ? undefined : {
+    looking: 'Looking that up…',
+    found: 'City, state and country filled in. You can still change them.',
+    missed: 'Couldn’t find that one, so please check the city, state and country below.',
+  }[lookup.result]
 
   function update(field: Field) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -102,7 +140,9 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
     const errs = validate(details)
     if (Object.keys(errs).length) { setErrors(errs); return }
     setStatus('sending')
-    const res = await fetch('/api/print-club', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...details, tier }) })
+    // A number pasted with its own + code keeps it
+    const phone = form.phone.trim().startsWith('+') ? form.phone.trim() : `${phoneCountry.dial} ${form.phone.trim()}`
+    const res = await fetch('/api/print-club', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...details, phone, tier }) })
     if (!res.ok) { setStatus('error'); return }
     const { checkoutUrl } = await res.json()
     // Once a payment link is configured, members go straight to checkout
@@ -115,7 +155,17 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
     setStatus('sent')
   }
 
-  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint, multiline }: FieldDef) => (
+  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint: fieldHint, multiline }: FieldDef) => {
+    const hint = id === 'postal_code' ? lookupHint : fieldHint
+    const input = (
+      <input
+        id={`pc-${id}`} name={id} type={type} autoComplete={autoComplete}
+        value={form[id]} onChange={update(id)} style={inputStyle(!!errors[id])}
+        aria-invalid={!!errors[id]}
+        max={type === 'date' ? new Date().toISOString().slice(0, 10) : undefined}
+      />
+    )
+    return (
     <div key={id} className={half ? 'col-span-2 sm:col-span-1' : 'col-span-2'}>
       <label htmlFor={`pc-${id}`} style={labelStyle}>
         {label}
@@ -126,18 +176,17 @@ export default function PrintClubForm({ defaultPlan, plans: PLANS }: { defaultPl
           id={`pc-${id}`} name={id} autoComplete={autoComplete} rows={2} maxLength={500}
           value={form[id]} onChange={update(id)} style={{ ...inputStyle(!!errors[id]), resize: 'vertical' }}
         />
-      ) : (
-        <input
-          id={`pc-${id}`} name={id} type={type} autoComplete={autoComplete}
-          value={form[id]} onChange={update(id)} style={inputStyle(!!errors[id])}
-          aria-invalid={!!errors[id]}
-          max={type === 'date' ? new Date().toISOString().slice(0, 10) : undefined}
-        />
-      )}
+      ) : id === 'phone' ? (
+        <div style={{ display: 'flex', alignItems: 'stretch', gap: 8 }}>
+          <CountryCodePicker value={phoneCountry} onChange={setPhoneCountry} />
+          {input}
+        </div>
+      ) : input}
       {hint && !errors[id] && <p style={{ fontSize: 10, letterSpacing: '.1em', fontWeight: 300, color: '#a0a0a0', marginTop: 6 }}>{hint}</p>}
       {errors[id] && <p style={{ fontSize: 10, letterSpacing: '.2em', color: '#7a3040', marginTop: 6 }}>{errors[id]}</p>}
     </div>
-  )
+    )
+  }
 
   if (status === 'sent') {
     return (
