@@ -221,8 +221,8 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
             return (
               <button key={id} type="button" aria-pressed={on} onClick={() => setTier(id)}
                 style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '10px 12px', fontFamily: 'inherit', cursor: 'pointer', textAlign: 'left', border: `1px solid ${TIERS[id].color}`, background: on ? TIERS[id].color : '#fff', color: on ? '#fff' : '#1a1014' }}>
-                <span style={{ display: 'block', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontStyle: 'italic', fontSize: 16, lineHeight: 1.2, whiteSpace: 'normal' }}>{TIERS[id].name}</span>
-                <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3 }}>{tierPrice(plan, id)} / month{TIERS[id].wip && <WipTag />}</span>
+                <span style={{ display: 'block', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontStyle: 'italic', fontSize: 15, fontWeight: on ? 700 : 400, lineHeight: 1.2, whiteSpace: 'normal' }}>{TIERS[id].name}</span>
+                <span style={{ display: 'block', fontSize: 11, fontWeight: on ? 700 : 300, marginTop: 3 }}>{tierPrice(plan, id)} / month{TIERS[id].wip && <WipTag />}</span>
               </button>
             )
           })}
