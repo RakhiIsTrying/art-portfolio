@@ -215,14 +215,14 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
     <form onSubmit={handleSubmit} noValidate className="grid grid-cols-2 gap-x-6 gap-y-5">
       <fieldset className="col-span-2" style={{ border: 'none', padding: 0, margin: 0 }}>
         <legend style={{ ...groupStyle, width: '100%' }}>Your tier</legend>
-        <div className="grid gap-2" style={{ marginTop: 10 }}>
+        <div className="grid sm:grid-cols-3 gap-2" style={{ marginTop: 10 }}>
           {TIER_IDS.map(id => {
             const on = tier === id
             return (
               <button key={id} type="button" aria-pressed={on} onClick={() => setTier(id)}
-                style={{ padding: '10px 12px', fontFamily: 'inherit', cursor: 'pointer', textAlign: 'left', border: `1px solid ${TIERS[id].color}`, background: on ? TIERS[id].color : '#fff', color: on ? '#fff' : '#1a1014' }}>
-                <span style={{ display: 'block', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontStyle: 'italic', fontSize: 16, lineHeight: 1.2, whiteSpace: 'normal' }}>{TIERS[id].name}{TIERS[id].wip && <WipTag />}</span>
-                <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3 }}>{tierPrice(plan, id)} / month</span>
+                style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '10px 12px', fontFamily: 'inherit', cursor: 'pointer', textAlign: 'left', border: `1px solid ${TIERS[id].color}`, background: on ? TIERS[id].color : '#fff', color: on ? '#fff' : '#1a1014' }}>
+                <span style={{ display: 'block', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontStyle: 'italic', fontSize: 16, lineHeight: 1.2, whiteSpace: 'normal' }}>{TIERS[id].name}</span>
+                <span style={{ display: 'block', fontSize: 11, fontWeight: 300, marginTop: 3 }}>{tierPrice(plan, id)} / month{TIERS[id].wip && <WipTag />}</span>
               </button>
             )
           })}

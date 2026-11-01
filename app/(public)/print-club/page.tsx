@@ -123,7 +123,7 @@ export default async function PrintClubPage() {
       </section>
 
       {/* Sign-up */}
-      <div id="apply" className="grid md:grid-cols-[1fr_1.1fr] gap-10 md:gap-16" style={{ background: '#fff', border: '1px solid #d0d0d0', position: 'relative', scrollMarginTop: 84 }}>
+      <div id="apply" className="grid md:grid-cols-[1fr_2fr] gap-10 md:gap-16" style={{ background: '#fff', border: '1px solid #d0d0d0', position: 'relative', scrollMarginTop: 84 }}>
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, #7a3040 25%, #1e3a8a 25% 50%, #1a6060 50% 75%, #7a5020 75%)' }} />
         <div className="p-7 md:p-10 md:pr-0">
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
