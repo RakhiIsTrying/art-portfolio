@@ -1,17 +1,17 @@
 // Print Club pricing: the region follows the member's shipping country, the tier is their choice
 export type PlanId = 'india' | 'international'
-export type TierId = 'broke' | 'baroque'
+export type TierId = 'digital' | 'broke' | 'baroque'
 
-/** `price` is the Gone Baroque price, `basicPrice` the Monet Can’t Buy Me Love price. */
-export type Plans = Record<PlanId, { price: string; basicPrice: string; region: string }>
+/** `price` is the Gone Baroque price, `basicPrice` the Monet Can’t Buy Me Love price, `digitalPrice` The Digital Pass price. */
+export type Plans = Record<PlanId, { price: string; basicPrice: string; digitalPrice: string; region: string }>
 
 // Defaults, the live prices come from Admin → Shop settings
 export const DEFAULT_PLANS: Plans = {
-  india:         { price: '₹750', basicPrice: '₹499', region: 'In India' },
-  international: { price: '$16',  basicPrice: '$11',  region: 'International' },
+  india:         { price: '₹750', basicPrice: '₹499', digitalPrice: '₹199', region: 'In India' },
+  international: { price: '$16',  basicPrice: '$11',  digitalPrice: '$3',  region: 'International' },
 }
 
-export type PerkIconId = 'post' | 'paint' | 'stickers' | 'cake' | 'breakup'
+export type PerkIconId = 'tablet' | 'post' | 'paint' | 'stickers' | 'cake' | 'breakup'
 type Perk = { icon: PerkIconId; title: string; body: string }
 
 const PRINT_PERK = { icon: 'post', title: 'Gogh Postal', body: 'A fresh piece of original art at your door, every month. Your walls have been asking.' } as Perk
@@ -20,6 +20,15 @@ const CANCEL_PERK = { icon: 'breakup', title: 'Break Up Anytime', body: 'No comm
 
 // What members get, edit freely
 export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: Perk[] }> = {
+  digital: {
+    name: 'The Digital Pass',
+    color: '#4a3a7a',
+    tagline: 'iPad instead of an easel? Miles from a mailbox? There’s a seat saved for you.',
+    perks: [
+      { icon: 'tablet', title: 'Ctrl + Alt + Paint', body: 'A detailed paint-along print, sent digitally every month. Your canvas goes wherever you go.' },
+      CANCEL_PERK,
+    ],
+  },
   broke: {
     name: 'Monet Can’t Buy Me Love',
     color: '#1a6060',
@@ -40,12 +49,15 @@ export const TIERS: Record<TierId, { name: string; color: string; tagline: strin
   },
 }
 export const TIER_IDS = Object.keys(TIERS) as TierId[]
-export const isTierId = (v: unknown): v is TierId => v === 'broke' || v === 'baroque'
+export const isTierId = (v: unknown): v is TierId => v === 'digital' || v === 'broke' || v === 'baroque'
 
 /** A saved sign-up's tier. Sign-ups from before tiers existed paid the higher price. */
 export const tierOf = (saved: unknown): TierId => (isTierId(saved) ? saved : 'baroque')
 
-export const tierPrice = (plan: Plans[PlanId], tier: TierId) => (tier === 'broke' ? plan.basicPrice : plan.price)
+export const tierPrice = (plan: Plans[PlanId], tier: TierId) => ({ digital: plan.digitalPrice, broke: plan.basicPrice, baroque: plan.price })[tier]
+
+/** The Digital Pass has nothing to post. */
+export const shipsPrints = (tier: TierId) => tier !== 'digital'
 
 /** Saved prices over the defaults, one region at a time, so settings saved before tiers keep working. */
 export function mergePlans(saved?: Partial<Record<PlanId, Partial<Plans[PlanId]>>>): Plans {

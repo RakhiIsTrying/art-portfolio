@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import CountryCodePicker from '@/components/CountryCodePicker'
 import { countryByIso, findCountry } from '@/lib/countries'
 import { postcodeReady } from '@/lib/postcode'
-import { isTierId, planForCountry, tierPrice, TIER_IDS, TIERS, type PlanId, type Plans, type TierId } from '@/lib/printClub'
+import { isTierId, planForCountry, shipsPrints, tierPrice, TIER_IDS, TIERS, type PlanId, type Plans, type TierId } from '@/lib/printClub'
 
 type FormState = {
   name: string; email: string; phone: string; birthday: string; birthday_request: string
@@ -18,7 +18,7 @@ const EMPTY: FormState = {
   address_line1: '', address_line2: '', city: '', region: '', postal_code: '', country: '',
 }
 
-function validate(f: FormState): Errors {
+function validate(f: FormState, shipping: boolean): Errors {
   const e: Errors = {}
   if (!f.name.trim())  e.name  = 'Name is required'
   if (!f.email.trim()) e.email = 'Email is required'
@@ -31,10 +31,12 @@ function validate(f: FormState): Errors {
     const d = new Date(f.birthday)
     if (isNaN(d.getTime()) || d > new Date() || d.getFullYear() < 1900) e.birthday = 'Enter a valid date'
   }
-  if (!f.address_line1.trim()) e.address_line1 = 'Address is required'
-  if (!f.city.trim())          e.city          = 'City is required'
-  if (!f.region.trim())        e.region        = 'State is required'
-  if (!f.postal_code.trim())   e.postal_code   = 'Pincode is required'
+  if (shipping) {
+    if (!f.address_line1.trim()) e.address_line1 = 'Address is required'
+    if (!f.city.trim())          e.city          = 'City is required'
+    if (!f.region.trim())        e.region        = 'State is required'
+    if (!f.postal_code.trim())   e.postal_code   = 'Pincode is required'
+  }
   if (!f.country.trim())       e.country       = 'Country is required'
   return e
 }
@@ -92,6 +94,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
   // Price follows the shipping country once it's entered
   const plan = PLANS[form.country.trim() ? planForCountry(form.country) : defaultPlan]
   const birthdayPerk = tier === 'baroque'
+  const shipping = shipsPrints(tier)
   const [phoneCountry, setPhoneCountry] = useState(() => countryByIso(visitorCountry ?? (defaultPlan === 'india' ? 'IN' : 'US')) ?? FALLBACK_COUNTRY)
 
   // A new pincode quietly fills in city, state and country in the background, but never over anything typed by hand.
@@ -141,8 +144,8 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     // Anything typed into the birthday fields before switching tier doesn't count
-    const details = birthdayPerk ? form : { ...form, birthday: '', birthday_request: '' }
-    const errs = validate(details)
+    const details = { ...form, ...(birthdayPerk ? {} : { birthday: '', birthday_request: '' }), ...(shipping ? {} : { address_line1: '', address_line2: '', city: '', region: '', postal_code: '' }) }
+    const errs = validate(details, shipping)
     if (Object.keys(errs).length) { setErrors(errs); return }
     setStatus('sending')
     // A number pasted with its own + code keeps it
@@ -154,7 +157,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
     if (checkoutUrl) {
       const url = new URL(checkoutUrl)
       url.searchParams.set('prefilled_email', form.email.trim())
-      window.location.href = url.toString()
+      window.location.assign(url.toString())
       return
     }
     setStatus('sent')
@@ -200,7 +203,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
           Application received.
         </p>
         <p style={{ fontSize: 12, lineHeight: 1.7, fontWeight: 300, color: '#787878' }}>
-          Thanks, {form.name.trim().split(' ')[0]}. I&apos;ll email you to set up your {TIERS[tier].name} membership.
+          Thanks, {form.name.trim().split(' ')[0]}. I&apos;ll email you to get you set up on {TIERS[tier].name}.
         </p>
       </div>
     )
@@ -210,7 +213,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
     <form onSubmit={handleSubmit} noValidate className="grid grid-cols-2 gap-x-6 gap-y-5">
       <fieldset className="col-span-2" style={{ border: 'none', padding: 0, margin: 0 }}>
         <legend style={{ ...groupStyle, width: '100%' }}>Your tier</legend>
-        <div className="grid sm:grid-cols-2 gap-2" style={{ marginTop: 10 }}>
+        <div className="grid gap-2" style={{ marginTop: 10 }}>
           {TIER_IDS.map(id => {
             const on = tier === id
             return (
@@ -227,8 +230,8 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
       <p className="col-span-2" style={{ ...groupStyle, marginTop: 10 }}>Contact</p>
       {CONTACT.filter(f => birthdayPerk || (f.id !== 'birthday' && f.id !== 'birthday_request')).map(renderField)}
 
-      <p className="col-span-2" style={{ ...groupStyle, marginTop: 10 }}>Shipping address</p>
-      {ADDRESS.map(renderField)}
+      <p className="col-span-2" style={{ ...groupStyle, marginTop: 10 }}>{shipping ? 'Shipping address' : 'Where you’re joining from'}</p>
+      {ADDRESS.filter(f => shipping || f.id === 'country').map(renderField)}
 
       {status === 'error' && (
         <p className="col-span-2" style={{ fontSize: 11, letterSpacing: '.15em', color: '#7a3040' }}>
@@ -250,7 +253,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
       </button>
 
       <p className="col-span-2" style={{ fontSize: 10, lineHeight: 1.7, fontWeight: 300, color: '#a0a0a0' }}>
-        Your details are only used to contact you and ship your prints.
+        Your details are only used to contact you{shipping ? ' and ship your prints' : ''}.
       </p>
     </form>
   )

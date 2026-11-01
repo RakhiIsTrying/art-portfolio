@@ -6,6 +6,22 @@ const INK = '#1a1014'
 export default function PerkIcon({ id, size = 52 }: { id: PerkIconId; size?: number }) {
   const box = { width: size, height: size, display: 'block', flexShrink: 0 } as const
   switch (id) {
+    // A tablet with a painting on it, and a stylus adding the last stroke
+    case 'tablet':
+      return (
+        <svg viewBox="0 0 52 52" style={box} aria-hidden>
+          <rect x="1.5" y="1.5" width="49" height="49" rx="12" fill="#d9cfe9" stroke={INK} strokeWidth="2.5" />
+          <rect x="9" y="8" width="29" height="37" rx="4" fill="#1a1014" />
+          <rect x="12" y="11" width="23" height="29" rx="1.5" fill="#1e3a8a" />
+          <path d="M12 26c5-5 9-4 12-1s7 2 11-2v17H12z" fill="#3f8f4f" />
+          <circle cx="29" cy="17" r="3.5" fill="#e8c55a" />
+          <path d="M15 17c2-2 5-1 4 1s-3 1-2.5 0" fill="none" stroke="#9ec3ee" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="23.5" cy="42.5" r="1" fill="#fff8e1" />
+          <path d="M45 15L31 34" stroke={INK} strokeWidth="5.5" strokeLinecap="round" />
+          <path d="M45 15L31 34" stroke="#f4a6c0" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M31 34l-2 4 4-2z" fill={INK} stroke={INK} strokeWidth="1.5" strokeLinejoin="round" />
+        </svg>
+      )
     // A letter flying through a Starry Night sky
     case 'post':
       return (
@@ -68,7 +84,7 @@ export default function PerkIcon({ id, size = 52 }: { id: PerkIconId; size?: num
         <svg viewBox="0 0 52 52" style={box} aria-hidden>
           <rect x="1.5" y="1.5" width="49" height="49" rx="12" fill="#e7c3c9" stroke={INK} strokeWidth="2.5" />
           <path d="M26 45C13 36 6 29 6 20c0-7 5-11 10.500-11C21 9 24 11.500 26 15c2-3.500 5-6 9.500-6C41 9 46 13 46 20c0 9-7 16-20 25z" fill="#b8433b" stroke={INK} strokeWidth="2.2" strokeLinejoin="round" />
-          <path d="M26 15l-4 7 7 5-5 6 3 9" fill="none" stroke="#fff8e1" strokeWidth="2.500" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M26 15l-4 7 7 5-5 6 3 9" fill="none" stroke="#fff8e1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           <g transform="rotate(-28 34 21)">
             <rect x="26" y="17" width="16" height="8" rx="4" fill="#ead5b5" stroke={INK} strokeWidth="1.800" />
             <path d="M32 19v4M36 19v4" stroke={INK} strokeWidth="1.200" />

@@ -85,7 +85,7 @@ export default async function PrintClubPage() {
       </div>
 
       {/* Tiers, priced for the visitor's region first */}
-      <section aria-label="Membership tiers" className="grid md:grid-cols-2 gap-5" style={{ marginBottom: 56 }}>
+      <section aria-label="Membership tiers" className="grid lg:grid-cols-3 gap-5" style={{ marginBottom: 56 }}>
         {TIER_IDS.map(id => {
           const tier = TIERS[id]
           const other = visitorPlan === 'india' ? 'international' : 'india'
@@ -131,7 +131,7 @@ export default async function PrintClubPage() {
             A little art, every month.
           </p>
           <p style={{ fontSize: 12, lineHeight: 1.8, fontWeight: 300, color: '#787878' }}>
-            From {PLANS.india.basicPrice} a month in India, {PLANS.international.basicPrice} internationally. Cancel anytime. Fill in where to reach you and where to send your prints, and I’ll be in touch to get you set up.
+            From {PLANS.india.digitalPrice} a month in India, {PLANS.international.digitalPrice} internationally. Cancel anytime. Tell me where to reach you, and where to send your prints if you’re getting them by mail, and I’ll be in touch to get you set up.
           </p>
         </div>
         <div className="p-7 md:p-10 md:pl-0">

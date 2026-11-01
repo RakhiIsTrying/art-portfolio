@@ -4,6 +4,8 @@ import { signupsToCsv } from '@/lib/printClubExport'
 
 describe('Print Club prices', () => {
   it('charges the agreed price for each region and tier', () => {
+    expect(tierPrice(DEFAULT_PLANS.india, 'digital')).toBe('₹199')
+    expect(tierPrice(DEFAULT_PLANS.international, 'digital')).toBe('$3')
     expect(tierPrice(DEFAULT_PLANS.india, 'broke')).toBe('₹499')
     expect(tierPrice(DEFAULT_PLANS.india, 'baroque')).toBe('₹750')
     expect(tierPrice(DEFAULT_PLANS.international, 'broke')).toBe('$11')
@@ -12,7 +14,7 @@ describe('Print Club prices', () => {
 
   it('fills in the lower price for settings saved before tiers existed', () => {
     const plans = mergePlans({ india: { price: '₹800', region: 'In India' } })
-    expect(plans.india).toEqual({ price: '₹800', basicPrice: '₹499', region: 'In India' })
+    expect(plans.india).toEqual({ price: '₹800', basicPrice: '₹499', digitalPrice: '₹199', region: 'In India' })
     expect(plans.international).toEqual(DEFAULT_PLANS.international)
   })
 

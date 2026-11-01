@@ -28,8 +28,8 @@ export async function saveShopSettings(input: ShopSettingsInput) {
   if (new Set(sizes.map(s => s.id)).size !== sizes.length) throw new Error('Two sizes have the same name')
   const greetings = input.greetings.map(g => g.trim()).filter(Boolean).slice(0, 30)
   if (!greetings.length) throw new Error('Add at least one greeting')
-  if ([input.plans.india, input.plans.international].some(p => !p.price.trim() || !p.basicPrice.trim())) throw new Error('Add every Print Club price')
-  const cleanPlan = (p: Plans[PlanId]) => ({ ...p, price: p.price.trim(), basicPrice: p.basicPrice.trim() })
+  if ([input.plans.india, input.plans.international].some(p => !p.price.trim() || !p.basicPrice.trim() || !p.digitalPrice.trim())) throw new Error('Add every Print Club price')
+  const cleanPlan = (p: Plans[PlanId]) => ({ ...p, price: p.price.trim(), basicPrice: p.basicPrice.trim(), digitalPrice: p.digitalPrice.trim() })
 
   await saveSettings({
     printSizes: sizes, greetings,

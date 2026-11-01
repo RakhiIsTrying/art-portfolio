@@ -141,8 +141,7 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
                 </p>
               )}
               <p style={{ fontSize: 12, lineHeight: 1.6, fontWeight: 300, color: '#1a1014', marginTop: 6 }}>
-                {[s.address_line1, s.address_line2].filter(Boolean).join(', ')}<br />
-                {[s.city, s.region, s.postal_code].filter(Boolean).join(', ')} · {s.country}
+                {s.address_line1 ? <>{[s.address_line1, s.address_line2].filter(Boolean).join(', ')}<br />{[s.city, s.region, s.postal_code].filter(Boolean).join(', ')} · </> : 'Digital only · '}{s.country}
               </p>
             </div>
             <span style={{ flexShrink: 0, fontSize: 11, letterSpacing: '.2em', fontWeight: 300, color: '#a0a0a0' }}>

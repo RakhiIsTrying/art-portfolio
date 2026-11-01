@@ -48,7 +48,7 @@ export default async function HomePage() {
   const stats = {
     works: totalWorks ?? 0,
     printFrom: formatPrice(Math.min(...settings.printSizes.map(sz => sz[currency])), currency),
-    clubPrice: settings.plans[plan].basicPrice,
+    clubPrice: settings.plans[plan].digitalPrice,
   }
 
   return (

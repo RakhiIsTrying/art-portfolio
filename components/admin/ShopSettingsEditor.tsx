@@ -66,7 +66,7 @@ export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsI
       <div style={panel}>
         <h2 style={h2}>Print Club monthly price</h2>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-          {(['india', 'international'] as const).flatMap(id => ([['basicPrice', TIERS.broke.name], ['price', TIERS.baroque.name]] as const).map(([field, name]) => (
+          {(['india', 'international'] as const).flatMap(id => ([['digitalPrice', TIERS.digital.name], ['basicPrice', TIERS.broke.name], ['price', TIERS.baroque.name]] as const).map(([field, name]) => (
             <label key={`${id}-${field}`} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, color: '#787878' }}>
               {name}, {plans[id].region}
               <input style={{ ...input, width: 140 }} value={plans[id][field]} onChange={e => setPlans(p => ({ ...p, [id]: { ...p[id], [field]: e.target.value } }))} />
