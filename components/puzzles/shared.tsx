@@ -72,13 +72,26 @@ const HOST = {
 /** "How to play": a card hosted by Bee, Ben or Dug-Dug. Sits beside the puzzle on wide screens, above it otherwise. */
 export function Rules({ who, title, intro, steps }: { who: keyof typeof HOST; title: string; intro?: React.ReactNode; steps: React.ReactNode[] }) {
   const h = HOST[who]
+  const card = useRef<HTMLElement>(null)
+  // For anyone who'd rather not read the directions: scroll to just below this card, clear of the sticky nav
+  const skip = () => {
+    const nav = document.querySelector('nav')?.offsetHeight ?? 0
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: card.current!.getBoundingClientRect().bottom + window.scrollY - nav, behavior: calm ? 'auto' : 'smooth' })
+  }
   return (
-    <aside className="vgb-side-left" aria-label={`How to play ${title}`}
+    <aside ref={card} className="vgb-side-left" aria-label={`How to play ${title}`}
       style={{ position: 'relative', width: 'min(100%, 560px)', margin: '22px auto 22px', padding: '18px 18px 16px', background: h.wash,
                border: `1px solid ${h.accent}55`, borderTop: `4px solid ${h.accent}`, boxShadow: '0 10px 24px rgba(26,16,20,.07)', textAlign: 'left' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={h.img} alt={h.name} style={{ position: 'absolute', right: 8, top: -34, height: 62, filter: 'drop-shadow(0 0 2px #fff) drop-shadow(0 5px 8px rgba(26,16,20,.2))' }} />
-      <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: h.ink, fontWeight: 600, paddingRight: 50, whiteSpace: 'nowrap' }}>How to play</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingRight: 50 }}>
+        <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: h.ink, fontWeight: 600, whiteSpace: 'nowrap' }}>How to play</p>
+        <button type="button" onClick={skip} className="vgb-skip"
+          style={{ alignItems: 'center', padding: '3px 9px', fontSize: 11, lineHeight: 1.3, fontFamily: 'inherit', whiteSpace: 'nowrap', cursor: 'pointer', borderRadius: 999, border: `1px solid ${h.ink}`, background: '#fff', color: h.ink }}>
+          ↓ To the puzzle
+        </button>
+      </div>
       <p style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(19px, 1.6vw, 22px)', fontWeight: 700, color: INK, lineHeight: 1.15, margin: '6px 0 8px', whiteSpace: 'nowrap' }}>{title}</p>
       {intro && <p style={{ fontSize: 13, fontStyle: 'italic', color: '#6a5e5e', marginBottom: 10, lineHeight: 1.5, whiteSpace: 'normal' }}>{keepTogether(intro)}</p>}
       <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -103,6 +116,54 @@ export function SmallButton({ onClick, children, dark, bee }: { onClick: () => v
     </button>
   )
 }
+
+/**
+ * On touch screens: opens the phone's own keyboard for typing in answers.
+ * Phones don't reliably report which key was pressed, so this compares what's in a hidden box after each change.
+ */
+export function PhoneKeyboard({ onKey, numeric, onOpen }: { onKey: (key: string) => void; numeric?: boolean; onOpen?: () => void }) {
+  const input = useRef<HTMLInputElement>(null)
+  const last = useRef(KEYBOARD_START)
+  const composing = useRef(false)
+  const [open, setOpen] = useState(false)
+
+  // Always leave a character behind, so there's something for Backspace to delete
+  const settle = () => {
+    const el = input.current
+    if (!el) return
+    el.value = last.current = KEYBOARD_START
+    el.setSelectionRange(1, 1)
+  }
+  const changed = () => {
+    const now = input.current!.value, was = last.current
+    let same = 0
+    while (same < was.length && same < now.length && was[same] === now[same]) same++
+    for (let i = same; i < was.length; i++) onKey('Backspace')
+    for (const ch of now.slice(same)) onKey(ch)
+    last.current = now
+    if (!composing.current) settle()
+  }
+
+  return (
+    <div className="vgb-touch-only" style={{ position: 'relative', justifyContent: 'center', marginTop: 12 }}>
+      <form onSubmit={e => { e.preventDefault(); onKey('Enter') }}>
+        {/* 16px stops iPhones zooming in on focus; the game's own key listener mustn't see these keys too */}
+        <input ref={input} defaultValue={KEYBOARD_START} aria-label="Type your answer" inputMode={numeric ? 'numeric' : 'text'} enterKeyHint={numeric ? undefined : 'go'}
+          autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false}
+          onInput={changed} onKeyDown={e => e.stopPropagation()}
+          onCompositionStart={() => { composing.current = true }} onCompositionEnd={() => { composing.current = false; settle() }}
+          onFocus={() => { setOpen(true); settle() }} onBlur={() => setOpen(false)}
+          style={{ position: 'absolute', left: '50%', top: 0, width: 1, height: 1, padding: 0, border: 'none', opacity: 0, fontSize: 16, pointerEvents: 'none' }} />
+      </form>
+      <button type="button" onMouseDown={e => e.preventDefault()}
+        onClick={() => { if (open) input.current?.blur(); else { input.current?.focus({ preventScroll: true }); onOpen?.() } }}
+        style={{ padding: '8px 14px', fontSize: 12, fontFamily: 'inherit', cursor: 'pointer', borderRadius: 999, border: `1px solid ${INK}`, background: open ? INK : '#fff', color: open ? '#fff' : INK }}>
+        ⌨ {open ? 'Hide keyboard' : 'Type with your keyboard'}
+      </button>
+    </div>
+  )
+}
+const KEYBOARD_START = ' '
 
 const HINT_COOLDOWN = 10 // seconds the hint button stays locked after each hint
 const HINT_LOCK_KEY = 'vgb-puzzle:hint-locked-until'
@@ -284,13 +345,13 @@ export function BeeCallout() {
     <div key={said.n} aria-live="polite" className="vgb-motion"
          style={{ position: 'fixed', right: 16, bottom: 0, zIndex: 60, display: 'flex', alignItems: 'flex-end', gap: 4, pointerEvents: 'none',
                   animation: 'vgb-bee-in .4s cubic-bezier(.2,1.3,.4,1) both' }}>
-      <div style={{ marginBottom: 96, padding: '10px 14px', maxWidth: 200, background: '#fff', color: INK, fontSize: 13, lineHeight: 1.4,
+      <div className="vgb-bee-say" style={{ marginBottom: 96, padding: '10px 14px', maxWidth: 200, background: '#fff', color: INK, fontSize: 13, lineHeight: 1.4,
                     border: `2px solid ${BEE_BEN}`, borderRadius: 14, borderBottomRightRadius: 2, boxShadow: '0 10px 24px rgba(26,16,20,.18)' }}>
         <span style={{ display: 'block', fontSize: 9, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN, marginBottom: 2 }}>Bee</span>
         {said.text}
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={BEE} alt="Bee" style={{ height: 170, display: 'block', filter: 'drop-shadow(0 6px 12px rgba(26,16,20,.25))' }} />
+      <img src={BEE} alt="Bee" className="vgb-bee-img" style={{ height: 170, display: 'block', filter: 'drop-shadow(0 6px 12px rgba(26,16,20,.25))' }} />
     </div>
   )
 }

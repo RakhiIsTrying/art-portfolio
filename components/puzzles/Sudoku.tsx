@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { sudokuOk } from '@/lib/puzzles/rules'
-import { CENTERED, DUG_DUG, HintButton, BEE_BEN, INK, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, DUG_DUG, HintButton, BEE_BEN, INK, PhoneKeyboard, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 import ArtFill from '@/components/ArtFill'
 
 type Props = {
@@ -62,12 +62,23 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
     setGrid(g => g.map((row, i) => row.map((x, j) => (i === r && j === c ? v : x))))
   }
 
+  function typed(key: string) {
+    if (/^[1-6]$/.test(key)) put(Number(key))
+    else if (key === 'Backspace' || key === 'Delete' || key === '0') put(0)
+  }
+
+  // Opening the phone's keyboard with nothing selected starts at the first empty square
+  function selectFirstEmpty() {
+    if (sel) return
+    const r = grid.findIndex(row => row.includes(0))
+    if (r !== -1) setSel([r, grid[r].indexOf(0)])
+  }
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!sel) return
-      if (/^[1-6]$/.test(e.key)) put(Number(e.key))
-      else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') put(0)
-      else if (e.key.startsWith('Arrow')) {
+      typed(e.key)
+      if (e.key.startsWith('Arrow')) {
         const [r, c] = sel
         const d = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key]!
         setSel([(r + d[0] + 6) % 6, (c + d[1] + 6) % 6]); e.preventDefault()
@@ -92,7 +103,7 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
             const isSel = sel?.[0] === r && sel?.[1] === c
             const peer = sel && !isSel && (sel[0] === r || sel[1] === c)
             return (
-              <button key={`${r}-${c}`} type="button" onClick={() => setSel([r, c])} aria-label={`Row ${r + 1} column ${c + 1}`}
+              <button key={`${r}-${c}`} type="button" onMouseDown={e => e.preventDefault()} onClick={() => setSel([r, c])} aria-label={`Row ${r + 1} column ${c + 1}`}
                 style={{
                   border: 'none', padding: 0, cursor: given || solved ? 'default' : 'pointer', fontFamily: 'inherit',
                   borderRight: c === 5 ? 'none' : `${c === 2 ? 2 : 1}px solid ${c === 2 ? INK : 'rgba(26,16,20,.25)'}`,
@@ -135,6 +146,8 @@ export default function Sudoku({ date, puzzle, solution, art, onSolved }: Props)
           )
         })}
       </div>
+
+      {!solved && <PhoneKeyboard numeric onKey={typed} onOpen={selectFirstEmpty} />}
 
       {!solved && (
         <div style={{ display: 'flex', gap: 6, marginTop: 14, flexWrap: 'wrap', justifyContent: 'center' }}>

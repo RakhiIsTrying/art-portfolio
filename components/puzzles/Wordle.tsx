@@ -1,7 +1,7 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
 import { wordleHint } from '@/lib/puzzles/rules'
-import { CENTERED, HintButton, callBee, INK, Rules, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, callBee, INK, PhoneKeyboard, Rules, SolvedBanner, useDailyState } from './shared'
 
 type Mark = 'hit' | 'near' | 'miss'
 const COLORS: Record<Mark, string> = { hit: '#3f8f4f', near: '#d9a521', miss: '#b8433b' }
@@ -52,19 +52,23 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
       if (!words.has(current)) return flash('Not in word list')
       setGuesses(g => [...g, current]); setCurrent('')
     } else if (key === 'back') setCurrent(c => c.slice(0, -1))
-    else if (/^[a-z]$/.test(key) && current.length < 5) setCurrent(c => c + key)
+    else if (/^[a-z]$/.test(key)) setCurrent(c => (c.length < 5 ? c + key : c))
   }, [current, done, setGuesses])
+
+  const typed = useCallback((key: string) => {
+    if (key === 'Enter') press('enter')
+    else if (key === 'Backspace') press('back')
+    else if (/^[a-zA-Z]$/.test(key)) press(key.toLowerCase())
+  }, [press])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return
-      if (e.key === 'Enter') press('enter')
-      else if (e.key === 'Backspace') press('back')
-      else if (/^[a-zA-Z]$/.test(e.key)) press(e.key.toLowerCase())
+      typed(e.key)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [press])
+  }, [typed])
 
   // Best mark seen for each letter, for the keyboard
   const keyMarks: Record<string, Mark> = {}
@@ -111,6 +115,8 @@ export default function Wordle({ date, answer, onSolved }: { date: string; answe
           )
         })}
       </div>
+
+      {!done && <PhoneKeyboard onKey={typed} />}
 
       {!done && (
         <div style={{ display: 'grid', gap: 6, marginTop: 18, width: 'min(100%, 560px)' }}>

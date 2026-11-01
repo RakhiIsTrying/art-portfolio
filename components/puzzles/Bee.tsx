@@ -1,7 +1,7 @@
 'use client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { nextClue, revealClue, type WordClue } from '@/lib/puzzles/rules'
-import { CENTERED, HintButton, HONEY, INK, PLAYFAIR, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
+import { CENTERED, HintButton, HONEY, INK, PhoneKeyboard, PLAYFAIR, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 type Props = { date: string; letters: string; center: string; answers: string[]; onSolved: () => void }
 
@@ -45,16 +45,20 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
     flash(isPangram(w, letters) ? 'Pangram! 🐝' : w.length === 4 ? 'Good!' : w.length < 7 ? 'Nice!' : 'Awesome!')
   }, [word, center, letters, found, answers, setFound])
 
+  const typed = useCallback((key: string) => {
+    if (key === 'Enter') submit()
+    else if (key === 'Backspace') setWord(w => w.slice(0, -1))
+    else if (/^[a-zA-Z]$/.test(key)) setWord(w => (w + key.toLowerCase()).slice(0, 19))
+  }, [submit])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return
-      if (e.key === 'Enter') submit()
-      else if (e.key === 'Backspace') setWord(w => w.slice(0, -1))
-      else if (/^[a-zA-Z]$/.test(e.key)) setWord(w => (w + e.key.toLowerCase()).slice(0, 19))
+      typed(e.key)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [submit])
+  }, [typed])
 
   // Honeycomb: centre plus six around it
   const HEX = [[0, -1], [.87, -.5], [.87, .5], [0, 1], [-.87, .5], [-.87, -.5]]
@@ -108,6 +112,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
             <SmallButton onClick={() => setOuter(o => [...o].sort(() => Math.random() - .5))}>⟳</SmallButton>
             <SmallButton dark onClick={submit}>Enter</SmallButton>
           </div>
+          <PhoneKeyboard onKey={typed} />
         </div>
 
         {/* Found words: Bee's honey jar */}
