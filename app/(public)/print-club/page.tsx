@@ -87,10 +87,9 @@ export default async function PrintClubPage() {
       <section aria-label="Membership tiers" className="grid md:grid-cols-2 gap-5" style={{ marginBottom: 56 }}>
         {TIER_IDS.map(id => {
           const tier = TIERS[id]
-          const fancy = id === 'baroque'
           const other = visitorPlan === 'india' ? 'international' : 'india'
           return (
-            <div key={id} style={{ minWidth: 0, display: 'flex', flexDirection: 'column', padding: '24px 24px 22px', background: '#fff', border: '1px solid #d0d0d0', borderTop: `4px solid ${fancy ? '#7a3040' : '#1a6060'}` }}>
+            <div key={id} style={{ minWidth: 0, display: 'flex', flexDirection: 'column', padding: '24px 24px 22px', background: '#fff', border: '1px solid #d0d0d0', borderTop: `4px solid ${tier.color}` }}>
               <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(24px, 2.6vw, 30px)', lineHeight: 1.15, color: '#1a1014', marginBottom: 6, whiteSpace: 'normal' }}>{tier.name}</p>
               <p style={{ fontSize: 13, fontWeight: 300, color: '#787878', marginBottom: 18 }}>{tier.tagline}</p>
               <p style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
@@ -108,8 +107,8 @@ export default async function PrintClubPage() {
                   </li>
                 ))}
               </ul>
-              <Link href={`/print-club?tier=${id}#apply`} className="hover:[background:#7a3040]"
-                    style={{ textAlign: 'center', padding: '13px 18px', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, textDecoration: 'none', background: '#1a1014', color: '#fff', transition: 'background .25s' }}>
+              <Link href={`/print-club?tier=${id}#apply`} className="hover:opacity-85"
+                    style={{ textAlign: 'center', padding: '13px 18px', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, textDecoration: 'none', background: tier.color, color: '#fff', transition: 'opacity .25s' }}>
                 Choose this tier →
               </Link>
             </div>

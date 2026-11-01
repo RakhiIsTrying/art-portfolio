@@ -16,14 +16,16 @@ const PAINT_PERK = { title: 'Paint-along cards 🎨', body: 'Grab a brush and pa
 const CANCEL_PERK = { title: 'Cancel anytime', body: 'No commitment. Stay as long as the prints make you happy.' }
 
 // What members get, edit freely
-export const TIERS: Record<TierId, { name: string; tagline: string; perks: { title: string; body: string }[] }> = {
+export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: { title: string; body: string }[] }> = {
   broke: {
     name: 'Monet Can’t Buy Me Love',
+    color: '#1a6060',
     tagline: 'Art in your mailbox instead of bills.',
     perks: [PRINT_PERK, PAINT_PERK, CANCEL_PERK],
   },
   baroque: {
     name: 'Gone Baroque',
+    color: '#7a3040',
     tagline: 'The full, gloriously over-the-top membership.',
     perks: [
       PRINT_PERK,
