@@ -163,7 +163,8 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
     setStatus('sent')
   }
 
-  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint, multiline }: FieldDef) => {
+  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint: fieldHint, multiline }: FieldDef) => {
+    const hint = id === 'email' && !shipping ? 'Your paint-along print arrives here every month, so double-check it.' : fieldHint
     const input = (
       <input
         id={`pc-${id}`} name={id} type={type} autoComplete={autoComplete}

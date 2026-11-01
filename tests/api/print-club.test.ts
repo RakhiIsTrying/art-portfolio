@@ -48,15 +48,15 @@ describe('POST /api/print-club', () => {
     expect(notifyArtist.mock.calls[0][0].subject).toContain('Monet Can’t Buy Me Love')
   })
 
-  it('takes The Digital Pass with no address, and keeps none', async () => {
+  it('takes Van Gogh Anywhere with no address, and keeps none', async () => {
     const { name, email, phone, country } = signup
     expect((await post({ name, email, phone, country, tier: 'digital' })).status).toBe(200)
     expect(insert.mock.calls[0][0]).toMatchObject({ tier: 'digital', plan: 'india', address_line1: null, city: null, region: null, postal_code: null, birthday: null })
-    expect(notifyArtist.mock.calls[0][0].subject).toBe('Maya, The Digital Pass, ₹199 / month')
+    expect(notifyArtist.mock.calls[0][0].subject).toBe('Maya, Van Gogh Anywhere, ₹199 / month')
     expect(notifyArtist.mock.calls[0][0].text).toContain('Digital only, in India')
   })
 
-  it('ignores an address sent with The Digital Pass, but still needs a country', async () => {
+  it('ignores an address sent with Van Gogh Anywhere, but still needs a country', async () => {
     await post({ ...signup, tier: 'digital' })
     expect(insert.mock.calls[0][0]).toMatchObject({ address_line1: null, postal_code: null })
     expect((await post({ ...signup, country: '', tier: 'digital' })).status).toBe(400)

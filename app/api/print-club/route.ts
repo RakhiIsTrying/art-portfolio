@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   const row: Record<string, string | null> = {}
   for (const k of needed) row[k] = clean(k)
   for (const k of OPTIONAL) row[k] = clean(k) || null
-  // The Digital Pass keeps no address
+  // Van Gogh Anywhere keeps no address
   if (!shipsPrints(tier)) { for (const k of SHIPPING) row[k] = null; row.address_line2 = null }
   row.email = row.email!.toLowerCase()
 

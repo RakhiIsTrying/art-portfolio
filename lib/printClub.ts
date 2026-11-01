@@ -2,7 +2,7 @@
 export type PlanId = 'india' | 'international'
 export type TierId = 'digital' | 'broke' | 'baroque'
 
-/** `price` is the Gone Baroque price, `basicPrice` the Monet Can’t Buy Me Love price, `digitalPrice` The Digital Pass price. */
+/** `price` is the Gone Baroque price, `basicPrice` the Monet Can’t Buy Me Love price, `digitalPrice` Van Gogh Anywhere price. */
 export type Plans = Record<PlanId, { price: string; basicPrice: string; digitalPrice: string; region: string }>
 
 // Defaults, the live prices come from Admin → Shop settings
@@ -21,11 +21,11 @@ const CANCEL_PERK = { icon: 'breakup', title: 'Break Up Anytime', body: 'No comm
 // What members get, edit freely
 export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: Perk[] }> = {
   digital: {
-    name: 'The Digital Pass',
+    name: 'Van Gogh Anywhere',
     color: '#4a3a7a',
     tagline: 'iPad instead of an easel? Miles from a mailbox? There’s a seat saved for you.',
     perks: [
-      { icon: 'tablet', title: 'Ctrl + Alt + Paint', body: 'A detailed paint-along print, sent digitally every month. Your canvas goes wherever you go.' },
+      { icon: 'tablet', title: 'Ctrl + Alt + Paint', body: 'A detailed paint-along print, emailed to you every month. Your canvas goes wherever you go.' },
       CANCEL_PERK,
     ],
   },
@@ -56,7 +56,7 @@ export const tierOf = (saved: unknown): TierId => (isTierId(saved) ? saved : 'ba
 
 export const tierPrice = (plan: Plans[PlanId], tier: TierId) => ({ digital: plan.digitalPrice, broke: plan.basicPrice, baroque: plan.price })[tier]
 
-/** The Digital Pass has nothing to post. */
+/** Van Gogh Anywhere has nothing to post. */
 export const shipsPrints = (tier: TierId) => tier !== 'digital'
 
 /** Saved prices over the defaults, one region at a time, so settings saved before tiers keep working. */
