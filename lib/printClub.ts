@@ -15,8 +15,8 @@ export type PerkIconId = 'post' | 'paint' | 'stickers' | 'cake' | 'breakup'
 type Perk = { icon: PerkIconId; title: string; body: string }
 
 const PRINT_PERK = { icon: 'post', title: 'Gogh Postal', body: 'A fresh piece of original art at your door, every month. Your walls have been asking.' } as Perk
-const PAINT_PERK = { icon: 'paint', title: 'Happy Little Accidents', body: 'Paint-along cards for you and a brush. No talent required, and nobody has to see your first attempt.' } as Perk
-const CANCEL_PERK = { icon: 'breakup', title: 'Break Up Anytime', body: 'No commitment, no awkward talk. It’s not you, it’s the budget.' } as Perk
+const PAINT_PERK = { icon: 'paint', title: 'Happy Little Accidents', body: 'Paint-along cards for you and a brush. Every splash counts, and there’s no wrong way to do it.' } as Perk
+const CANCEL_PERK = { icon: 'breakup', title: 'Break Up Anytime', body: 'No commitment, no awkward talk. It’s not you, it’s us.' } as Perk
 
 // What members get, edit freely
 export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: Perk[] }> = {
@@ -33,7 +33,7 @@ export const TIERS: Record<TierId, { name: string; color: string; tagline: strin
     perks: [
       PRINT_PERK,
       PAINT_PERK,
-      { icon: 'stickers', title: 'Sticker Shock', body: 'Bookmarks, special edition stickers and other surprises, tucked in every month. Go on, actually use the stickers this time.' },
+      { icon: 'stickers', title: 'Sticker Shock', body: 'Bookmarks, special edition stickers and other surprises, tucked in every month. Go on, stick them on everything.' },
       { icon: 'cake', title: 'Cake Expectations', body: 'Add your birthday and make a special request: a favourite character, a dedication, something just for you. Better odds than blowing out candles.' },
       CANCEL_PERK,
     ],
