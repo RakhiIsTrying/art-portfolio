@@ -11,12 +11,15 @@ export const DEFAULT_PLANS: Plans = {
   international: { price: '$16',  basicPrice: '$11',  region: 'International' },
 }
 
-const PRINT_PERK = { title: 'Mail you’ll actually want 📬', body: 'A fresh piece of original art at your door, every month. Your walls have been asking.' }
-const PAINT_PERK = { title: 'Paint-along cards 🎨', body: 'Grab a brush and paint along. No talent required, and nobody has to see your first attempt.' }
-const CANCEL_PERK = { title: 'Break up anytime 💔', body: 'No commitment, no awkward talk. It’s not you, it’s the budget.' }
+export type PerkIconId = 'post' | 'paint' | 'stickers' | 'cake' | 'breakup'
+type Perk = { icon: PerkIconId; title: string; body: string }
+
+const PRINT_PERK = { icon: 'post', title: 'Gogh Postal', body: 'A fresh piece of original art at your door, every month. Your walls have been asking.' } as Perk
+const PAINT_PERK = { icon: 'paint', title: 'Happy Little Accidents', body: 'Paint-along cards for you and a brush. No talent required, and nobody has to see your first attempt.' } as Perk
+const CANCEL_PERK = { icon: 'breakup', title: 'Break Up Anytime', body: 'No commitment, no awkward talk. It’s not you, it’s the budget.' } as Perk
 
 // What members get, edit freely
-export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: { title: string; body: string }[] }> = {
+export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: Perk[] }> = {
   broke: {
     name: 'Monet Can’t Buy Me Love',
     color: '#1a6060',
@@ -30,8 +33,8 @@ export const TIERS: Record<TierId, { name: string; color: string; tagline: strin
     perks: [
       PRINT_PERK,
       PAINT_PERK,
-      { title: 'Monthly goodies 🎁', body: 'Bookmarks, special edition stickers and other surprises tucked in with your print. Go on, actually use the stickers this time.' },
-      { title: 'Birthday special 🎂', body: 'Add your birthday and make a special request: a favourite character, a dedication, something just for you. Better odds than blowing out candles.' },
+      { icon: 'stickers', title: 'Sticker Shock', body: 'Bookmarks, special edition stickers and other surprises, tucked in every month. Go on, actually use the stickers this time.' },
+      { icon: 'cake', title: 'Cake Expectations', body: 'Add your birthday and make a special request: a favourite character, a dedication, something just for you. Better odds than blowing out candles.' },
       CANCEL_PERK,
     ],
   },

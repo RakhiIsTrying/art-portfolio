@@ -7,6 +7,7 @@ import { getSettings } from '@/lib/settings'
 import { countryForVisitor, planForVisitor } from '@/lib/printClubServer'
 import type { Artwork } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
+import PerkIcon from '@/components/PerkIcon'
 
 export const metadata: Metadata = {
   title: 'Print Club | Van Gone Broke',
@@ -101,9 +102,12 @@ export default async function PrintClubPage() {
               </p>
               <ul style={{ listStyle: 'none', borderTop: '1px solid #d0d0d0', marginBottom: 20, flex: 1 }}>
                 {tier.perks.map(p => (
-                  <li key={p.title} style={{ padding: '12px 0', borderBottom: '1px solid #ebebeb' }}>
-                    <p style={{ fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 4 }}>{p.title}</p>
-                    <p style={{ fontSize: 12, lineHeight: 1.7, fontWeight: 300, color: '#787878' }}>{p.body}</p>
+                  <li key={p.title} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '14px 0', borderBottom: '1px solid #ebebeb' }}>
+                    <PerkIcon id={p.icon} />
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontFamily: PLAYFAIR, fontSize: 18, fontWeight: 700, lineHeight: 1.2, color: '#1a1014', marginBottom: 4, whiteSpace: 'normal' }}>{p.title}</p>
+                      <p style={{ fontSize: 12, lineHeight: 1.7, fontWeight: 300, color: '#787878', whiteSpace: 'normal' }}>{p.body}</p>
+                    </div>
                   </li>
                 ))}
               </ul>
