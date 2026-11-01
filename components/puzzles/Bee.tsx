@@ -1,5 +1,6 @@
 'use client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { nextClue, revealClue, type WordClue } from '@/lib/puzzles/rules'
 import { CENTERED, HintButton, HONEY, INK, PLAYFAIR, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
 type Props = { date: string; letters: string; center: string; answers: string[]; onSolved: () => void }
@@ -13,8 +14,8 @@ const points = (w: string, letters: string) => (w.length === 4 ? 1 : w.length) +
 
 export default function Bee({ date, letters, center, answers, onSolved }: Props) {
   const [found, setFound] = useDailyState<string[]>(date, 'bee', [])
-  // The word behind Bee's latest hint; Dug-Dug's reveal gives exactly this word
-  const [benWord, setBenWord] = useDailyState<string | null>(date, 'bee-ben-word', null)
+  // The word behind Bee's latest hint; Dug-Dug's reveal gives this word unless it's been found
+  const [clue, setClue] = useDailyState<WordClue | null>(date, 'bee-clue', null)
   const [outer, setOuter] = useState(() => [...letters].filter(l => l !== center))
   const [word, setWord] = useState('')
   const [message, setMessage] = useState<string | null>(null)
@@ -143,30 +144,27 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
       </div>
 
       <HintButton host="bee" date={date} game="bee" disabled={genius && found.length === answers.length}
-        getHint={n => {
-          // Bee builds up one word over three hints: first letter, then two, then three. Dug-Dug's reveal then gives it.
+        getHint={() => {
+          // Bee builds up one word still to find over three hints: first letter, then two, then three
           const left = answers.filter(w => !found.includes(w))
-          if (!left.length) return null
-          const step = n % 3
-          let w = benWord
-          if (step === 0 || !w || found.includes(w)) {
-            const pangram = left.find(x => isPangram(x, letters))
-            w = n === 0 && pangram ? pangram : left[Math.floor(n / 3) % left.length]
-            setBenWord(w)
-          }
-          const start = w.slice(0, step + 1).toUpperCase()
+          const next = nextClue(clue, left, clue ? undefined : left.find(x => isPangram(x, letters)))
+          if (!next) return null
+          setClue(next)
+          const w = next.word
+          const start = w.slice(0, next.show).toUpperCase()
           const what = isPangram(w, letters) ? 'There’s a pangram (uses all seven letters)' : `Try a ${w.length}-letter word`
-          return step === 0
+          return next.show === 1
             ? `${what}${isPangram(w, letters) ? `: ${w.length} letters,` : ''} starting with “${start}”.`
             : `Same word, it starts with “${start}”…`
         }}
         getReveal={() => {
-          // The answer to Bee's latest hint, for them to type in (never a new word)
-          if (!benWord) return 'Ask Bee for a hint first, then I’ll sniff out the word!'
-          if (found.includes(benWord)) return `You already found Bee’s word, “${benWord.toUpperCase()}”! Ask Bee for a new hint.`
-          setSniff({ word: benWord, key: Date.now() })
+          // The answer to Bee's latest hint for them to type in, or another word if that one's been found or revealed
+          const next = revealClue(clue, answers.filter(w => !found.includes(w)))
+          if (!next) return null
+          setClue(next)
+          setSniff({ word: next.word, key: Date.now() })
           setTimeout(() => setSniff(null), 4000)
-          return { text: 'Sniff sniff… Dug-Dug sniffed out Bee’s word! Type it in to add it:', word: benWord }
+          return { text: `Sniff sniff… Dug-Dug sniffed out ${next.word === clue?.word ? 'Bee’s word' : 'a new word'}! Type it in to add it:`, word: next.word }
         }} />
 
       {genius && <SolvedBanner title="Genius! Bee is buzzing 🐝" detail={`${found.length} words, ${score} points. Keep going to find them all.`} artIndex={6} />}

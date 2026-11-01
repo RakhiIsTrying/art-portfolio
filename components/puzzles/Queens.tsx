@@ -79,8 +79,11 @@ export default function Queens({ date, regions, solution, onSolved }: { date: st
           const r = solution.findIndex((c, row) => board[row][c] !== 2 || board[row].filter(v => v === 2).length > 1)
           if (r === -1) return null
           const c = solution[r]
+          const placed = board[r][c] === 2
           setBoard(b => b.map((row, i) => row.map((v, j) => (i === r ? (j === c ? 2 : v === 2 ? 0 : v) : v))))
-          return `Woof! I belong in row ${r + 1}, column ${c + 1}.`
+          return placed
+            ? `Woof! Row ${r + 1} only needs the pup in column ${c + 1}, so I moved the extra one.`
+            : `Woof! I belong in row ${r + 1}, column ${c + 1}.`
         }} />
 
       {solved && <SolvedBanner title="Long live the Dug-Dug Kings! 👑" artIndex={4} />}

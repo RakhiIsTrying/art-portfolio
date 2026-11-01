@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { nextClue, revealClue, type WordClue } from '@/lib/puzzles/rules'
 import { CENTERED, HintButton, BEE_BEN, HONEY, INK, PLAYFAIR, Rules, SmallButton, SolvedBanner, callBee, useDailyState } from './shared'
 
 type Word = { word: string; cells: number[] }
@@ -13,7 +14,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
   const [found, setFound] = useDailyState<Word[]>(date, 'dig', [])
   const [path, setPath] = useState<number[]>([])
   // Dug-Dug's clue: which hidden word, and how many of its first letters are lit
-  const [clue, setClue] = useDailyState<{ word: number; show: number } | null>(date, 'dig-clue', null)
+  const [clue, setClue] = useDailyState<WordClue | null>(date, 'dig-word-clue', null)
   const [flash, setFlash] = useState<string | null>(null)
   const [dugUp, setDugUp] = useState(0)      // restarts the dig-up animation on each reveal
   const boardRef = useRef<HTMLDivElement>(null)
@@ -25,6 +26,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
   const owner = new Map<number, number>()          // cell → index of the found word using it
   found.forEach((f, i) => f.cells.forEach(c => owner.set(c, i)))
   const left = words.map((w, i) => i).filter(i => !found.some(f => f.word === words[i].word))
+  const leftWords = left.map(i => words[i].word)
   const spelled = path.map(i => letters[i]).join('')
 
   const adjacent = (a: number, b: number) =>
@@ -39,7 +41,6 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
     if (hit === undefined) return false
     setFound(f => [...f, { word: w, cells: p }])
     setPath([])
-    if (clue && words[clue.word].word === w) setClue(null)
     say(['Dug-Dug dug it up! 🦴', 'Found one!', 'Nice digging!'][found.length % 3])
     return true
   }
@@ -90,8 +91,10 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
   }
 
   const centre = (i: number) => [((i % size) + .5) * (100 / size), (Math.floor(i / size) + .5) * (100 / size)]
-  const lit = new Set(clue ? words[clue.word].cells.slice(0, clue.show) : [])
-  const revealCells = clue && clue.show === words[clue.word].word.length ? words[clue.word].cells : []
+  // Only a word still hidden stays lit
+  const clueCells = (clue && leftWords.includes(clue.word) && words.find(w => w.word === clue.word)?.cells) || []
+  const lit = new Set(clueCells.slice(0, clue?.show))
+  const revealCells = clue && clue.show === clue.word.length ? clueCells : []
 
   return (
     <div className="vgb-puzzle" style={CENTERED}>
@@ -179,30 +182,27 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
       {!solved && (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 12 }}>
           <SmallButton bee="clear" onClick={() => setPath([])}>Clear word</SmallButton>
-          <SmallButton bee="reset" onClick={() => { setFound([]); setPath([]) }}>Start over</SmallButton>
+          <SmallButton bee="reset" onClick={() => { setFound([]); setPath([]); setClue(null) }}>Start over</SmallButton>
         </div>
       )}
 
       <HintButton host="dug" date={date} game="dig" disabled={solved}
-        getHint={n => {
-          // Dug-Dug lights up one word's first letter, then two, then three. Dug-Dug's reveal then shows it all.
-          if (!left.length) return null
-          const step = n % 3
-          let target = clue?.word
-          if (step === 0 || target === undefined || !left.includes(target)) target = left[0]
-          setClue({ word: target, show: step + 1 })
-          const w = words[target].word
-          return step === 0
-            ? `Woof! Look for a ${w.length}-letter word. I circled where it starts.`
-            : `Same word, I circled its first ${step + 1} letters.`
+        getHint={() => {
+          // Dug-Dug lights up one word still hidden: its first letter, then two, then three. His reveal then shows it all.
+          const next = nextClue(clue, leftWords)
+          if (!next) return null
+          setClue(next)
+          return next.show === 1
+            ? `Woof! Look for a ${next.word.length}-letter word. I circled where it starts.`
+            : `Same word, I circled its first ${next.show} letters.`
         }}
         getReveal={() => {
-          // Lights up the whole of the hinted word for them to trace
-          const target = clue && left.includes(clue.word) ? clue.word : null
-          if (target === null) return 'Ask me for a hint first, then I’ll dig up the word!'
-          setClue({ word: target, show: words[target].word.length })
+          // Lights up the whole of the hinted word for them to trace, or another if that one's been found or revealed
+          const next = revealClue(clue, leftWords)
+          if (!next) return null
+          setClue(next)
           setDugUp(Date.now())
-          return { text: 'Dig dig dig… I dug up the whole word! Now trace it on the board:', word: words[target].word }
+          return { text: 'Dig dig dig… I dug up the whole word! Now trace it on the board:', word: next.word }
         }} />
 
       {solved && <SolvedBanner title="All dug up! 🦴" detail={`Every ${theme.toLowerCase()} word found.`} artIndex={4} />}

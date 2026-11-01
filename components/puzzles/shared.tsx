@@ -116,9 +116,9 @@ const HINTS_PER_REVEAL = 3 // every 3 hints unlock one reveal
 type HintProps = {
   date: string
   game: string
-  /** Gives a clue (without changing the board) and returns what Ben says; `n` = hints given so far, to vary the clue */
+  /** Gives a clue (without changing the board) and returns what the host says, or null if there's nothing new; `n` = hints given so far, to vary the clue */
   getHint: (n: number) => string | null
-  /** Does one step of the answer and returns what Dug-Dug says (optionally a word to show off as tiles) */
+  /** Does one step of the answer and returns what Dug-Dug says (optionally a word to show off as tiles), or null if nothing's left */
   getReveal: () => string | { text: string; word: string } | null
   disabled?: boolean
   /** Who gives the hints: the puzzle's own host. Reveals are always Dug-Dug's. */
@@ -162,8 +162,10 @@ export function HintButton({ date, game, getHint, getReveal, disabled, host = 'b
 
   function ask() {
     if (tick() > 0 || disabled) return
-    setSaid({ who: 'host', text: getHint(used.hints) ?? 'Hmm, nothing left to tell you. You’ve got this!' })
+    const hint = getHint(used.hints)
+    setSaid({ who: 'host', text: hint ?? 'Hmm, nothing left to tell you. You’ve got this!' })
     setCount(c => c + 1)
+    if (hint === null) return   // Nothing new was said, so it doesn't count as a hint
     setUsed(u => ({ ...u, hints: u.hints + 1 }))
     try { localStorage.setItem(HINT_LOCK_KEY, String(Date.now() + HINT_COOLDOWN * 1000)) } catch {}
     setWait(HINT_COOLDOWN)
@@ -175,7 +177,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled, host = 'b
     const r = getReveal()
     setSaid(typeof r === 'string' ? { who: 'dug', text: r } : r ? { who: 'dug', ...r } : { who: 'dug', text: 'Woof! Nothing left to reveal.' })
     setCount(c => c + 1)
-    setUsed(u => ({ ...u, reveals: u.reveals + 1 }))
+    if (r !== null) setUsed(u => ({ ...u, reveals: u.reveals + 1 }))   // Nothing to reveal keeps the reveal for later
   }
 
   const dug = said?.who === 'dug'
