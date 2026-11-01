@@ -94,40 +94,45 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
   const birthdayPerk = tier === 'baroque'
   const [phoneCountry, setPhoneCountry] = useState(() => countryByIso(visitorCountry ?? (defaultPlan === 'india' ? 'IN' : 'US')) ?? FALLBACK_COUNTRY)
 
-  // A new pincode fills in city, state and country straight away; they can still be edited afterwards.
+  // A new pincode quietly fills in city, state and country in the background, but never over anything typed by hand.
   // The country to search comes from what's typed, else the phone's country code.
-  const lookupIso = findCountry(form.country)?.iso ?? phoneCountry.iso
+  const typedByHand = useRef(new Set<Field>())
+  const [autoCountry, setAutoCountry] = useState('')
+  const lookupIso = (form.country !== autoCountry && findCountry(form.country)?.iso) || phoneCountry.iso
   const code = form.postal_code.trim()
   const lookupKey = `${lookupIso}:${code}`
   const lastLookup = useRef(lookupKey)
-  const [lookup, setLookup] = useState<{ key: string; result: 'looking' | 'found' | 'missed' } | null>(null)
   useEffect(() => {
     if (lookupKey === lastLookup.current || !postcodeReady(code, lookupIso)) return
     const stop = new AbortController()
     const timer = setTimeout(async () => {
       lastLookup.current = lookupKey
-      setLookup({ key: lookupKey, result: 'looking' })
+      let place: { city: string; state: string } | null = null
       try {
         const res = await fetch(`/api/postcode?code=${encodeURIComponent(code)}&country=${lookupIso}`, { signal: stop.signal })
-        if (!res.ok) return setLookup({ key: lookupKey, result: 'missed' })
-        const place: { city: string; state: string } = await res.json()
-        setForm(f => ({ ...f, city: place.city, region: place.state || f.region, country: countryByIso(lookupIso)?.name ?? f.country }))
-        setErrors(e => ({ ...e, city: undefined, region: undefined, country: undefined }))
-        setLookup({ key: lookupKey, result: 'found' })
+        if (res.ok) place = await res.json()
       } catch {
-        if (!stop.signal.aborted) setLookup({ key: lookupKey, result: 'missed' })
+        if (stop.signal.aborted) return
       }
+      const typed = typedByHand.current
+      // An unknown code clears what the last one filled in, so the wrong city doesn't stay behind
+      const country = place && !typed.has('country') ? countryByIso(lookupIso)?.name : undefined
+      if (country) setAutoCountry(country)
+      setForm(f => ({
+        ...f,
+        city: typed.has('city') ? f.city : place?.city ?? '',
+        region: typed.has('region') ? f.region : place?.state ?? '',
+        country: country ?? f.country,
+      }))
+      if (place) setErrors(e => ({ ...e, city: typed.has('city') ? e.city : undefined, region: typed.has('region') ? e.region : undefined, country: country ? undefined : e.country }))
     }, 350)
     return () => { clearTimeout(timer); stop.abort() }
   }, [lookupKey, code, lookupIso])
-  const lookupHint = lookup?.key !== lookupKey ? undefined : {
-    looking: 'Looking that up…',
-    found: 'City, state and country filled in. You can still change them.',
-    missed: 'Couldn’t find that one, so please check the city, state and country below.',
-  }[lookup.result]
 
   function update(field: Field) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      if (e.target.value.trim()) typedByHand.current.add(field)
+      else typedByHand.current.delete(field)
       setForm(f => ({ ...f, [field]: e.target.value }))
       if (errors[field]) setErrors(er => ({ ...er, [field]: undefined }))
     }
@@ -155,8 +160,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
     setStatus('sent')
   }
 
-  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint: fieldHint, multiline }: FieldDef) => {
-    const hint = id === 'postal_code' ? lookupHint : fieldHint
+  const renderField = ({ id, label, type = 'text', autoComplete, optional, half, hint, multiline }: FieldDef) => {
     const input = (
       <input
         id={`pc-${id}`} name={id} type={type} autoComplete={autoComplete}

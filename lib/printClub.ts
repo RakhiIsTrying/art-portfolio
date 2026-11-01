@@ -13,7 +13,7 @@ export const DEFAULT_PLANS: Plans = {
 
 const PRINT_PERK = { title: 'A new print, every month', body: 'A fresh piece of original art mailed to your door.' }
 const PAINT_PERK = { title: 'Paint-along cards 🎨', body: 'Grab a brush and paint along, so you get to make a little art of your own too.' }
-const CANCEL_PERK = { title: 'Cancel anytime', body: 'No commitment. Stay as long as the prints make you happy.' }
+const CANCEL_PERK = { title: 'Break up anytime 💔', body: 'No commitment, no awkward talk. It’s not you, it’s us. Dug-Dug will only sulk a little.' }
 
 // What members get, edit freely
 export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: { title: string; body: string }[] }> = {
