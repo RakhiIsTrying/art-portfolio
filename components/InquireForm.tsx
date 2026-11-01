@@ -1,4 +1,5 @@
 'use client'
+import { track } from '@/lib/analytics/client'
 import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import type { Currency } from '@/lib/prints'
@@ -49,6 +50,7 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
     if (Object.keys(errs).length) { setErrors(errs); return }
     setStatus('sending')
     const res = await fetch('/api/inquire', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, order }) })
+    if (res.ok) track('inquiry', { label: form.piece || undefined })
     setStatus(res.ok ? 'sent' : 'error')
   }
 

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import CountryCodePicker from '@/components/CountryCodePicker'
+import { track } from '@/lib/analytics/client'
 import WipTag from '@/components/WipTag'
 import { countryByIso, findCountry } from '@/lib/countries'
 import { postcodeReady } from '@/lib/postcode'
@@ -153,6 +154,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
     const phone = form.phone.trim().startsWith('+') ? form.phone.trim() : `${phoneCountry.dial} ${form.phone.trim()}`
     const res = await fetch('/api/print-club', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...details, phone, tier }) })
     if (!res.ok) { setStatus('error'); return }
+    track('club_signup', { label: tier })
     const { checkoutUrl } = await res.json()
     // Once a payment link is configured, members go straight to checkout
     if (checkoutUrl) {
@@ -219,7 +221,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
           {TIER_IDS.map(id => {
             const on = tier === id
             return (
-              <button key={id} type="button" aria-pressed={on} onClick={() => setTier(id)}
+              <button key={id} type="button" aria-pressed={on} onClick={() => { setTier(id); track('tier_selected', { label: id }) }}
                 style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '10px 12px', fontFamily: 'inherit', cursor: 'pointer', textAlign: 'left', border: `1px solid ${TIERS[id].color}`, background: on ? TIERS[id].color : '#fff', color: on ? '#fff' : '#1a1014' }}>
                 <span style={{ display: 'block', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontStyle: 'italic', fontSize: 15, fontWeight: on ? 700 : 400, lineHeight: 1.2, whiteSpace: 'normal' }}>{TIERS[id].name}</span>
                 <span style={{ display: 'block', fontSize: 11, fontWeight: on ? 700 : 300, marginTop: 3 }}>{tierPrice(plan, id)} / month{TIERS[id].wip && <WipTag />}</span>

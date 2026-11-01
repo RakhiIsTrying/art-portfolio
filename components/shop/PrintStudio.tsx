@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { track } from '@/lib/analytics/client'
 import { formatPrice, type Currency, type PrintSize } from '@/lib/prints'
 import { useShopSettings } from './ShopSettings'
 import type { Artwork } from '@/lib/types'
@@ -86,6 +87,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
   const order = orderPayload(PRINT_SIZES, qty, currency, cards ? (greetingMode === 'custom' && greeting.trim() ? greeting.trim() : 'Surprise me (random greeting)') : undefined)
 
   function pick(a: Artwork) {
+    track('piece_selected', { label: a.title })
     setArt(a)
     setOrientation(null)
     // Keep the address in step, so choosing an original's prints afterwards always counts as a change
@@ -104,6 +106,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: contact.name.trim(), email: contact.email.trim(), piece: `Print: ${art.title} (${landscape ? 'landscape' : 'portrait'})`, message: contact.note.trim(), order }),
     })
+    if (res.ok) track('order_request', { label: art.title })
     setStatus(res.ok ? 'sent' : 'error')
   }
 

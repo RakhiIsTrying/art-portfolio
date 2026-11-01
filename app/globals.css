@@ -214,3 +214,9 @@ label[style*="text-transform: uppercase"] { white-space: nowrap; }
   72%  { transform: translateY(-6px); }
   100% { transform: none; }
 }
+
+/* About: money thrown at the artist */
+@keyframes vgb-money {
+  0%   { transform: translate(-50%, 0) rotate(0); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--vgb-x, 0px)), -170px) rotate(40deg); opacity: 0; }
+}

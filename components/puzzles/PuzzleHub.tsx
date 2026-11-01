@@ -1,4 +1,5 @@
 'use client'
+import { track } from '@/lib/analytics/client'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Daily } from '@/lib/puzzles/daily'
 import Sudoku from './Sudoku'
@@ -96,7 +97,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
     setCelebrating(true)
   }, [])
   const markSolved = useCallback((g: GameId) => {
-    if (solvedLoaded && !solved[g]) celebrate()
+    if (solvedLoaded && !solved[g]) { celebrate(); track('puzzle_solved', { label: GAMES.find(x => x.id === g)?.name }) }
     setSolved(s => (s[g] ? s : { ...s, [g]: true }))
   }, [setSolved, solved, solvedLoaded, celebrate])
 
@@ -134,7 +135,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
         {GAMES.map(g => {
           const on = g.id === active
           return (
-            <button key={g.id} role="tab" aria-selected={on} type="button" onClick={() => setActive(g.id)}
+            <button key={g.id} role="tab" aria-selected={on} type="button" onClick={() => { setActive(g.id); track('puzzle_opened', { label: g.name }) }}
               style={{ position: 'relative', textAlign: 'center', padding: '12px 10px 14px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                        background: on ? BEE_BEN : '#fff', color: on ? '#fff' : INK, transition: 'background .2s' }}>
               {/* A little drawing of the game, on a white tile so it pops on the purple tab too */}

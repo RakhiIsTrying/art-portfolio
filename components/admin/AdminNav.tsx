@@ -1,10 +1,12 @@
 'use client'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase/env'
 
 const links = [
+  { href: '/admin/analytics', label: 'Analytics', color: '#4a3a7a' },
   { href: '/admin/inbox',    label: 'Inbox',    color: '#1e3a8a' },
   { href: '/admin/instagram', label: 'Instagram', color: '#b0552f' },
   { href: '/admin/skipped',  label: 'Skipped',  color: '#b0552f' },
@@ -21,6 +23,9 @@ const links = [
 export default function AdminNav() {
   const pathname = usePathname()
   const router = useRouter()
+
+  // Your own visits shouldn't count in Analytics
+  useEffect(() => { try { localStorage.setItem('vgb-no-track', '1') } catch {} }, [])
 
   async function handleLogout() {
     const supabase = createClient(

@@ -11,7 +11,7 @@ const categories = [
 
 const socials = [
   { href: 'https://www.instagram.com/van_gone_broke/', label: 'Instagram' },
-  { href: 'https://twitter.com',   label: 'Twitter'   },
+  { href: 'https://www.youtube.com/@Van_Gone_Broke', label: 'YouTube' },
 ]
 
 export default function Footer() {
