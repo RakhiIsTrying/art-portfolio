@@ -6,7 +6,10 @@ const insert = vi.fn()
 const notifyArtist = vi.fn()
 vi.mock('@/lib/supabase/admin', () => ({ getSupabaseAdminClient: () => ({ from: () => ({ insert }) }) }))
 vi.mock('@/lib/notify', () => ({ notifyArtist: (m: unknown) => notifyArtist(m) }))
-vi.mock('@/lib/settings', () => ({ getSettings: async () => ({ plans: DEFAULT_PLANS }) }))
+const settings = { plans: DEFAULT_PLANS, checkoutLinks: {} as Record<string, string> }
+vi.mock('@/lib/settings', () => ({ getSettings: async () => settings }))
+const sendMemberEmails = vi.fn()
+vi.mock('@/lib/memberEmail', async original => ({ ...(await original<typeof import('@/lib/memberEmail')>()), sendMemberEmails: (e: unknown) => sendMemberEmails(e) }))
 
 import { POST } from '@/app/api/print-club/route'
 
@@ -18,7 +21,7 @@ const signup = {
 const post = (body: object) => POST(new NextRequest('http://x/api/print-club', { method: 'POST', body: JSON.stringify(body) }))
 
 describe('POST /api/print-club', () => {
-  beforeEach(() => { vi.clearAllMocks(); insert.mockResolvedValue({ error: null }) })
+  beforeEach(() => { vi.clearAllMocks(); insert.mockResolvedValue({ error: null }); settings.checkoutLinks = {} })
   afterEach(() => vi.unstubAllEnvs())
 
   it('saves the chosen tier and tells the artist its price', async () => {
@@ -66,6 +69,29 @@ describe('POST /api/print-club', () => {
     const { name, email, phone, country } = signup
     expect((await post({ name, email, phone, country, tier: 'broke' })).status).toBe(400)
     expect(insert).not.toHaveBeenCalled()
+  })
+
+  it('prefers the payment link saved in Admin for that tier and region', async () => {
+    vi.stubEnv('PRINT_CLUB_CHECKOUT_URL_INDIA_DIGITAL', 'https://pay/env')
+    settings.checkoutLinks = { india_digital: 'https://pay/admin' }
+    expect(await (await post({ ...signup, tier: 'digital' })).json()).toEqual({ ok: true, checkoutUrl: 'https://pay/admin' })
+    expect(await (await post({ ...signup, tier: 'broke' })).json()).toEqual({ ok: true, checkoutUrl: null })
+  })
+
+  it('welcomes a new member with their payment link, but not someone already signed up', async () => {
+    settings.checkoutLinks = { india_digital: 'https://pay/admin' }
+    await post({ ...signup, tier: 'digital' })
+    expect(sendMemberEmails.mock.calls[0][0][0]).toMatchObject({ to: 'maya@example.com', subject: 'Welcome to Van Gogh Anywhere!' })
+    expect(sendMemberEmails.mock.calls[0][0][0].text).toContain('https://pay/admin')
+    sendMemberEmails.mockClear()
+    insert.mockResolvedValue({ error: { code: '23505' } })
+    await post({ ...signup, tier: 'digital' })
+    expect(sendMemberEmails).not.toHaveBeenCalled()
+  })
+
+  it('still succeeds if the welcome email fails', async () => {
+    sendMemberEmails.mockRejectedValueOnce(new Error('down'))
+    expect((await post({ ...signup, tier: 'digital' })).status).toBe(200)
   })
 
   it('never sends the lower tier to the higher tier’s payment link', async () => {

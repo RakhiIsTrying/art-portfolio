@@ -19,9 +19,10 @@ const PAINT_PERK = { icon: 'paint', title: 'Happy Little Accidents', body: 'Pain
 const CANCEL_PERK = { icon: 'breakup', title: 'Break Up Anytime', body: 'No commitment, no awkward talk. It’s not you, it’s us.' } as Perk
 
 // What members get, edit freely
-export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: Perk[] }> = {
+export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: Perk[]; wip?: boolean }> = {
   digital: {
     name: 'Van Gogh Anywhere',
+    wip: true,
     color: '#4a3a7a',
     tagline: 'iPad instead of an easel? Miles from a mailbox? There’s a seat saved for you.',
     perks: [
@@ -48,6 +49,9 @@ export const TIERS: Record<TierId, { name: string; color: string; tagline: strin
     ],
   },
 }
+/** Where each tier's payment link is kept in Admin → Shop settings. */
+export const checkoutKey = (plan: PlanId, tier: TierId) => `${plan}_${tier}`
+
 export const TIER_IDS = Object.keys(TIERS) as TierId[]
 export const isTierId = (v: unknown): v is TierId => v === 'digital' || v === 'broke' || v === 'baroque'
 

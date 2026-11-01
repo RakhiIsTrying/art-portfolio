@@ -5,7 +5,7 @@ import { saveSettings } from '@/lib/settings'
 import type { PrintSize } from '@/lib/prints'
 import type { PlanId, Plans } from '@/lib/printClub'
 
-export type ShopSettingsInput = { printSizes: PrintSize[]; greetings: string[]; plans: Plans; shopIntro: string }
+export type ShopSettingsInput = { printSizes: PrintSize[]; greetings: string[]; plans: Plans; checkoutLinks: Record<string, string>; shopIntro: string }
 
 /** Save print sizes & prices, card greetings, Print Club prices and the shop intro. */
 export async function saveShopSettings(input: ShopSettingsInput) {
@@ -31,7 +31,15 @@ export async function saveShopSettings(input: ShopSettingsInput) {
   if ([input.plans.india, input.plans.international].some(p => !p.price.trim() || !p.basicPrice.trim() || !p.digitalPrice.trim())) throw new Error('Add every Print Club price')
   const cleanPlan = (p: Plans[PlanId]) => ({ ...p, price: p.price.trim(), basicPrice: p.basicPrice.trim(), digitalPrice: p.digitalPrice.trim() })
 
+  const checkoutLinks: Record<string, string> = {}
+  for (const [key, link] of Object.entries(input.checkoutLinks)) {
+    if (!link.trim()) continue
+    if (!/^https:\/\/\S+$/.test(link.trim())) throw new Error('Payment links must start with https://')
+    checkoutLinks[key] = link.trim()
+  }
+
   await saveSettings({
+    checkoutLinks,
     printSizes: sizes, greetings,
     plans: { india: cleanPlan(input.plans.india), international: cleanPlan(input.plans.international) },
     shopIntro: input.shopIntro.trim().slice(0, 400),

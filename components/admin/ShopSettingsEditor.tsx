@@ -1,7 +1,8 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { saveShopSettings, type ShopSettingsInput } from '@/app/admin/(shell)/shop/actions'
-import { TIERS } from '@/lib/printClub'
+import { checkoutKey, TIER_IDS, TIERS } from '@/lib/printClub'
+import WipTag from '@/components/WipTag'
 
 const panel: React.CSSProperties = { border: '1px solid #d0d0d0', background: '#fff', padding: 18, display: 'flex', flexDirection: 'column', gap: 12 }
 const h2: React.CSSProperties = { fontSize: 12, fontWeight: 500, letterSpacing: '.35em', textTransform: 'uppercase', color: '#1a1014' }
@@ -13,6 +14,7 @@ export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsI
   const [sizes, setSizes] = useState(initial.printSizes)
   const [greetings, setGreetings] = useState(initial.greetings.join('\n'))
   const [plans, setPlans] = useState(initial.plans)
+  const [links, setLinks] = useState(initial.checkoutLinks)
   const [intro, setIntro] = useState(initial.shopIntro)
   const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null)
   const [pending, start] = useTransition()
@@ -22,7 +24,7 @@ export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsI
   function save() {
     start(async () => {
       try {
-        await saveShopSettings({ printSizes: sizes, greetings: greetings.split('\n'), plans, shopIntro: intro })
+        await saveShopSettings({ printSizes: sizes, greetings: greetings.split('\n'), plans, checkoutLinks: links, shopIntro: intro })
         setNote({ ok: true, text: 'Saved. The shop is updated ✓' })
       } catch (e) { setNote({ ok: false, text: e instanceof Error ? e.message : 'Could not save' }) }
     })
@@ -70,6 +72,19 @@ export default function ShopSettingsEditor({ initial }: { initial: ShopSettingsI
             <label key={`${id}-${field}`} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, color: '#787878' }}>
               {name}, {plans[id].region}
               <input style={{ ...input, width: 140 }} value={plans[id][field]} onChange={e => setPlans(p => ({ ...p, [id]: { ...p[id], [field]: e.target.value } }))} />
+            </label>
+          )))}
+        </div>
+      </div>
+
+      <div style={panel}>
+        <h2 style={h2}>Print Club payment links<WipTag /></h2>
+        <p style={{ fontSize: 12, fontWeight: 300, color: '#787878' }}>Paste a link when you have one. Until then, members apply and you get in touch with them.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {(['india', 'international'] as const).flatMap(id => TIER_IDS.map(tier => (
+            <label key={checkoutKey(id, tier)} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, color: '#787878' }}>
+              {TIERS[tier].name}, {plans[id].region}
+              <input type="url" placeholder="https://" style={{ ...input, width: '100%' }} value={links[checkoutKey(id, tier)] ?? ''} onChange={e => setLinks(l => ({ ...l, [checkoutKey(id, tier)]: e.target.value }))} />
             </label>
           )))}
         </div>

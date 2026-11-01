@@ -8,6 +8,7 @@ import { countryForVisitor, planForVisitor } from '@/lib/printClubServer'
 import type { Artwork } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
 import PerkIcon from '@/components/PerkIcon'
+import WipTag from '@/components/WipTag'
 
 export const metadata: Metadata = {
   title: 'Print Club | Van Gone Broke',
@@ -91,7 +92,7 @@ export default async function PrintClubPage() {
           const other = visitorPlan === 'india' ? 'international' : 'india'
           return (
             <div key={id} style={{ minWidth: 0, display: 'flex', flexDirection: 'column', padding: '24px 24px 22px', background: '#fff', border: '1px solid #d0d0d0', borderTop: `4px solid ${tier.color}` }}>
-              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(24px, 2.6vw, 30px)', lineHeight: 1.15, color: '#1a1014', marginBottom: 6, whiteSpace: 'normal' }}>{tier.name}</p>
+              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(24px, 2.6vw, 30px)', lineHeight: 1.15, color: '#1a1014', marginBottom: 6, whiteSpace: 'normal' }}>{tier.name}{tier.wip && <WipTag />}</p>
               <p style={{ fontSize: 13, fontWeight: 300, color: '#787878', marginBottom: 18 }}>{tier.tagline}</p>
               <p style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
                 <span style={{ fontFamily: PLAYFAIR, fontSize: 40, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>{tierPrice(PLANS[visitorPlan], id)}</span>

@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { tierOf, tierPrice, TIERS, type PlanId } from '@/lib/printClub'
 import { getSettings } from '@/lib/settings'
 import { monthKey, monthLabel } from '@/lib/printClubExport'
+import { memberEmailReady } from '@/lib/memberEmail'
+import MonthlyPrintSender from '@/components/admin/MonthlyPrintSender'
 
 export const dynamic = 'force-dynamic'
 
@@ -56,6 +58,8 @@ export default async function AdminPrintClubPage({ searchParams }: { searchParam
           <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>Print Club</h1>
         </div>
       </div>
+
+      <MonthlyPrintSender ready={memberEmailReady()} members={(signups ?? []).filter(s => s.tier === 'digital').length} />
 
       {/* Upcoming birthdays */}
       <div style={{ border: '1px solid #d0d0d0', background: '#fff' }}>

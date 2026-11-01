@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { notifyArtist } from '@/lib/notify'
-import { isTierId, planForCountry, shipsPrints, tierPrice, TIERS } from '@/lib/printClub'
+import { sendMemberEmails, welcomeEmail } from '@/lib/memberEmail'
+import { checkoutKey, isTierId, planForCountry, shipsPrints, tierPrice, TIERS } from '@/lib/printClub'
 import { getSettings } from '@/lib/settings'
 
 const REQUIRED = ['name', 'email', 'phone', 'country'] as const
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
   if (tier !== 'baroque') { row.birthday = null; row.birthday_request = null }
 
   const plan = planForCountry(row.country!)
-  const PLANS = (await getSettings()).plans
+  const { plans: PLANS, checkoutLinks } = await getSettings()
   const price = tierPrice(PLANS[plan], tier)
   const admin = getSupabaseAdminClient()
   let { error } = await admin.from('print_club_signups').insert({ ...row, plan, tier })
@@ -71,6 +72,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Separate payment links per region and tier, once configured. A tier without its own link never uses the other's price.
-  const checkoutUrl = process.env[`PRINT_CLUB_CHECKOUT_URL_${plan === 'india' ? 'INDIA' : 'INTERNATIONAL'}${{ digital: '_DIGITAL', broke: '_BROKE', baroque: '' }[tier]}`]
+  const checkoutUrl = checkoutLinks[checkoutKey(plan, tier)] || process.env[`PRINT_CLUB_CHECKOUT_URL_${plan === 'india' ? 'INDIA' : 'INTERNATIONAL'}${{ digital: '_DIGITAL', broke: '_BROKE', baroque: '' }[tier]}`]
+  // Best effort, and only for a new sign-up: does nothing until member emails are switched on
+  if (!error) {
+    try {
+      await sendMemberEmails([welcomeEmail({ to: row.email!, name: row.name!, tier, price, checkoutUrl })])
+    } catch (e) { console.error('Welcome email not sent:', e) }
+  }
+
   return NextResponse.json({ ok: true, checkoutUrl: checkoutUrl || null })
 }

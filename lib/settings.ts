@@ -15,6 +15,8 @@ export type SiteSettings = {
   printSizes: PrintSize[]
   greetings: string[]
   plans: Plans
+  /** Print Club payment links, by region and tier (see checkoutKey) */
+  checkoutLinks: Record<string, string>
   shopIntro: string
   /** Background-removed versions of artworks (artwork id → image url), used as cut-outs */
   cutouts: Record<string, string>
@@ -29,6 +31,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   printSizes: DEFAULT_PRINT_SIZES,
   greetings: DEFAULT_GREETINGS,
   plans: DEFAULT_PLANS,
+  checkoutLinks: {},
   cutouts: {},
   shopIntro: 'Bring a piece home. Every print and card is made to order. Pick a piece, see it at every size and send your order.',
 }

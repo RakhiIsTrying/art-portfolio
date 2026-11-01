@@ -15,7 +15,7 @@ export default async function AdminShopPage() {
           <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginTop: 8 }}>Print sizes and prices, greeting-card messages, Print Club prices and the shop intro.</p>
         </div>
       </div>
-      <ShopSettingsEditor initial={{ printSizes: s.printSizes, greetings: s.greetings, plans: s.plans, shopIntro: s.shopIntro }} />
+      <ShopSettingsEditor initial={{ printSizes: s.printSizes, greetings: s.greetings, plans: s.plans, checkoutLinks: s.checkoutLinks, shopIntro: s.shopIntro }} />
     </div>
   )
 }
