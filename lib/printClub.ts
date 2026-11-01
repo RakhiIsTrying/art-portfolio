@@ -11,9 +11,9 @@ export const DEFAULT_PLANS: Plans = {
   international: { price: '$16',  basicPrice: '$11',  region: 'International' },
 }
 
-const PRINT_PERK = { title: 'A new print, every month', body: 'A fresh piece of original art mailed to your door.' }
-const PAINT_PERK = { title: 'Paint-along cards 🎨', body: 'Grab a brush and paint along, so you get to make a little art of your own too.' }
-const CANCEL_PERK = { title: 'Break up anytime 💔', body: 'No commitment, no awkward talk. It’s not you, it’s us. Dug-Dug will only sulk a little.' }
+const PRINT_PERK = { title: 'Mail you’ll actually want 📬', body: 'A fresh piece of original art at your door, every month. Your walls have been asking.' }
+const PAINT_PERK = { title: 'Paint-along cards 🎨', body: 'Grab a brush and paint along. No talent required, and nobody has to see your first attempt.' }
+const CANCEL_PERK = { title: 'Break up anytime 💔', body: 'No commitment, no awkward talk. It’s not you, it’s the budget.' }
 
 // What members get, edit freely
 export const TIERS: Record<TierId, { name: string; color: string; tagline: string; perks: { title: string; body: string }[] }> = {
@@ -30,8 +30,8 @@ export const TIERS: Record<TierId, { name: string; color: string; tagline: strin
     perks: [
       PRINT_PERK,
       PAINT_PERK,
-      { title: 'Monthly goodies 🎁', body: 'Little extras tucked in with each month’s print: bookmarks, special edition stickers and other surprises.' },
-      { title: 'Birthday special 🎂', body: 'Add your birthday and ask for a special request: a favourite character, a dedication, something just for you.' },
+      { title: 'Monthly goodies 🎁', body: 'Bookmarks, special edition stickers and other surprises tucked in with your print. Go on, actually use the stickers this time.' },
+      { title: 'Birthday special 🎂', body: 'Add your birthday and make a special request: a favourite character, a dedication, something just for you. Better odds than blowing out candles.' },
       CANCEL_PERK,
     ],
   },
