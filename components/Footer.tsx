@@ -61,8 +61,8 @@ export default function Footer() {
         <Link
           href="/privacy"
           style={{
-            fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
-            color: 'rgba(255,255,255,.3)', textDecoration: 'none',
+            fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+            color: '#b07880', textDecoration: 'none',
           }}
         >
           Privacy
