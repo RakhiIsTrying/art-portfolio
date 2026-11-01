@@ -11,7 +11,7 @@ export const DEFAULT_PLANS: Plans = {
   international: { price: '$16',  basicPrice: '$11',  region: 'International' },
 }
 
-const PRINT_PERK = { title: 'A new print, every month', body: 'A fresh piece mailed to your door: music, movies, comics or Dug-Dug.' }
+const PRINT_PERK = { title: 'A new print, every month', body: 'A fresh piece of original art mailed to your door.' }
 const CANCEL_PERK = { title: 'Cancel anytime', body: 'No commitment. Stay as long as the prints make you happy.' }
 
 // What members get, edit freely
