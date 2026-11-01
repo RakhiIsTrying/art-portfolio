@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 import { track } from '@/lib/analytics/client'
 import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
@@ -128,6 +129,9 @@ export default function InquireForm({ currency: initialCurrency }: { currency: C
       >
         {status === 'sending' ? 'Sending…' : order ? 'Send order request →' : 'Send Message →'}
       </button>
+      <p style={{ fontSize: 10, fontWeight: 300, color: '#a0a0a0', marginTop: 10 }}>
+        <Link href="/privacy" style={{ textDecoration: 'underline' }}>Privacy policy</Link>
+      </p>
 
     </form>
   )

@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { track } from '@/lib/analytics/client'
 import { formatPrice, type Currency, type PrintSize } from '@/lib/prints'
@@ -219,7 +220,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                 {status === 'sending' ? 'Sending…' : 'Send order request →'}
               </button>
               <p style={{ fontSize: 10, fontWeight: 300, color: '#a0a0a0', lineHeight: 1.6, marginTop: -8 }}>
-                No payment yet. I’ll confirm the total and shipping by email.
+                No payment yet. I’ll confirm the total and shipping by email. <Link href="/privacy" style={{ textDecoration: 'underline' }}>Privacy policy</Link>
               </p>
             </form>
           )}

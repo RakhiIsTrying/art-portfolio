@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import CountryCodePicker from '@/components/CountryCodePicker'
 import { track } from '@/lib/analytics/client'
 import WipTag from '@/components/WipTag'
@@ -257,7 +258,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
       </button>
 
       <p className="col-span-2" style={{ fontSize: 10, lineHeight: 1.7, fontWeight: 300, color: '#a0a0a0' }}>
-        Your details are only used to contact you{shipping ? ' and ship your prints' : ''}.
+        Your details are only used to contact you{shipping ? ' and ship your prints' : ''}. <Link href="/privacy" style={{ textDecoration: 'underline' }}>Privacy policy</Link>
       </p>
     </form>
   )

@@ -59,6 +59,15 @@ export default function Footer() {
           </a>
         ))}
         <Link
+          href="/privacy"
+          style={{
+            fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
+            color: 'rgba(255,255,255,.3)', textDecoration: 'none',
+          }}
+        >
+          Privacy
+        </Link>
+        <Link
           href="/shop"
           style={{
             fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
