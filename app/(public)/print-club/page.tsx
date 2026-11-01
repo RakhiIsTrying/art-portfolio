@@ -92,8 +92,9 @@ export default async function PrintClubPage() {
           const other = visitorPlan === 'india' ? 'international' : 'india'
           return (
             <div key={id} style={{ minWidth: 0, display: 'flex', flexDirection: 'column', padding: '24px 24px 22px', background: '#fff', border: '1px solid #d0d0d0', borderTop: `4px solid ${tier.color}` }}>
-              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(24px, 2.6vw, 30px)', lineHeight: 1.15, color: '#1a1014', marginBottom: 6, whiteSpace: 'normal' }}>{tier.name}{tier.wip && <WipTag />}</p>
-              <p style={{ fontSize: 13, fontWeight: 300, color: '#787878', marginBottom: 18 }}>{tier.tagline}</p>
+              {/* One line each at one size, and room for two lines below, so the prices line up across the cards */}
+              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(19px, 6vw, 23px)', lineHeight: 1.2, color: '#1a1014', marginBottom: 8, whiteSpace: 'nowrap' }}>{tier.name}{tier.wip && <WipTag />}</p>
+              <p style={{ fontSize: 13, lineHeight: 1.5, minHeight: '3em', fontWeight: 300, color: '#787878', marginBottom: 18 }}>{tier.tagline}</p>
               <p style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
                 <span style={{ fontFamily: PLAYFAIR, fontSize: 40, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>{tierPrice(PLANS[visitorPlan], id)}</span>
                 <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month · {PLANS[visitorPlan].region}</span>

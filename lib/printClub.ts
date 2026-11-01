@@ -24,7 +24,7 @@ export const TIERS: Record<TierId, { name: string; color: string; tagline: strin
     name: 'Van Gogh Anywhere',
     wip: true,
     color: '#4a3a7a',
-    tagline: 'iPad instead of an easel? Miles from a mailbox? There’s a seat saved for you.',
+    tagline: 'iPad instead of an easel? Miles from a mailbox? Your seat is saved.',
     perks: [
       { icon: 'tablet', title: 'Ctrl + Alt + Paint', body: 'A detailed paint-along print, emailed to you every month. Your canvas goes wherever you go.' },
       CANCEL_PERK,
@@ -33,13 +33,13 @@ export const TIERS: Record<TierId, { name: string; color: string; tagline: strin
   broke: {
     name: 'Monet Can’t Buy Me Love',
     color: '#1a6060',
-    tagline: 'Art in your mailbox instead of bills.',
+    tagline: 'Art in your mailbox instead of bills. A little joy, every single month.',
     perks: [PRINT_PERK, PAINT_PERK, CANCEL_PERK],
   },
   baroque: {
     name: 'Gone Baroque',
     color: '#7a3040',
-    tagline: 'The full, gloriously over-the-top membership.',
+    tagline: 'The full, gloriously over-the-top membership, with all the trimmings.',
     perks: [
       PRINT_PERK,
       PAINT_PERK,
