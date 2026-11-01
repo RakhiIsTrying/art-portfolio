@@ -13,13 +13,13 @@ describe('Ticker', () => {
     const { container } = render(
       <Ticker text="test" direction="left" variant="rust" />
     )
-    expect(container.firstChild).toHaveClass('bg-rust')
+    expect(container.firstChild).toHaveStyle({ background: '#7a3040' })
   })
 
   it('applies blush background for blush variant', () => {
     const { container } = render(
       <Ticker text="test" direction="right" variant="blush" />
     )
-    expect(container.firstChild).toHaveClass('bg-blush')
+    expect(container.firstChild).toHaveStyle({ background: '#1a1014' })
   })
 })
