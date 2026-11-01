@@ -7,6 +7,8 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase/env'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { Resend } from 'resend'
 
+const SITE_URL = 'https://faradaycage.xyz'
+
 type FormState = { error?: string; sent?: string; ok?: boolean } | null
 
 export async function loginAction(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -33,8 +35,11 @@ export async function forgotPasswordAction(_prev: FormState, formData: FormData)
   const done = { sent: 'If that’s the admin email, a link to set a new password is on its way. Check your inbox (and Spam).' }
   if (!isAdminEmail(email)) return done
 
+  // Always the live site, except when running on this computer for testing.
+  // (The request's own host can come through as localhost on the server, which sent reset links there.)
   const h = await headers()
-  const redirectTo = `${h.get('x-forwarded-proto') ?? 'https'}://${h.get('host')}/admin/reset`
+  const local = process.env.NODE_ENV === 'development' && h.get('host')?.startsWith('localhost')
+  const redirectTo = `${local ? `http://${h.get('host')}` : SITE_URL}/admin/reset`
 
   // Sent through Resend: Supabase's own mailer only allows a couple of emails an hour and often lands in Spam
   const key = (process.env.RESEND_API_KEY ?? '').replace(/\s+/g, '')
