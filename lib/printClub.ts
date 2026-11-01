@@ -12,6 +12,7 @@ export const DEFAULT_PLANS: Plans = {
 }
 
 const PRINT_PERK = { title: 'A new print, every month', body: 'A fresh piece of original art mailed to your door.' }
+const PAINT_PERK = { title: 'Paint-along cards 🎨', body: 'Grab a brush and paint along, so you get to make a little art of your own too.' }
 const CANCEL_PERK = { title: 'Cancel anytime', body: 'No commitment. Stay as long as the prints make you happy.' }
 
 // What members get, edit freely
@@ -19,13 +20,14 @@ export const TIERS: Record<TierId, { name: string; tagline: string; perks: { tit
   broke: {
     name: 'Monet Can’t Buy Me Love',
     tagline: 'Art in your mailbox instead of bills.',
-    perks: [PRINT_PERK, CANCEL_PERK],
+    perks: [PRINT_PERK, PAINT_PERK, CANCEL_PERK],
   },
   baroque: {
     name: 'Gone Baroque',
     tagline: 'The full, gloriously over-the-top membership.',
     perks: [
       PRINT_PERK,
+      PAINT_PERK,
       { title: 'Monthly goodies 🎁', body: 'Little extras tucked in with each month’s print: bookmarks, special edition stickers and other surprises.' },
       { title: 'Birthday special 🎂', body: 'Add your birthday and ask for a special request: a favourite character, a dedication, something just for you.' },
       CANCEL_PERK,
