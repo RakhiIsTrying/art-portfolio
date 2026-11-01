@@ -104,6 +104,23 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </span>
       </Link>
 
+      {/* Prints, order window on the left, scale previews on the right */}
+      <section id="prints" style={{ marginBottom: 56, scrollMarginTop: 60 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 18 }}>
+          <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Prints &amp; cards</h2>
+          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+            From {formatPrice(Math.min(...settings.printSizes.map(s => s[currency])), currency)}
+          </span>
+        </div>
+        {prints.length > 0 ? (
+          <PrintStudio artworks={prints} currency={currency} initialTitle={piece ?? 'Happy Pupper Dug-Dug'} />
+        ) : (
+          <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
+            Prints coming soon.
+          </p>
+        )}
+      </section>
+
       {/* Originals for sale: pieces marked "original for sale" in Admin → Arrange art */}
       <section id="originals" style={{ scrollMarginTop: 60, marginBottom: 56 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px 16px', marginBottom: 18, paddingBottom: 12, borderBottom: '1px solid #d0d0d0' }}>
@@ -141,23 +158,6 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             Start a commission →
           </Link>
         </div>
-      </section>
-
-      {/* Prints, order window on the left, scale previews on the right */}
-      <section id="prints" style={{ marginBottom: 56, scrollMarginTop: 60 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 18 }}>
-          <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Prints &amp; cards</h2>
-          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
-            From {formatPrice(Math.min(...settings.printSizes.map(s => s[currency])), currency)}
-          </span>
-        </div>
-        {prints.length > 0 ? (
-          <PrintStudio artworks={prints} currency={currency} initialTitle={piece ?? 'Happy Pupper Dug-Dug'} />
-        ) : (
-          <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
-            Prints coming soon.
-          </p>
-        )}
       </section>
 
     </div>
