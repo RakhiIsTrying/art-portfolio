@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { nextClue, revealClue, wordleHint, type WordClue } from '@/lib/puzzles/rules'
+import { kingsHint, kingsTarget, nextClue, revealClue, wordleHint, type WordClue } from '@/lib/puzzles/rules'
 
 describe('wordleHint', () => {
   it('never names a letter already guessed', () => {
@@ -104,5 +104,61 @@ describe('revealClue', () => {
 
   it('returns null when everything is found', () => {
     expect(revealClue({ word: 'honey', show: 5, told: [] }, [])).toBeNull()
+  })
+})
+
+describe('kingsHint', () => {
+  const solution = [1, 3, 0, 2]
+  const empty = () => Array.from({ length: 4 }, () => [0, 0, 0, 0])
+
+  it('marks a right square when no pup is misplaced', () => {
+    expect(kingsHint(empty(), solution, [])).toEqual({ r: 0, c: 1 })
+  })
+
+  it('points out a misplaced pup first', () => {
+    const board = empty(); board[2][3] = 2
+    expect(kingsHint(board, solution, [])).toEqual({ r: 2, c: 3 })
+  })
+
+  it('moves on to the next misplaced pup, then to a right square', () => {
+    const board = empty(); board[0][0] = 2; board[2][3] = 2
+    expect(kingsHint(board, solution, [{ r: 0, c: 0 }])).toEqual({ r: 2, c: 3 })
+    expect(kingsHint(board, solution, [{ r: 0, c: 0 }, { r: 2, c: 3 }])).toEqual({ r: 0, c: 1 })
+  })
+
+  it('skips pups already in the right place and squares already marked', () => {
+    const board = empty(); board[0][1] = 2
+    expect(kingsHint(board, solution, [{ r: 1, c: 3 }])).toEqual({ r: 2, c: 0 })
+  })
+
+  it('ignores crosses', () => {
+    const board = empty(); board[0][0] = 1
+    expect(kingsHint(board, solution, [])).toEqual({ r: 0, c: 1 })
+  })
+
+  it('has nothing to add once every remaining square is marked', () => {
+    const marks = solution.map((c, r) => ({ r, c }))
+    expect(kingsHint(empty(), solution, marks)).toBeNull()
+  })
+})
+
+describe('kingsTarget', () => {
+  // One colour per row, which allows exactly two solutions on a 4×4 board
+  const regions = [[0, 0, 0, 0], [1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3]]
+  const solution = [1, 3, 0, 2]
+  const empty = () => Array.from({ length: 4 }, () => [0, 0, 0, 0])
+
+  it('keeps the day’s solution on an empty board', () => {
+    expect(kingsTarget(regions, empty(), solution)).toEqual(solution)
+  })
+
+  it('follows the other valid solution when the player’s pups fit it', () => {
+    const board = empty(); board[0][2] = 2
+    expect(kingsTarget(regions, board, solution)).toEqual([2, 0, 3, 1])
+  })
+
+  it('keeps the day’s solution when a pup fits neither', () => {
+    const board = empty(); board[0][0] = 2
+    expect(kingsTarget(regions, board, solution)).toEqual(solution)
   })
 })

@@ -54,3 +54,38 @@ export function wordleHint(answer: string, guesses: string[], revealed: number[]
   const m = notHere[n % notHere.length]
   return `“${m.l.toUpperCase()}” is not letter ${m.i + 1}.`
 }
+
+/** A square marked by a Dug-Dug Kings hint. Whether it's a right or wrong spot comes from comparing it with the solution. */
+export type KingsMark = { r: number; c: number }
+
+/**
+ * The next square for a Dug-Dug Kings hint: a misplaced pup not yet pointed out, otherwise
+ * a right square not yet marked. Null when every remaining square has already been marked.
+ * The board holds 2 where a pup is placed.
+ */
+export function kingsHint(board: number[][], solution: number[], marks: KingsMark[]): KingsMark | null {
+  const marked = (r: number, c: number) => marks.some(m => m.r === r && m.c === c)
+  for (let r = 0; r < board.length; r++) for (let c = 0; c < board[r].length; c++) {
+    if (board[r][c] === 2 && solution[r] !== c && !marked(r, c)) return { r, c }
+  }
+  const r = solution.findIndex((c, row) => board[row][c] !== 2 && !marked(row, c))
+  return r === -1 ? null : { r, c: solution[r] }
+}
+
+/** The valid Dug-Dug Kings solution closest to the player's pups, as some days have more than one. Ties keep the day's own solution. */
+export function kingsTarget(regions: number[][], board: number[][], solution: number[]): number[] {
+  const n = regions.length
+  const overlap = (cols: number[]) => cols.filter((c, r) => board[r][c] === 2).length
+  let best = solution
+  const cols: number[] = []
+  const place = (r: number) => {
+    if (r === n) { if (overlap(cols) > overlap(best)) best = [...cols]; return }
+    for (let c = 0; c < n; c++) {
+      const clash = cols.some((q, i) => q === c || regions[i][q] === regions[r][c] || (i === r - 1 && Math.abs(q - c) <= 1))
+      if (clash) continue
+      cols.push(c); place(r + 1); cols.pop()
+    }
+  }
+  place(0)
+  return best
+}
