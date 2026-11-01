@@ -2,7 +2,7 @@
 export type PlanId = 'india' | 'international'
 export type TierId = 'broke' | 'baroque'
 
-/** `price` is the Gone Baroque price, `basicPrice` the Van Gogh-Getter price. */
+/** `price` is the Gone Baroque price, `basicPrice` the Monet Can’t Buy Me Love price. */
 export type Plans = Record<PlanId, { price: string; basicPrice: string; region: string }>
 
 // Defaults, the live prices come from Admin → Shop settings
@@ -17,7 +17,7 @@ const CANCEL_PERK = { title: 'Cancel anytime', body: 'No commitment. Stay as lon
 // What members get, edit freely
 export const TIERS: Record<TierId, { name: string; tagline: string; perks: { title: string; body: string }[] }> = {
   broke: {
-    name: 'Van Gogh-Getter',
+    name: 'Monet Can’t Buy Me Love',
     tagline: 'Art in your mailbox instead of bills.',
     perks: [PRINT_PERK, CANCEL_PERK],
   },
@@ -26,7 +26,7 @@ export const TIERS: Record<TierId, { name: string; tagline: string; perks: { tit
     tagline: 'The full, gloriously over-the-top membership.',
     perks: [
       PRINT_PERK,
-      { title: 'First look', body: 'See new work before it’s posted anywhere else.' },
+      { title: 'Monthly goodies 🎁', body: 'Little extras tucked in with each month’s print: bookmarks, special edition stickers and other surprises.' },
       { title: 'Birthday special 🎂', body: 'Add your birthday and ask for a special request: a favourite character, a dedication, something just for you.' },
       CANCEL_PERK,
     ],

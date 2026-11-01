@@ -19,7 +19,7 @@ describe('Print Club prices', () => {
   it('exports each member’s tier and price, treating older sign-ups as the higher tier', () => {
     const base = { created_at: '2026-11-01T00:00:00Z', name: 'A' }
     const csv = signupsToCsv([{ ...base, plan: 'india', tier: 'broke' }, { ...base, plan: 'international' }])
-    expect(csv).toContain('"Van Gogh-Getter","₹499 / month"')
+    expect(csv).toContain('"Monet Can’t Buy Me Love","₹499 / month"')
     expect(csv).toContain('"Gone Baroque","$16 / month"')
   })
 })
