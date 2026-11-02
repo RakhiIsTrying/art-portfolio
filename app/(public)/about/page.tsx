@@ -90,8 +90,8 @@ export default async function AboutPage() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 15, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }}>
               <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(20px, 3vw, 26px)', lineHeight: 1.25, color: INK }}>Corporate by day. Absolutely feral by night.</p>
-              <p>Every morning I put on my corporate face, go to my corporate job and say “let’s circle back” like I mean it.</p>
-              <p>Then the laptop shuts, the face falls off, and I draw pop stars, movie villains and my dog until the sun files a complaint.</p>
+              <p>From 9 to 6:30, I am a corporate employee. I have a lanyard. I have “bandwidth.” I once said “synergy” out loud and nobody called for help.</p>
+              <p>At 6:31, the lanyard comes off and something feral crawls out. It draws pop stars, movie villains and my dog until 3 AM, then logs on for the morning stand-up and says “no blockers.”</p>
               <p>I also trained as an architect, so I can walk into any room and feel disappointed. And Van Gone Broke isn’t a brand name. It’s a financial forecast.</p>
             </div>
           )}
