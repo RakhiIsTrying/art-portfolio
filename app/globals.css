@@ -227,12 +227,19 @@ label[style*="text-transform: uppercase"] { white-space: nowrap; }
 }
 /* Two identical animations, swapped on each throw so the button replays it */
 @keyframes vgb-cha-0 {
-  0%   { transform: translate(3px, 3px) scale(.96); box-shadow: 2px 2px 0 #1a1014; }
+  0%   { transform: translateY(4px) scale(.96); }
   45%  { transform: translate(0, -3px) scale(1.06) rotate(-2deg); }
   100% { transform: none; }
 }
 @keyframes vgb-cha-1 {
-  0%   { transform: translate(3px, 3px) scale(.96); box-shadow: 2px 2px 0 #1a1014; }
+  0%   { transform: translateY(4px) scale(.96); }
   45%  { transform: translate(0, -3px) scale(1.06) rotate(-2deg); }
   100% { transform: none; }
 }
+@keyframes vgb-twinkle {
+  0%, 100% { transform: scale(.75) rotate(-10deg); opacity: .55; }
+  50%      { transform: scale(1.15) rotate(10deg); opacity: 1; }
+}
+.vgb-cute-button { transition: transform .15s; }
+.vgb-cute-button:hover { transform: translateY(-2px) rotate(-1.5deg); }
+.vgb-cute-button:active { transform: translateY(4px); }

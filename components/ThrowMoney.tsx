@@ -88,13 +88,21 @@ export default function ThrowMoney() {
 
       {jackpotNow && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img key={`dug-${count}`} src="/puzzles/dugdug.png" alt="" aria-hidden className="vgb-motion" style={{ position: 'absolute', top: -74, right: -40, height: 90, pointerEvents: 'none', filter: 'drop-shadow(0 0 2px #fff)', animation: 'vgb-hop .7s ease-out 2 both' }} />
+        <img key={`dug-${count}`} src="/puzzles/dugdug.png" alt="" aria-hidden className="vgb-motion" style={{ position: 'absolute', top: -74, right: -12, height: 90, pointerEvents: 'none', filter: 'drop-shadow(0 0 2px #fff)', animation: 'vgb-hop .7s ease-out 2 both' }} />
       )}
 
-      <button type="button" onClick={toss} className="vgb-motion"
-        style={{ padding: '16px 28px', fontFamily: 'inherit', fontSize: 13, letterSpacing: '.22em', textTransform: 'uppercase', fontWeight: 700, cursor: 'pointer', border: '2px solid #1a1014', background: jackpotNow ? '#3f8f4f' : '#e8c55a', color: jackpotNow ? '#fff' : '#1a1014', boxShadow: '5px 5px 0 #1a1014', animation: count ? `vgb-cha-${count % 2} .28s ease-out` : undefined }}>
-        Throw money at me 💸
-      </button>
+      <div style={{ position: 'relative', marginTop: 40 }}>
+        {/* Dug-Dug peeks over the button, and hops at every throw */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img key={`peek-${count}`} src="/puzzles/dugdug.png" alt="" aria-hidden className="vgb-motion" style={{ position: 'absolute', top: -46, left: '50%', marginLeft: -36, width: 72, pointerEvents: 'none', animation: count ? 'vgb-hop .45s ease-out both' : undefined }} />
+        <span aria-hidden className="vgb-motion" style={{ position: 'absolute', top: -12, left: -14, fontSize: 18, zIndex: 2, pointerEvents: 'none', animation: 'vgb-twinkle 1.6s ease-in-out infinite' }}>✨</span>
+        <span aria-hidden className="vgb-motion" style={{ position: 'absolute', bottom: -6, right: -12, fontSize: 15, zIndex: 2, pointerEvents: 'none', animation: 'vgb-twinkle 1.6s ease-in-out .8s infinite' }}>💖</span>
+        <button type="button" onClick={toss} className="vgb-motion vgb-cute-button"
+          style={{ position: 'relative', zIndex: 1, padding: '15px 30px', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(18px, 4vw, 22px)', fontStyle: 'italic', fontWeight: 700, lineHeight: 1.1, whiteSpace: 'nowrap', cursor: 'pointer', borderRadius: 999, border: '3px solid #1a1014', color: '#1a1014',
+                   background: jackpotNow ? 'linear-gradient(180deg, #ffe680 0%, #f2b632 100%)' : 'linear-gradient(180deg, #ffe0e8 0%, #ffb3c7 100%)', boxShadow: `0 6px 0 ${jackpotNow ? '#c9901a' : '#d77a96'}`, animation: count ? `vgb-cha-${count % 2} .28s ease-out` : undefined }}>
+          Throw money at me 💸
+        </button>
+      </div>
 
       <p aria-live="polite" style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(26px, 5vw, 38px)', fontWeight: 700, lineHeight: 1.1, color: '#1a1014', minHeight: '1.1em' }}>
         {count > 0 && `₹${total.toLocaleString('en-IN')}`}
