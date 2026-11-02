@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 const INK = '#1a1014'
-const PORTRAIT_TITLE = 'Me & Dug-Dug'
+const INTRO_TITLE = 'CEO of Zoomies'
+const ID_PHOTO_TITLE = 'Me & Dug-Dug'
 
 // A joke, not a timesheet
 const DAY = [
@@ -33,11 +34,13 @@ const DOORS = [
 
 export default async function AboutPage() {
   const supabase = await getSupabaseServerClient()
-  const [{ data: page }, { data: portrait }] = await Promise.all([
+  const [{ data: page }, { data: art }] = await Promise.all([
     supabase.from('pages').select('content_json').eq('slug', 'about').single(),
-    supabase.from('artworks').select('title, image_url').eq('title', PORTRAIT_TITLE).maybeSingle(),
+    supabase.from('artworks').select('title, image_url').in('title', [INTRO_TITLE, ID_PHOTO_TITLE]),
   ])
   const content = page?.content_json as { html?: string } | null
+  const intro = art?.find(a => a.title === INTRO_TITLE)
+  const idPhoto = art?.find(a => a.title === ID_PHOTO_TITLE)
 
   return (
     <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 1040, margin: '0 auto' }}>
@@ -62,12 +65,13 @@ export default async function AboutPage() {
 
       {/* Who */}
       <section className="grid md:grid-cols-[2fr_3fr] gap-8 md:gap-12 items-center" style={{ marginBottom: 48 }}>
-        {portrait && (
-          <div style={{ background: '#fff', padding: 12, boxShadow: '0 22px 50px rgba(26,16,20,.2)', transform: 'rotate(-2deg)' }}>
+        {intro && (
+          <figure style={{ background: '#fff', padding: '12px 12px 10px', boxShadow: '0 22px 50px rgba(26,16,20,.2)', transform: 'rotate(-2deg)' }}>
             <div style={{ position: 'relative', aspectRatio: '4/5' }}>
-              <ArtFill src={portrait.image_url} alt="Rakhi and Dug-Dug, drawn by Rakhi" sizes="(max-width: 768px) 90vw, 400px" priority />
+              <ArtFill src={intro.image_url} alt="Rakhi hugging Dug-Dug in a sunny park, drawn by Rakhi" sizes="(max-width: 768px) 90vw, 400px" priority />
             </div>
-          </div>
+            <figcaption style={{ marginTop: 8, fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 14, textAlign: 'center', color: INK }}>My manager, Dug-Dug, CEO of Zoomies</figcaption>
+          </figure>
         )}
         <div>
           <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a5020', marginBottom: 12 }}>✦ Evidence suggests a human runs this place</p>
@@ -78,16 +82,16 @@ export default async function AboutPage() {
             <div className="prose max-w-none" style={{ fontSize: 15, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }} dangerouslySetInnerHTML={{ __html: content.html }} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 15, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }}>
-              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(20px, 3vw, 26px)', lineHeight: 1.25, color: INK }}>Corporate by day. Absolutely feral by night.</p>
-              <p>From 9 to 6:30, I am a corporate employee. I have a lanyard. I have “bandwidth.” I once said “synergy” out loud and nobody called for help.</p>
-              <p>At 6:31, the lanyard comes off and something feral crawls out. It draws pop stars, movie villains and my dog until 3 AM, then logs on for the morning stand-up and says “no blockers.”</p>
+              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(20px, 3vw, 26px)', lineHeight: 1.25, color: INK }}>I have two jobs. One pays the rent. The other spends it.</p>
+              <p>By day, I work in corporate, where I’m paid to nod at spreadsheets and say “great point” to points that were not great.</p>
+              <p>By night, I draw KATSEYE, the Joker and my dog with the focus of someone who has a 9 AM and has made peace with that. My dog has never once asked me for a status update. He’s the only colleague I respect.</p>
               <p>I also trained as an architect, so I can walk into any room and feel disappointed. And Van Gone Broke isn’t a brand name. It’s a financial forecast.</p>
             </div>
           )}
         </div>
       </section>
 
-      <ArtistId portraitUrl={portrait?.image_url} />
+      <ArtistId portraitUrl={idPhoto?.image_url} />
 
       {/* A normal day */}
       <section aria-labelledby="normal-day" style={{ marginBottom: 48 }}>
