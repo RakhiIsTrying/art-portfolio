@@ -14,6 +14,8 @@ export const metadata: Metadata = { title: 'Analytics | Admin' }
 
 const RANGES = [7, 30, 90]
 const INK = '#1a1014'
+// The device's own font: built for its screen, and instant to load
+const READABLE_FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", sans-serif'
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const COUNTRY_NAMES = new Intl.DisplayNames(['en'], { type: 'region' })
 
@@ -31,8 +33,8 @@ function Board({ title, tag, children }: { title: string; tag: string; children:
   return (
     <section style={{ minWidth: 0, background: '#fff', border: '1px solid #d0d0d0', borderTop: '4px solid #4a3a7a', padding: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div>
-        <h2 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 22, fontWeight: 700, lineHeight: 1.15, color: INK }}>{title}</h2>
-        <p style={{ fontSize: 11, color: '#787878', whiteSpace: 'normal' }}>{tag}</p>
+        <h2 style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.3, color: INK }}>{title}</h2>
+        <p style={{ fontSize: 13, color: '#595959', whiteSpace: 'normal' }}>{tag}</p>
       </div>
       {children}
     </section>
@@ -43,10 +45,10 @@ function Big({ label, value, was }: { label: string; value: string; was?: { now:
   const change = was && was.before > 0 ? Math.round(((was.now - was.before) / was.before) * 100) : null
   return (
     <div style={{ paddingBottom: 10, borderBottom: '1px solid #ebe8e8' }}>
-      <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(26px, 3vw, 34px)', fontWeight: 700, lineHeight: 1.1, color: INK, overflowWrap: 'anywhere' }}>{value}</p>
-      <p style={{ fontSize: 12, color: '#787878', whiteSpace: 'normal' }}>
+      <p style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.2, color: INK, overflowWrap: 'anywhere' }}>{value}</p>
+      <p style={{ fontSize: 13, color: '#595959', whiteSpace: 'normal' }}>
         {label}
-        {change !== null && <b style={{ marginLeft: 6, fontWeight: 600, color: change === 0 ? '#787878' : change > 0 ? '#2f7a43' : '#b3261e' }}>{change > 0 ? '▲' : change < 0 ? '▼' : '='} {Math.abs(change)}%</b>}
+        {change !== null && <b style={{ marginLeft: 6, fontWeight: 600, color: change === 0 ? '#595959' : change > 0 ? '#2f7a43' : '#b3261e' }}>{change > 0 ? '▲' : change < 0 ? '▼' : '='} {Math.abs(change)}%</b>}
       </p>
     </div>
   )
@@ -54,7 +56,7 @@ function Big({ label, value, was }: { label: string; value: string; was?: { now:
 
 function Small({ label, value }: { label: string; value: string }) {
   return (
-    <p style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, fontSize: 13, color: '#787878' }}>
+    <p style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, fontSize: 13, color: '#595959' }}>
       <span style={{ whiteSpace: 'normal' }}>{label}</span>
       <b style={{ fontWeight: 600, color: INK, textAlign: 'right', whiteSpace: 'normal' }}>{value}</b>
     </p>
@@ -65,9 +67,9 @@ function InsightCard({ insight }: { insight: Insight }) {
   const tone = TONES[insight.tone]
   return (
     <article style={{ minWidth: 0, background: '#fff', border: '1px solid #d0d0d0', borderLeft: `4px solid ${tone.color}`, padding: '14px 16px' }}>
-      <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: tone.color, marginBottom: 5 }}><span aria-hidden>{tone.mark} </span>{tone.label}</p>
+      <p style={{ fontSize: 13, fontWeight: 700, color: tone.color, marginBottom: 5 }}><span aria-hidden>{tone.mark} </span>{tone.label}</p>
       <h3 style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.3, color: INK, marginBottom: 5, whiteSpace: 'normal' }}>{insight.title}</h3>
-      <p style={{ fontSize: 13, fontWeight: 300, lineHeight: 1.55, color: '#3a3a3a', whiteSpace: 'normal' }}>{insight.detail}</p>
+      <p style={{ fontSize: 13, fontWeight: 400, lineHeight: 1.55, color: '#3a3a3a', whiteSpace: 'normal' }}>{insight.detail}</p>
     </article>
   )
 }
@@ -75,14 +77,14 @@ function InsightCard({ insight }: { insight: Insight }) {
 function Panel({ title, note, children, wide }: { title: string; note?: string; children: React.ReactNode; wide?: boolean }) {
   return (
     <section className={wide ? 'lg:col-span-2' : undefined} style={{ minWidth: 0, background: '#fff', border: '1px solid #d0d0d0', padding: 18 }}>
-      <h2 style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.3em', textTransform: 'uppercase', color: INK, marginBottom: note ? 4 : 14 }}>{title}</h2>
-      {note && <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginBottom: 14 }}>{note}</p>}
+      <h2 style={{ fontSize: 16, fontWeight: 700, color: INK, marginBottom: note ? 4 : 12 }}>{title}</h2>
+      {note && <p style={{ fontSize: 13, fontWeight: 400, color: '#595959', marginBottom: 14 }}>{note}</p>}
       {children}
     </section>
   )
 }
 
-const Empty = () => <p style={{ fontSize: 12, fontWeight: 300, color: '#a0a0a0' }}>Nothing yet.</p>
+const Empty = () => <p style={{ fontSize: 13, fontWeight: 400, color: '#595959' }}>Nothing yet.</p>
 
 /** A ranked list with a thin bar behind each number, so the exact figures are always readable. */
 function Bars({ rows, name = (k: string) => k, unit, extraLabel, limit = 10 }: { rows: Row[]; name?: (k: string) => string; unit?: string; extraLabel?: string; limit?: number }) {
@@ -93,10 +95,10 @@ function Bars({ rows, name = (k: string) => k, unit, extraLabel, limit = 10 }: {
     <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
       {rows.slice(0, limit).map(r => (
         <li key={r.key}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 12, color: INK, marginBottom: 3 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 13, color: INK, marginBottom: 3 }}>
             <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={name(r.key)}>{name(r.key)}</span>
             <span style={{ flexShrink: 0, color: '#3a3a3a' }}>
-              {r.value.toLocaleString('en-IN')}{unit ? ` ${unit}` : ''} <span style={{ color: '#a0a0a0' }}>({percent(r.value, total)}%)</span>
+              {r.value.toLocaleString('en-IN')}{unit ? ` ${unit}` : ''} <span style={{ color: '#595959' }}>({percent(r.value, total)}%)</span>
               {extraLabel && !!r.extra && <b style={{ marginLeft: 6, fontWeight: 600 }}>· {r.extra} {extraLabel}</b>}
             </span>
           </div>
@@ -116,9 +118,9 @@ function Funnel({ steps }: { steps: Row[] }) {
     <ol style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
       {steps.map((s, i) => (
         <li key={s.key}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: INK, marginBottom: 3 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: INK, marginBottom: 3 }}>
             <span>{s.key}</span>
-            <span>{s.value} {i > 0 && <span style={{ color: '#787878' }}>({Math.min(100, percent(s.value, steps[i - 1].value))}% of the step before)</span>}</span>
+            <span>{s.value} {i > 0 && <span style={{ color: '#595959' }}>({Math.min(100, percent(s.value, steps[i - 1].value))}% of the step before)</span>}</span>
           </div>
           <div style={{ height: 14, background: '#f1eeee', borderRadius: 3 }}>
             <div style={{ width: `${(s.value / top) * 100}%`, minWidth: s.value ? 3 : 0, height: '100%', background: '#4a3a7a', borderRadius: 3 }} />
@@ -134,12 +136,12 @@ function Stat({ label, value, was, better = 'up' }: { label: string; value: stri
   if (was && was.before > 0) {
     const pct = Math.round(((was.now - was.before) / was.before) * 100)
     const good = pct === 0 ? null : (pct > 0) === (better === 'up')
-    change = <span style={{ fontSize: 11, color: good === null ? '#787878' : good ? '#2f7a43' : '#b3261e' }}>{pct > 0 ? '▲' : pct < 0 ? '▼' : '='} {Math.abs(pct)}% vs before</span>
-  } else if (was) change = <span style={{ fontSize: 11, color: '#a0a0a0' }}>nothing to compare yet</span>
+    change = <span style={{ fontSize: 13, color: good === null ? '#595959' : good ? '#2f7a43' : '#b3261e' }}>{pct > 0 ? '▲' : pct < 0 ? '▼' : '='} {Math.abs(pct)}% vs before</span>
+  } else if (was) change = <span style={{ fontSize: 13, color: '#595959' }}>nothing to compare yet</span>
   return (
     <div style={{ minWidth: 0, background: '#fff', border: '1px solid #d0d0d0', padding: '14px 14px 12px' }}>
-      <p style={{ fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', color: '#787878', marginBottom: 6 }}>{label}</p>
-      <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, lineHeight: 1.1, color: INK, marginBottom: 4 }}>{value}</p>
+      <p style={{ fontSize: 13, color: '#595959', marginBottom: 6 }}>{label}</p>
+      <p style={{ fontSize: 24, fontWeight: 700, lineHeight: 1.2, color: INK, marginBottom: 4 }}>{value}</p>
       {change}
     </div>
   )
@@ -151,9 +153,9 @@ function Heatmap({ heat }: { heat: number[][] }) {
     <div className="no-scrollbar" style={{ overflowX: 'auto' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '34px repeat(24, minmax(16px, 1fr))', gap: 2, minWidth: 460 }}>
         <span />
-        {heat[0].map((_, h) => <span key={h} style={{ fontSize: 9, textAlign: 'center', color: '#787878' }}>{h % 3 === 0 ? h : ''}</span>)}
+        {heat[0].map((_, h) => <span key={h} style={{ fontSize: 13, textAlign: 'center', color: '#595959' }}>{h % 3 === 0 ? h : ''}</span>)}
         {[1, 2, 3, 4, 5, 6, 0].flatMap(d => [
-          <span key={`d${d}`} style={{ fontSize: 10, color: '#787878', alignSelf: 'center' }}>{WEEKDAYS[d]}</span>,
+          <span key={`d${d}`} style={{ fontSize: 13, color: '#595959', alignSelf: 'center' }}>{WEEKDAYS[d]}</span>,
           ...heat[d].map((n, h) => (
             <span key={`${d}-${h}`} title={`${WEEKDAYS[d]} ${h}:00, ${n} page ${n === 1 ? 'view' : 'views'}`}
               style={{ height: 18, borderRadius: 2, background: n ? `rgba(74,58,122,${0.15 + 0.85 * (n / max)})` : '#f4f2f2' }} />
@@ -183,20 +185,19 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   ].sort((x, y) => y.at.localeCompare(x.at))
 
   return (
-    <div className="w-full max-w-[1120px] mx-auto px-4 py-6 md:px-9 md:py-9" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div className="w-full max-w-[1120px] mx-auto px-4 py-6 md:px-9 md:py-9" style={{ display: 'flex', flexDirection: 'column', gap: 20, fontFamily: READABLE_FONT, fontSize: 15, fontWeight: 400, lineHeight: 1.5, color: INK }}>
 
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, borderBottom: '1px solid #d0d0d0', paddingBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
           <div style={{ width: 3, background: '#4a3a7a', marginRight: 16 }} />
           <div>
-            <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', color: '#4a3a7a', marginBottom: 6 }}>Who’s visiting</p>
-            <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 28, fontWeight: 700, color: INK, lineHeight: 1 }}>Analytics</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 700, color: INK, lineHeight: 1.2 }}>Analytics</h1>
           </div>
         </div>
         <nav aria-label="Time range" style={{ display: 'flex', gap: 6 }}>
           {RANGES.map(r => (
             <Link key={r} href={`/admin/analytics?days=${r}`} aria-current={r === days ? 'page' : undefined}
-              style={{ padding: '6px 12px', fontSize: 11, letterSpacing: '.15em', textDecoration: 'none', border: `1px solid ${r === days ? '#4a3a7a' : '#d0d0d0'}`, background: r === days ? '#4a3a7a' : '#fff', color: r === days ? '#fff' : INK }}>
+              style={{ padding: '6px 12px', fontSize: 13, textDecoration: 'none', border: `1px solid ${r === days ? '#4a3a7a' : '#d0d0d0'}`, background: r === days ? '#4a3a7a' : '#fff', color: r === days ? '#fff' : INK }}>
               {r} days
             </Link>
           ))}
@@ -210,7 +211,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         </p>
       )}
 
-      <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(19px, 2.6vw, 25px)', lineHeight: 1.35, color: INK, whiteSpace: 'normal' }}>{verdict(s, sales, days)}</p>
+      <p style={{ fontSize: 17, lineHeight: 1.5, color: INK, whiteSpace: 'normal' }}>{verdict(s, sales, days)}</p>
 
       <AskAnalytics smart={!!process.env.ANTHROPIC_API_KEY?.trim()} />
 
@@ -231,7 +232,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         </Board>
         <Board title="Next 30 days" tag={CONFIDENCE[projection.visitors.confidence]}>
           {projection.visitors.confidence === 'too-early' ? (
-            <p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.6, color: '#3a3a3a', whiteSpace: 'normal' }}>I need at least 7 days of visits to project anything. There {projection.visitors.days === 1 ? 'is 1 day' : `are ${projection.visitors.days} days`} so far.</p>
+            <p style={{ fontSize: 14, fontWeight: 400, lineHeight: 1.6, color: '#3a3a3a', whiteSpace: 'normal' }}>I need at least 7 days of visits to project anything. There {projection.visitors.days === 1 ? 'is 1 day' : `are ${projection.visitors.days} days`} so far.</p>
           ) : (
             <>
               <Big label="Club income a month, if all pay" value={projection.hasSalesHistory ? showMoney(projection.monthlyIncome) : 'No sales yet'} />
@@ -245,14 +246,14 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       </div>
 
       <section aria-labelledby="insights">
-        <h2 id="insights" style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.3em', textTransform: 'uppercase', color: INK, marginBottom: 10 }}>What I’d look at</h2>
+        <h2 id="insights" style={{ fontSize: 18, fontWeight: 700, color: INK, marginBottom: 10 }}>What I’d look at</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
           {insights.map(i => <InsightCard key={i.title} insight={i} />)}
         </div>
       </section>
 
       <div style={{ minWidth: 0, background: '#fff', border: '1px solid #d0d0d0', padding: 18 }}>
-        <h2 style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.3em', textTransform: 'uppercase', color: INK, marginBottom: 14 }}>Visitors, last {days} days</h2>
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: INK, marginBottom: 12 }}>Visitors, last {days} days</h2>
         <DailyChart days={s.daily} />
       </div>
 
@@ -292,8 +293,8 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         <Panel title="Time on page">
           {s.pages.length ? (
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, color: INK }}>
-                <thead><tr style={{ textAlign: 'left', color: '#787878' }}><th style={{ fontWeight: 500, paddingBottom: 6 }}>Page</th><th style={{ fontWeight: 500, textAlign: 'right' }}>Visitors</th><th style={{ fontWeight: 500, textAlign: 'right' }}>Avg time</th></tr></thead>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, color: INK }}>
+                <thead><tr style={{ textAlign: 'left', color: '#595959' }}><th style={{ fontWeight: 500, paddingBottom: 6 }}>Page</th><th style={{ fontWeight: 500, textAlign: 'right' }}>Visitors</th><th style={{ fontWeight: 500, textAlign: 'right' }}>Avg time</th></tr></thead>
                 <tbody>{s.pages.slice(0, 12).map(p => (
                   <tr key={p.key} style={{ borderTop: '1px solid #f1eeee' }}><td style={{ padding: '5px 8px 5px 0', wordBreak: 'break-all' }}>{p.key}</td><td style={{ textAlign: 'right' }}>{p.extra}</td><td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>{duration(p.seconds)}</td></tr>
                 ))}</tbody>
@@ -323,15 +324,15 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         <Panel title="Who’s buying" note="Everyone so far, from all time. Payments aren’t on the site yet, so these are requests and applications.">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" style={{ marginBottom: 16 }}>
             {TIER_IDS.map(t => (
-              <div key={t}><p style={{ fontSize: 11, color: '#787878' }}>{TIERS[t].name}</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{club.filter(m => m.tierId === t).length}</p></div>
+              <div key={t}><p style={{ fontSize: 13, color: '#595959' }}>{TIERS[t].name}</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{club.filter(m => m.tierId === t).length}</p></div>
             ))}
-            <div><p style={{ fontSize: 11, color: '#787878' }}>Print orders</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{orders.length}</p></div>
-            <div><p style={{ fontSize: 11, color: '#787878' }}>Club income a month, if all pay</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{showMoney(sales.monthlyIncome)}</p></div>
+            <div><p style={{ fontSize: 13, color: '#595959' }}>Print orders</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{orders.length}</p></div>
+            <div><p style={{ fontSize: 13, color: '#595959' }}>Club income a month, if all pay</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{showMoney(sales.monthlyIncome)}</p></div>
           </div>
           {buyers.length ? (
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', minWidth: 560, borderCollapse: 'collapse', fontSize: 12, color: INK }}>
-                <thead><tr style={{ textAlign: 'left', color: '#787878' }}>{['Date', 'Name', 'What', 'Country', 'Email'].map(h => <th key={h} style={{ fontWeight: 500, paddingBottom: 6 }}>{h}</th>)}</tr></thead>
+              <table style={{ width: '100%', minWidth: 560, borderCollapse: 'collapse', fontSize: 13, color: INK }}>
+                <thead><tr style={{ textAlign: 'left', color: '#595959' }}>{['Date', 'Name', 'What', 'Country', 'Email'].map(h => <th key={h} style={{ fontWeight: 500, paddingBottom: 6 }}>{h}</th>)}</tr></thead>
                 <tbody>{buyers.slice(0, 50).map((x, i) => (
                   <tr key={i} style={{ borderTop: '1px solid #f1eeee' }}>
                     <td style={{ padding: '6px 8px 6px 0', whiteSpace: 'nowrap' }}>{when(x.at)}</td><td style={{ paddingRight: 8 }}>{x.name}</td><td style={{ paddingRight: 8 }}>{x.what}</td><td style={{ paddingRight: 8 }}>{x.where}</td>

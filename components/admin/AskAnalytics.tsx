@@ -49,34 +49,34 @@ export default function AskAnalytics({ smart }: { smart: boolean }) {
     setTurns(t => t.map((x, i) => (i === turn ? { ...x, charts: x.charts!.map((c, n) => (n === chart ? { ...c, type } : c)) } : x)))
 
   return (
-    <section aria-labelledby="ask" style={{ background: '#1a1014', color: '#fff', padding: 'clamp(16px, 3vw, 24px)' }}>
-      <h2 id="ask" style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(22px, 3vw, 28px)', fontWeight: 700, lineHeight: 1.15, marginBottom: 4 }}>Ask your analytics anything</h2>
-      <p style={{ fontSize: 12, fontWeight: 300, color: 'rgba(255,255,255,.65)', marginBottom: 14, whiteSpace: 'normal' }}>
+    <section aria-labelledby="ask" style={{ background: '#fff', color: '#1a1014', border: '1px solid #d0d0d0', padding: 16 }}>
+      <h2 id="ask" style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.3, marginBottom: 4 }}>Ask about your analytics</h2>
+      <p style={{ fontSize: 14, color: '#595959', marginBottom: 12, whiteSpace: 'normal' }}>
         {smart ? 'Numbers are calculated from your real data, and the AI explains them. Ask for any chart, then change its format with a tap or by typing “make it a pie”. Sales questions never share names or emails.' : 'Basic mode: good for counts, charts, sales and projections. Add the AI key for “why” questions and follow-ups.'}
       </p>
 
       {turns.length > 0 && (
         <div role="log" aria-live="polite" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 14, maxHeight: 640, overflowY: 'auto' }}>
           {turns.map((t, i) => (
-            <div key={i} style={{ alignSelf: t.role === 'user' ? 'flex-end' : t.charts?.length ? 'stretch' : 'flex-start', maxWidth: t.charts?.length ? '100%' : '92%', padding: '10px 14px', borderRadius: 10, fontSize: 14, lineHeight: 1.6, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', background: t.role === 'user' ? '#4a3a7a' : '#fff', color: t.role === 'user' ? '#fff' : '#1a1014' }}>
+            <div key={i} style={{ alignSelf: t.role === 'user' ? 'flex-end' : t.charts?.length ? 'stretch' : 'flex-start', maxWidth: t.charts?.length ? '100%' : '92%', padding: '10px 14px', borderRadius: 10, fontSize: 15, lineHeight: 1.5, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', background: t.role === 'user' ? '#ece9f4' : '#f6f5f5', color: '#1a1014' }}>
               {t.role === 'assistant' ? withBold(t.content) : t.content}
               {t.charts?.map((c, n) => <AnswerChart key={n} chart={c} onType={type => setChartType(i, n, type)} />)}
-              {t.notice && <span style={{ display: 'block', marginTop: 6, fontSize: 11, color: '#787878' }}>{t.notice}</span>}
+              {t.notice && <span style={{ display: 'block', marginTop: 6, fontSize: 13, color: '#595959' }}>{t.notice}</span>}
             </div>
           ))}
-          {busy && <p style={{ fontSize: 13, color: 'rgba(255,255,255,.7)' }}>Working it out…</p>}
+          {busy && <p style={{ fontSize: 14, color: '#595959' }}>Working it out…</p>}
         </div>
       )}
 
       <form onSubmit={e => { e.preventDefault(); ask(question) }} style={{ display: 'flex', gap: 8 }}>
         <input ref={input} value={question} onChange={e => setQuestion(e.target.value)} maxLength={500} placeholder="Type a question…" aria-label="Your question"
-          style={{ flex: 1, minWidth: 0, padding: '11px 12px', fontFamily: 'inherit', fontSize: 16, border: 'none', borderRadius: 4, background: '#fff', color: '#1a1014' }} />
-        <button type="submit" disabled={busy || !question.trim()} style={{ flexShrink: 0, padding: '0 18px', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, border: 'none', borderRadius: 4, background: '#e8c55a', color: '#1a1014', cursor: busy ? 'wait' : 'pointer', opacity: busy || !question.trim() ? .6 : 1 }}>Ask</button>
+          style={{ flex: 1, minWidth: 0, padding: '11px 12px', fontFamily: 'inherit', fontSize: 16, border: '1px solid #8a8a8a', borderRadius: 4, background: '#fff', color: '#1a1014' }} />
+        <button type="submit" disabled={busy || !question.trim()} style={{ flexShrink: 0, padding: '0 18px', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, border: 'none', borderRadius: 4, background: '#1a1014', color: '#fff', cursor: busy ? 'wait' : 'pointer', opacity: busy || !question.trim() ? .6 : 1 }}>Ask</button>
       </form>
       {!turns.length && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
           {EXAMPLES.map(q => (
-            <button key={q} type="button" onClick={() => ask(q)} style={{ padding: '6px 10px', fontFamily: 'inherit', fontSize: 12, borderRadius: 999, cursor: 'pointer', border: '1px solid rgba(255,255,255,.35)', background: 'transparent', color: '#fff' }}>{q}</button>
+            <button key={q} type="button" onClick={() => ask(q)} style={{ padding: '6px 10px', fontFamily: 'inherit', fontSize: 13, borderRadius: 999, cursor: 'pointer', border: '1px solid #8a8a8a', background: '#fff', color: '#1a1014', whiteSpace: 'normal', textAlign: 'left' }}>{q}</button>
           ))}
         </div>
       )}

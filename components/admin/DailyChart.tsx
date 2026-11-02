@@ -12,7 +12,7 @@ export default function DailyChart({ days }: { days: Day[] }) {
   const shown = active === null ? null : days[active]
   return (
     <div>
-      <p aria-live="polite" style={{ minHeight: 20, marginBottom: 8, fontSize: 12, color: '#3a3a3a' }}>
+      <p aria-live="polite" style={{ minHeight: 20, marginBottom: 8, fontSize: 13, color: '#3a3a3a' }}>
         {shown ? <><b>{label(shown.day)}</b>: {shown.visitors} {shown.visitors === 1 ? 'visitor' : 'visitors'}, {shown.views} page {shown.views === 1 ? 'view' : 'views'}</> : 'Hover or tap a day for its numbers'}
       </p>
       <div role="img" aria-label="Visitors per day" onMouseLeave={() => setActive(null)} style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 170, borderBottom: '1px solid #d0d0d0' }}>
@@ -23,7 +23,7 @@ export default function DailyChart({ days }: { days: Day[] }) {
           </button>
         ))}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 11, color: '#787878' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 13, color: '#595959' }}>
         <span>{days.length ? label(days[0].day) : ''}</span>
         <span>Peak: {max === 1 && !days.some(d => d.visitors) ? 0 : max} a day</span>
         <span>{days.length ? label(days[days.length - 1].day) : ''}</span>

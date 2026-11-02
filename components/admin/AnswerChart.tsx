@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { CHART_NAMES, CHART_TYPES, chartCsv, type ChartRow, type ChartSpec, type ChartType } from '@/lib/analytics/chart'
 
 const INK = '#1a1014'
-const MUTED = '#787878'
+const MUTED = '#595959'
 const ACCENT = '#4a3a7a'
 const TRACK = '#f1eeee'
 // A checked colour-blind-safe order. An eighth slice and beyond fold into "Other", rather than inventing more colours.
@@ -27,14 +27,14 @@ function Bars({ rows, more }: { rows: ChartRow[]; more: number }) {
     <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
       {rows.slice(0, MAX_BARS).map(r => (
         <li key={r.key}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 12, marginBottom: 2 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 13, marginBottom: 2 }}>
             <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={prettyKey(r.key)}>{prettyKey(r.key)}</span>
             <span style={{ flexShrink: 0 }}>{num(r.value)} <span style={{ color: MUTED }}>({share(r.value, total)}%)</span></span>
           </div>
           <div style={{ height: 8, background: TRACK, borderRadius: 4 }}><div style={{ width: `${(r.value / max) * 100}%`, minWidth: r.value ? 4 : 0, height: '100%', background: ACCENT, borderRadius: 4 }} /></div>
         </li>
       ))}
-      {rows.length + more > MAX_BARS && <li style={{ fontSize: 11, color: MUTED }}>Showing the top {MAX_BARS}. Switch to Table for more.</li>}
+      {rows.length + more > MAX_BARS && <li style={{ fontSize: 13, color: MUTED }}>Showing the top {MAX_BARS}. Switch to Table for more.</li>}
     </ul>
   )
 }
@@ -42,7 +42,7 @@ function Bars({ rows, more }: { rows: ChartRow[]; more: number }) {
 /** The exact figures for whichever point is being touched, for columns and lines. */
 function Readout({ row, label, fallback }: { row: ChartRow | null; label: string; fallback: string }) {
   return (
-    <p aria-live="polite" style={{ minHeight: 18, marginBottom: 6, fontSize: 12 }}>
+    <p aria-live="polite" style={{ minHeight: 18, marginBottom: 6, fontSize: 13 }}>
       {row ? <><b style={{ fontWeight: 600 }}>{prettyKey(row.key)}</b>: {num(row.value)} {label.toLowerCase()}{row.projected ? ' (projected)' : ''}</> : <span style={{ color: MUTED }}>{fallback}</span>}
     </p>
   )
@@ -50,7 +50,7 @@ function Readout({ row, label, fallback }: { row: ChartRow | null; label: string
 
 function AxisEnds({ rows, max }: { rows: ChartRow[]; max: number }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginTop: 4, fontSize: 11, color: MUTED }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginTop: 4, fontSize: 13, color: MUTED }}>
       <span>{prettyKey(rows[0].key)}</span><span>Highest: {num(max)}</span><span>{prettyKey(rows[rows.length - 1].key)}</span>
     </div>
   )
@@ -72,7 +72,7 @@ function Columns({ rows, label }: { rows: ChartRow[]; label: string }) {
       </div>
       {rows.length <= MAX_COLUMN_LABELS ? (
         <div style={{ display: 'flex', gap: 2, marginTop: 4 }}>
-          {rows.map(r => <span key={r.key} title={prettyKey(r.key)} style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 10, textAlign: 'center', color: MUTED }}>{prettyKey(r.key)}</span>)}
+          {rows.map(r => <span key={r.key} title={prettyKey(r.key)} style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, textAlign: 'center', color: MUTED }}>{prettyKey(r.key)}</span>)}
         </div>
       ) : <AxisEnds rows={rows} max={max} />}
     </div>
@@ -106,7 +106,7 @@ function Line({ rows, label }: { rows: ChartRow[]; label: string }) {
         </div>
       </div>
       <AxisEnds rows={rows} max={max} />
-      {firstAhead !== -1 && <p style={{ marginTop: 4, fontSize: 11, color: MUTED }}>Solid line: actual. Dashed line: projected.</p>}
+      {firstAhead !== -1 && <p style={{ marginTop: 4, fontSize: 13, color: MUTED }}>Solid line: actual. Dashed line: projected.</p>}
     </div>
   )
 }
@@ -132,7 +132,7 @@ function Pie({ rows }: { rows: ChartRow[] }) {
           )
         })}
       </svg>
-      <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 5, minWidth: 0, fontSize: 12 }}>
+      <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 5, minWidth: 0, fontSize: 13 }}>
         {slices.map(s => (
           <li key={s.key} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <span aria-hidden style={{ width: 10, height: 10, flexShrink: 0, borderRadius: 2, background: s.colour }} />
@@ -149,7 +149,7 @@ function Table({ chart }: { chart: ChartSpec }) {
   const total = chart.rows.reduce((t, r) => t + r.value, 0)
   return (
     <div style={{ maxHeight: 280, overflowY: 'auto' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
         <thead><tr style={{ textAlign: 'left', color: MUTED }}><th style={{ fontWeight: 500, paddingBottom: 4 }}>{chart.overTime ? 'When' : 'Name'}</th><th style={{ fontWeight: 500, textAlign: 'right' }}>{chart.valueLabel}</th><th style={{ fontWeight: 500, textAlign: 'right' }}>Share</th></tr></thead>
         <tbody>{chart.rows.map(r => (
           <tr key={r.key} style={{ borderTop: '1px solid #f1eeee' }}>
@@ -157,7 +157,7 @@ function Table({ chart }: { chart: ChartSpec }) {
           </tr>
         ))}</tbody>
       </table>
-      {!!chart.more && <p style={{ marginTop: 6, fontSize: 11, color: MUTED }}>{chart.more} more not shown.</p>}
+      {!!chart.more && <p style={{ marginTop: 6, fontSize: 13, color: MUTED }}>{chart.more} more not shown.</p>}
     </div>
   )
 }
@@ -177,7 +177,7 @@ export default function AnswerChart({ chart, onType }: { chart: ChartSpec; onTyp
     <figure style={{ marginTop: 10, padding: 12, border: '1px solid #e6e2e2', borderRadius: 8, background: '#fff', color: INK, whiteSpace: 'normal' }}>
       <figcaption style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{chart.title}</figcaption>
       {chart.type === 'number' ? (
-        <p><span style={{ display: 'block', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 44, fontWeight: 700, lineHeight: 1.1 }}>{num(chart.total)}</span><span style={{ fontSize: 12, color: MUTED }}>{chart.valueLabel}</span></p>
+        <p><span style={{ display: 'block', fontSize: 44, fontWeight: 700, lineHeight: 1.1 }}>{num(chart.total)}</span><span style={{ fontSize: 13, color: MUTED }}>{chart.valueLabel}</span></p>
       ) : empty ? <NoData />
         : chart.type === 'bars' ? <Bars rows={chart.rows} more={chart.more ?? 0} />
         : chart.type === 'columns' ? <Columns rows={chart.rows} label={chart.valueLabel} />
@@ -187,11 +187,11 @@ export default function AnswerChart({ chart, onType }: { chart: ChartSpec; onTyp
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, marginTop: 10 }}>
         {CHART_TYPES.map(type => (
           <button key={type} type="button" aria-pressed={chart.type === type} onClick={() => onType(type)}
-            style={{ padding: '4px 9px', fontFamily: 'inherit', fontSize: 11, cursor: 'pointer', borderRadius: 999, border: `1px solid ${chart.type === type ? ACCENT : '#d0d0d0'}`, background: chart.type === type ? ACCENT : '#fff', color: chart.type === type ? '#fff' : INK }}>
+            style={{ padding: '4px 9px', fontFamily: 'inherit', fontSize: 13, cursor: 'pointer', borderRadius: 999, border: `1px solid ${chart.type === type ? ACCENT : '#d0d0d0'}`, background: chart.type === type ? ACCENT : '#fff', color: chart.type === type ? '#fff' : INK }}>
             {CHART_NAMES[type]}
           </button>
         ))}
-        <button type="button" onClick={download} style={{ marginLeft: 'auto', padding: '4px 9px', fontFamily: 'inherit', fontSize: 11, cursor: 'pointer', borderRadius: 999, border: '1px solid #d0d0d0', background: '#fff', color: INK }}>Download CSV</button>
+        <button type="button" onClick={download} style={{ marginLeft: 'auto', padding: '4px 9px', fontFamily: 'inherit', fontSize: 13, cursor: 'pointer', borderRadius: 999, border: '1px solid #d0d0d0', background: '#fff', color: INK }}>Download CSV</button>
       </div>
     </figure>
   )
