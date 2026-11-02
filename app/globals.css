@@ -225,7 +225,13 @@ label[style*="text-transform: uppercase"] { white-space: nowrap; }
   85%  { opacity: 1; }
   100% { transform: translateY(105vh) rotate(420deg); opacity: 0; }
 }
-@keyframes vgb-cha {
+/* Two identical animations, swapped on each throw so the button replays it */
+@keyframes vgb-cha-0 {
+  0%   { transform: translate(3px, 3px) scale(.96); box-shadow: 2px 2px 0 #1a1014; }
+  45%  { transform: translate(0, -3px) scale(1.06) rotate(-2deg); }
+  100% { transform: none; }
+}
+@keyframes vgb-cha-1 {
   0%   { transform: translate(3px, 3px) scale(.96); box-shadow: 2px 2px 0 #1a1014; }
   45%  { transform: translate(0, -3px) scale(1.06) rotate(-2deg); }
   100% { transform: none; }

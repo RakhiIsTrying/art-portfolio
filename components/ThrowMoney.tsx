@@ -88,11 +88,11 @@ export default function ThrowMoney() {
 
       {jackpotNow && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img key={count} src="/puzzles/dugdug.png" alt="" aria-hidden className="vgb-motion" style={{ position: 'absolute', top: -74, right: -40, height: 90, pointerEvents: 'none', filter: 'drop-shadow(0 0 2px #fff)', animation: 'vgb-hop .7s ease-out 2 both' }} />
+        <img key={`dug-${count}`} src="/puzzles/dugdug.png" alt="" aria-hidden className="vgb-motion" style={{ position: 'absolute', top: -74, right: -40, height: 90, pointerEvents: 'none', filter: 'drop-shadow(0 0 2px #fff)', animation: 'vgb-hop .7s ease-out 2 both' }} />
       )}
 
-      <button key={count} type="button" onClick={toss} className="vgb-motion"
-        style={{ padding: '16px 28px', fontFamily: 'inherit', fontSize: 13, letterSpacing: '.22em', textTransform: 'uppercase', fontWeight: 700, cursor: 'pointer', border: '2px solid #1a1014', background: jackpotNow ? '#3f8f4f' : '#e8c55a', color: jackpotNow ? '#fff' : '#1a1014', boxShadow: '5px 5px 0 #1a1014', animation: count ? 'vgb-cha .28s ease-out' : undefined }}>
+      <button type="button" onClick={toss} className="vgb-motion"
+        style={{ padding: '16px 28px', fontFamily: 'inherit', fontSize: 13, letterSpacing: '.22em', textTransform: 'uppercase', fontWeight: 700, cursor: 'pointer', border: '2px solid #1a1014', background: jackpotNow ? '#3f8f4f' : '#e8c55a', color: jackpotNow ? '#fff' : '#1a1014', boxShadow: '5px 5px 0 #1a1014', animation: count ? `vgb-cha-${count % 2} .28s ease-out` : undefined }}>
         Throw money at me 💸
       </button>
 
