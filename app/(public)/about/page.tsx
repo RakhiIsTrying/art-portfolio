@@ -3,6 +3,7 @@ import Link from 'next/link'
 import ArtFill from '@/components/ArtFill'
 import ArtistId from '@/components/ArtistId'
 import ThrowMoney from '@/components/ThrowMoney'
+import Timesheet from '@/components/Timesheet'
 import { currencyForCountry } from '@/lib/currency'
 import { countryForVisitor } from '@/lib/printClubServer'
 import Ticker from '@/components/Ticker'
@@ -17,15 +18,6 @@ const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 const INK = '#1a1014'
 const INTRO_TITLE = 'CEO of Zoomies'
 const ID_PHOTO_TITLE = 'Me & Dug-Dug'
-
-// A joke, not a timesheet
-const DAY = [
-  { at: '9:00 AM', what: 'Logs on. Writes “per my last email” with love.' },
-  { at: '11:30 AM', what: 'Meeting about the meeting. Draws Dug-Dug in the notes. Nods.' },
-  { at: '6:30 PM', what: 'Logs off. Personality returns from its holiday.' },
-  { at: '10:00 PM', what: '“Just one more layer.”' },
-  { at: '2:00 AM', what: 'Layer 247. Dug-Dug judges in silence.' },
-]
 
 const DOORS = [
   { href: '/gallery', title: 'See the art', body: 'Proof that I don’t sleep.', color: '#7a3040' },
@@ -96,20 +88,7 @@ export default async function AboutPage() {
 
       <ArtistId portraitUrl={idPhoto?.image_url} />
 
-      {/* A normal day */}
-      <section aria-labelledby="normal-day" style={{ marginBottom: 48 }}>
-        <h2 id="normal-day" style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 700, color: INK, marginBottom: 16 }}>
-          A perfectly normal <span style={{ fontWeight: 400, fontStyle: 'italic', color: '#b07880' }}>day</span>
-        </h2>
-        <ol style={{ listStyle: 'none', borderTop: `2px solid ${INK}` }}>
-          {DAY.map(d => (
-            <li key={d.at} style={{ display: 'flex', flexWrap: 'wrap', gap: '2px 18px', padding: '12px 0', borderBottom: '1px solid #d0d0d0' }}>
-              <span style={{ width: 86, flexShrink: 0, fontSize: 12, fontWeight: 600, color: '#7a3040' }}>{d.at}</span>
-              <span style={{ flex: 1, minWidth: 200, fontSize: 15, fontWeight: 300, color: '#3a3a3a', whiteSpace: 'normal' }}>{d.what}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
+      <Timesheet />
 
       {/* The bio says this works */}
       <section style={{ textAlign: 'center', marginBottom: 48 }}>
