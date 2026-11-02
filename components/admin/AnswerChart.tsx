@@ -15,7 +15,7 @@ const MAX_COLUMN_LABELS = 12
 
 const num = (n: number) => n.toLocaleString('en-IN')
 const share = (value: number, total: number) => (total ? Math.round((value / total) * 100) : 0)
-const prettyKey = (key: string) => (/^\d{4}-\d{2}-\d{2}$/.test(key) ? new Date(`${key}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }) : key)
+const prettyKey = (key: string) => (key === '/' ? 'Home page' : /^\d{4}-\d{2}-\d{2}$/.test(key) ? new Date(`${key}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }) : key)
 
 function NoData() {
   return <p style={{ fontSize: 13, color: MUTED }}>Nothing to show for this yet.</p>

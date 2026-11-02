@@ -6,6 +6,11 @@ import { CHART_NAMES, formatRequest, type ChartSpec, type ChartType } from '@/li
 const EXAMPLES = ['Show me visitors per day', 'Which country sends the most people?', 'Sales by tier as a chart', 'What will next month look like?', 'What should I fix first?']
 type Turn = { role: 'user' | 'assistant'; content: string; notice?: string; charts?: ChartSpec[] }
 
+/** Shows **bold** from an answer as bold, rather than as stars. */
+function withBold(text: string) {
+  return text.split(/(\*\*[^*\n]+\*\*)/).map((part, i) => (part.startsWith('**') && part.endsWith('**') && part.length > 4 ? <b key={i} style={{ fontWeight: 600 }}>{part.slice(2, -2)}</b> : part))
+}
+
 /** Type a question about the site and get an answer calculated from the real numbers. */
 export default function AskAnalytics({ smart }: { smart: boolean }) {
   const [turns, setTurns] = useState<Turn[]>([])
@@ -54,7 +59,7 @@ export default function AskAnalytics({ smart }: { smart: boolean }) {
         <div role="log" aria-live="polite" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 14, maxHeight: 640, overflowY: 'auto' }}>
           {turns.map((t, i) => (
             <div key={i} style={{ alignSelf: t.role === 'user' ? 'flex-end' : t.charts?.length ? 'stretch' : 'flex-start', maxWidth: t.charts?.length ? '100%' : '92%', padding: '10px 14px', borderRadius: 10, fontSize: 14, lineHeight: 1.6, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', background: t.role === 'user' ? '#4a3a7a' : '#fff', color: t.role === 'user' ? '#fff' : '#1a1014' }}>
-              {t.content}
+              {t.role === 'assistant' ? withBold(t.content) : t.content}
               {t.charts?.map((c, n) => <AnswerChart key={n} chart={c} onType={type => setChartType(i, n, type)} />)}
               {t.notice && <span style={{ display: 'block', marginTop: 6, fontSize: 11, color: '#787878' }}>{t.notice}</span>}
             </div>
