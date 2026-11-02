@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { isBot, parseDevice, sourceOf } from '@/lib/analytics/parse'
-import { istDay, monthlyIncome, percent, summarise, type AnalyticsEvent } from '@/lib/analytics/summary'
+import { istDay, percent, summarise, type AnalyticsEvent } from '@/lib/analytics/summary'
 
 const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1'
 const NOW = new Date('2026-11-02T12:00:00Z')
@@ -64,7 +64,5 @@ describe('summarise', () => {
 
   it('does sums', () => {
     expect(percent(1, 0)).toBe(0)
-    expect(monthlyIncome(['₹499', '₹199', '$3', ''])).toBe('₹698 + $3')
-    expect(monthlyIncome([])).toBe('0')
   })
 })

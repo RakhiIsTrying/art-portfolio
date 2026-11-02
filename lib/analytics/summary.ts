@@ -132,13 +132,3 @@ export function summarise(all: AnalyticsEvent[], days: number, now = new Date())
     puzzles: count('puzzle_opened').map(r => ({ ...r, extra: solved.get(r.key) ?? 0 })),
   }
 }
-
-/** Adds up prices like ₹499 or $11 per member, with each currency kept separate. */
-export function monthlyIncome(prices: string[]) {
-  const totals = new Map<string, number>()
-  for (const price of prices) {
-    const m = price.match(/^(\D*)([\d,.]+)/)
-    if (m) totals.set(m[1].trim(), (totals.get(m[1].trim()) ?? 0) + Number(m[2].replace(/,/g, '')))
-  }
-  return [...totals].map(([symbol, total]) => `${symbol}${total.toLocaleString('en-IN')}`).join(' + ') || '0'
-}

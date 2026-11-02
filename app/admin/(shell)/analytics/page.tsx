@@ -1,38 +1,75 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import DailyChart from '@/components/admin/DailyChart'
-import { getSupabaseAdminClient } from '@/lib/supabase/admin'
-import { getSettings } from '@/lib/settings'
-import { listInbox } from '@/lib/notify'
-import { tierOf, tierPrice, TIER_IDS, TIERS, type PlanId } from '@/lib/printClub'
-import { monthlyIncome, percent, summarise, type AnalyticsEvent, type Row } from '@/lib/analytics/summary'
+import AskAnalytics from '@/components/admin/AskAnalytics'
+import { projectSales } from '@/lib/analytics/forecast'
+import { findInsights, verdict, type Insight } from '@/lib/analytics/insights'
+import { loadEvents, loadSales } from '@/lib/analytics/load'
+import { salesSummary, showMoney } from '@/lib/analytics/sales'
+import { percent, summarise, type AnalyticsEvent, type Row } from '@/lib/analytics/summary'
+import { tierOf, TIER_IDS, TIERS } from '@/lib/printClub'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Analytics | Admin' }
 
 const RANGES = [7, 30, 90]
-const PAGE_SIZE = 1000
-const MAX_EVENTS = 200_000
 const INK = '#1a1014'
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const COUNTRY_NAMES = new Intl.DisplayNames(['en'], { type: 'region' })
 
 const countryName = (key: string) => { try { return /^[A-Z]{2}$/.test(key) ? COUNTRY_NAMES.of(key) ?? key : key } catch { return key } }
 const placeName = (key: string) => { const [place, code] = key.split(', '); return code ? `${place}, ${countryName(code)}` : key }
+// Small expected numbers keep a decimal, as “about 0” would hide them
+const about = (n: number) => (n >= 5 ? Math.round(n).toLocaleString('en-IN') : n.toFixed(1))
 const duration = (s: number) => (s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`)
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' })
 
-async function loadEvents(since: Date) {
-  const db = getSupabaseAdminClient()
-  const events: AnalyticsEvent[] = []
-  while (events.length < MAX_EVENTS) {
-    const { data, error } = await db.from('analytics_events').select('created_at, name, path, label, seconds, visitor_id, session_id, source, referrer, utm_medium, utm_campaign, country, region, city, device, browser, os')
-      .gte('created_at', since.toISOString()).order('created_at', { ascending: false }).range(events.length, events.length + PAGE_SIZE - 1)
-    if (error) return { events, error: error.message }
-    events.push(...(data as AnalyticsEvent[]))
-    if (!data || data.length < PAGE_SIZE) break
-  }
-  return { events, error: null }
+const CONFIDENCE = { 'too-early': 'Too early to say', rough: 'Rough guess, under 2 weeks of data', fair: 'Fair estimate', good: 'Good estimate' } as const
+const TONES = { good: { label: 'Working', color: '#2f7a43', mark: '▲' }, fix: { label: 'Fix', color: '#b3261e', mark: '!' }, idea: { label: 'Try', color: '#4a3a7a', mark: '★' } } as const
+
+function Board({ title, tag, children }: { title: string; tag: string; children: React.ReactNode }) {
+  return (
+    <section style={{ minWidth: 0, background: '#fff', border: '1px solid #d0d0d0', borderTop: '4px solid #4a3a7a', padding: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div>
+        <h2 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 22, fontWeight: 700, lineHeight: 1.15, color: INK }}>{title}</h2>
+        <p style={{ fontSize: 11, color: '#787878', whiteSpace: 'normal' }}>{tag}</p>
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function Big({ label, value, was }: { label: string; value: string; was?: { now: number; before: number } }) {
+  const change = was && was.before > 0 ? Math.round(((was.now - was.before) / was.before) * 100) : null
+  return (
+    <div style={{ paddingBottom: 10, borderBottom: '1px solid #ebe8e8' }}>
+      <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(26px, 3vw, 34px)', fontWeight: 700, lineHeight: 1.1, color: INK, overflowWrap: 'anywhere' }}>{value}</p>
+      <p style={{ fontSize: 12, color: '#787878', whiteSpace: 'normal' }}>
+        {label}
+        {change !== null && <b style={{ marginLeft: 6, fontWeight: 600, color: change === 0 ? '#787878' : change > 0 ? '#2f7a43' : '#b3261e' }}>{change > 0 ? '▲' : change < 0 ? '▼' : '='} {Math.abs(change)}%</b>}
+      </p>
+    </div>
+  )
+}
+
+function Small({ label, value }: { label: string; value: string }) {
+  return (
+    <p style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, fontSize: 13, color: '#787878' }}>
+      <span style={{ whiteSpace: 'normal' }}>{label}</span>
+      <b style={{ fontWeight: 600, color: INK, textAlign: 'right', whiteSpace: 'normal' }}>{value}</b>
+    </p>
+  )
+}
+
+function InsightCard({ insight }: { insight: Insight }) {
+  const tone = TONES[insight.tone]
+  return (
+    <article style={{ minWidth: 0, background: '#fff', border: '1px solid #d0d0d0', borderLeft: `4px solid ${tone.color}`, padding: '14px 16px' }}>
+      <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: tone.color, marginBottom: 5 }}><span aria-hidden>{tone.mark} </span>{tone.label}</p>
+      <h3 style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.3, color: INK, marginBottom: 5, whiteSpace: 'normal' }}>{insight.title}</h3>
+      <p style={{ fontSize: 13, fontWeight: 300, lineHeight: 1.55, color: '#3a3a3a', whiteSpace: 'normal' }}>{insight.detail}</p>
+    </article>
+  )
 }
 
 function Panel({ title, note, children, wide }: { title: string; note?: string; children: React.ReactNode; wide?: boolean }) {
@@ -136,16 +173,13 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   const a = s.now, b = s.before
 
   // The people behind the numbers: only ever shown here, behind the Admin sign-in
-  const [{ data: members }, inbox, { plans }] = await Promise.all([
-    getSupabaseAdminClient().from('print_club_signups').select('name, email, tier, plan, country, created_at').order('created_at', { ascending: false }),
-    listInbox(),
-    getSettings(),
-  ])
-  const club = (members ?? []).map(m => ({ ...m, tierId: tierOf(m.tier), price: plans[m.plan as PlanId] ? tierPrice(plans[m.plan as PlanId], tierOf(m.tier)) : '' }))
-  const orders = inbox.filter(m => m.kind === 'Print order')
+  const { members: club, orders } = await loadSales()
+  const sales = salesSummary(club, orders, days, now)
+  const projection = projectSales(s, sales)
+  const insights = findInsights(s, sales)
   const buyers = [
-    ...club.map(m => ({ at: m.created_at, name: m.name, email: m.email, what: `${TIERS[m.tierId].name}, ${m.price} / month`, where: countryName(m.country) })),
-    ...orders.map(o => ({ at: o.at, name: o.subject.split(', ')[0], email: o.from ?? '', what: `Print order: ${o.subject.split(', ').slice(1).join(', ').replace(/^Print: /, '')}`, where: '' })),
+    ...club.map(m => ({ at: m.at, name: m.name, email: m.email, what: `${m.tier}, ${m.price} / month`, where: countryName(m.country) })),
+    ...orders.map(o => ({ at: o.at, name: o.name, email: o.email, what: `Print order: ${o.piece}${o.total ? `, ${o.total}` : ''}`, where: '' })),
   ].sort((x, y) => y.at.localeCompare(x.at))
 
   return (
@@ -176,7 +210,57 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         </p>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(19px, 2.6vw, 25px)', lineHeight: 1.35, color: INK, whiteSpace: 'normal' }}>{verdict(s, sales, days)}</p>
+
+      <AskAnalytics smart={!!process.env.ANTHROPIC_API_KEY?.trim()} />
+
+      <div className="grid lg:grid-cols-3 gap-3">
+        <Board title="Website" tag="How it's performing">
+          <Big label="Visitors" value={a.visitors.toLocaleString('en-IN')} was={{ now: a.visitors, before: b.visitors }} />
+          <Small label="Time per visit" value={duration(a.avgSeconds)} />
+          <Small label="Left after one page" value={`${a.bounceRate}%`} />
+          <Small label="Came back" value={`${percent(a.returning, a.visitors)}%`} />
+          <Small label="Top source" value={s.sources[0]?.key ?? 'None yet'} />
+        </Board>
+        <Board title="Sales" tag="Requests, as payments aren't on yet">
+          <Big label="Club income a month, if all pay" value={showMoney(sales.monthlyIncome)} />
+          <Small label="Club members" value={`${sales.members}${sales.newMembers ? ` (+${sales.newMembers} new)` : ''}`} />
+          <Small label="Print orders" value={`${sales.orders}${sales.newOrders ? ` (+${sales.newOrders} new)` : ''}`} />
+          <Small label="Print order value" value={showMoney(sales.orderValue)} />
+          <Small label="Visitors who act" value={`${a.conversionRate.toFixed(1)}%`} />
+        </Board>
+        <Board title="Next 30 days" tag={CONFIDENCE[projection.visitors.confidence]}>
+          {projection.visitors.confidence === 'too-early' ? (
+            <p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.6, color: '#3a3a3a', whiteSpace: 'normal' }}>I need at least 7 days of visits to project anything. There {projection.visitors.days === 1 ? 'is 1 day' : `are ${projection.visitors.days} days`} so far.</p>
+          ) : (
+            <>
+              <Big label="Club income a month, if all pay" value={projection.hasSalesHistory ? showMoney(projection.monthlyIncome) : 'No sales yet'} />
+              <Small label="Visitors" value={`${projection.visitors.mid.toLocaleString('en-IN')} (${projection.visitors.low.toLocaleString('en-IN')} to ${projection.visitors.high.toLocaleString('en-IN')})`} />
+              <Small label="New club members" value={`About ${about(projection.newSignups)}`} />
+              <Small label="Print orders" value={`About ${about(projection.newOrders)}`} />
+              <Small label="Print order value" value={projection.hasSalesHistory ? showMoney(projection.orderValue) : 'No sales yet'} />
+            </>
+          )}
+        </Board>
+      </div>
+
+      <section aria-labelledby="insights">
+        <h2 id="insights" style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.3em', textTransform: 'uppercase', color: INK, marginBottom: 10 }}>What I’d look at</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {insights.map(i => <InsightCard key={i.title} insight={i} />)}
+        </div>
+      </section>
+
+      <div style={{ minWidth: 0, background: '#fff', border: '1px solid #d0d0d0', padding: 18 }}>
+        <h2 style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.3em', textTransform: 'uppercase', color: INK, marginBottom: 14 }}>Visitors, last {days} days</h2>
+        <DailyChart days={s.daily} />
+      </div>
+
+      <details style={{ background: '#fff', border: '1px solid #d0d0d0' }}>
+        <summary style={{ padding: '14px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: INK }}>Show all the detailed numbers</summary>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20, padding: '0 12px 12px', background: '#e6e6e6', paddingTop: 12 }}>
+
+      <div id="site-details" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         <Stat label="Visitors" value={a.visitors.toLocaleString('en-IN')} was={{ now: a.visitors, before: b.visitors }} />
         <Stat label="Visits" value={a.sessions.toLocaleString('en-IN')} was={{ now: a.sessions, before: b.sessions }} />
         <Stat label="Page views" value={a.pageviews.toLocaleString('en-IN')} was={{ now: a.pageviews, before: b.pageviews }} />
@@ -188,8 +272,6 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       </div>
 
       <div className="grid lg:grid-cols-2 gap-3">
-        <Panel wide title={`Visitors, last ${days} days`}><DailyChart days={s.daily} /></Panel>
-
         <Panel title="Where they come from" note="By visitors. Bold shows how many went on to order, sign up or message you.">
           <Bars rows={s.sources} extraLabel="acted" />
         </Panel>
@@ -237,13 +319,14 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
           <Bars rows={s.puzzles} extraLabel="solved" />
         </Panel>
 
-        <Panel wide title="Who’s buying" note="Everyone so far, from all time. Payments aren’t on the site yet, so these are requests and applications.">
+        <div id="buyers" className="lg:col-span-2" style={{ minWidth: 0 }}>
+        <Panel title="Who’s buying" note="Everyone so far, from all time. Payments aren’t on the site yet, so these are requests and applications.">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" style={{ marginBottom: 16 }}>
             {TIER_IDS.map(t => (
               <div key={t}><p style={{ fontSize: 11, color: '#787878' }}>{TIERS[t].name}</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{club.filter(m => m.tierId === t).length}</p></div>
             ))}
             <div><p style={{ fontSize: 11, color: '#787878' }}>Print orders</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{orders.length}</p></div>
-            <div><p style={{ fontSize: 11, color: '#787878' }}>Club income a month, if all pay</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{monthlyIncome(club.map(m => m.price))}</p></div>
+            <div><p style={{ fontSize: 11, color: '#787878' }}>Club income a month, if all pay</p><p style={{ fontSize: 20, fontWeight: 600, color: INK }}>{showMoney(sales.monthlyIncome)}</p></div>
           </div>
           {buyers.length ? (
             <div style={{ overflowX: 'auto' }}>
@@ -259,7 +342,10 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
             </div>
           ) : <Empty />}
         </Panel>
+        </div>
       </div>
+        </div>
+      </details>
     </div>
   )
 }

@@ -54,6 +54,7 @@ export default function PrivacyPage() {
         <li><b style={{ fontWeight: 600 }}>Vercel</b> hosts the site and provides the approximate location.</li>
         <li><b style={{ fontWeight: 600 }}>Supabase</b> stores sign-ups, messages and statistics.</li>
         <li><b style={{ fontWeight: 600 }}>Resend</b> delivers the site’s emails.</li>
+        <li><b style={{ fontWeight: 600 }}>Anthropic</b> powers a question box in my private Admin page, if switched on. It can receive visitor statistics and sales totals, never names, emails, phone numbers or addresses.</li>
         <li><b style={{ fontWeight: 600 }}>India Post’s pincode service and Zippopotam</b> receive the postal code you type, so your city and state can fill in. They get only the code and country.</li>
         <li><b style={{ fontWeight: 600 }}>YouTube and Instagram</b> are separate services with their own policies. Video players and links to them may collect information once you use them.</li>
       </ul>
