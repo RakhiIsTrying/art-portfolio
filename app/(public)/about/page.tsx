@@ -82,9 +82,10 @@ export default async function AboutPage() {
             <div className="prose max-w-none" style={{ fontSize: 15, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }} dangerouslySetInnerHTML={{ __html: content.html }} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 15, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }}>
-              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(20px, 3vw, 26px)', lineHeight: 1.25, color: INK }}>I have two jobs. One pays the rent. The other spends it.</p>
-              <p>By day, I work in corporate, where I’m paid to nod at spreadsheets and say “great point” to points that were not great.</p>
-              <p>By night, I draw KATSEYE, the Joker and my dog with the focus of someone who has a 9 AM and has made peace with that. My dog has never once asked me for a status update. He’s the only colleague I respect.</p>
+              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(20px, 3vw, 26px)', lineHeight: 1.25, color: INK }}>I am three raccoons in a business-casual blazer.</p>
+              <p>From 9 to 6:30, the blazer goes to a corporate job. It says “great point.” It has circled back so many times that it is now legally a roundabout.</p>
+              <p>At night, the blazer comes off and the raccoons get to work. We have drawn KATSEYE. We have drawn the Joker. We have drawn my dog more times than we have drunk water this year.</p>
+              <p>Dug-Dug is the only one who knows. He hasn’t told HR. His silence costs me four treats a day.</p>
               <p>I also trained as an architect, so I can walk into any room and feel disappointed. And Van Gone Broke isn’t a brand name. It’s a financial forecast.</p>
             </div>
           )}
