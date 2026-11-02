@@ -1,9 +1,9 @@
 'use client'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+import { formatMoney } from '@/lib/currency'
 
 const BILLS = ['💸', '💵', '🪙', '💰', '💴']
-const AMOUNTS = [100, 500, 2000]
 const JACKPOT_EVERY = 5
 const MAX_ON_SCREEN = 150
 const REPLIES: Record<number, string> = {
@@ -24,10 +24,13 @@ const COIN_SOUND = '/sounds/coin-prize.mp3'
 const JACKPOT_SOUND = '/sounds/jackpot-siren.mp3'
 const VOLUME = 0.7
 
+// Imaginary, so any number will do: a random round amount, much bigger at a jackpot
+const randomAmount = (jackpot: boolean) => (jackpot ? 20_000 + Math.floor(Math.random() * 81) * 1000 : 50 + Math.floor(Math.random() * 60) * 50)
+
 type Bill = { id: number; bill: string; x: number; rain: boolean; delay: number; size: number }
 
 /** My Instagram bio says money being thrown at me works. Test it. */
-export default function ThrowMoney() {
+export default function ThrowMoney({ currency }: { currency: string }) {
   const [thrown, setThrown] = useState<Bill[]>([])
   const [count, setCount] = useState(0)
   const [total, setTotal] = useState(0)
@@ -68,7 +71,7 @@ export default function ThrowMoney() {
     const nextCount = count + 1
     const jackpot = nextCount % JACKPOT_EVERY === 0
     setCount(nextCount)
-    setTotal(t => t + (jackpot ? 50000 : AMOUNTS[nextCount % AMOUNTS.length]))
+    setTotal(t => t + randomAmount(jackpot))
     ring(jackpot)
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const make = (rain: boolean): Bill => ({
@@ -120,7 +123,7 @@ export default function ThrowMoney() {
       </div>
 
       <p aria-live="polite" style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(26px, 5vw, 38px)', fontWeight: 700, lineHeight: 1.1, color: '#1a1014', minHeight: '1.1em' }}>
-        {count > 0 && `₹${total.toLocaleString('en-IN')}`}
+        {count > 0 && formatMoney(total, currency)}
       </p>
       <p role="status" style={{ minHeight: 44, maxWidth: 420, fontSize: 14, lineHeight: 1.5, color: '#3a3a3a', whiteSpace: 'normal' }}>
         {count === 0 ? 'Go on. It’s in my bio.' : REPLIES[replyAt ?? 1]}

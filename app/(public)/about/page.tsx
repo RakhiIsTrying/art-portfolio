@@ -3,6 +3,8 @@ import Link from 'next/link'
 import ArtFill from '@/components/ArtFill'
 import ArtistId from '@/components/ArtistId'
 import ThrowMoney from '@/components/ThrowMoney'
+import { currencyForCountry } from '@/lib/currency'
+import { countryForVisitor } from '@/lib/printClubServer'
 import Ticker from '@/components/Ticker'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 
@@ -111,7 +113,7 @@ export default async function AboutPage() {
 
       {/* The bio says this works */}
       <section style={{ textAlign: 'center', marginBottom: 48 }}>
-        <ThrowMoney />
+        <ThrowMoney currency={currencyForCountry(await countryForVisitor())} />
       </section>
 
       {/* Where to next */}
