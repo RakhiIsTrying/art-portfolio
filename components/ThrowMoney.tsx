@@ -1,7 +1,6 @@
 'use client'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { playChaChing } from '@/lib/chaChing'
 
 const BILLS = ['💸', '💵', '🪙', '💰', '💴']
 const AMOUNTS = [100, 500, 2000]
@@ -20,6 +19,10 @@ const REPLIES: Record<number, string> = {
   20: 'JACKPOT! Sir, this is an About page.',
 }
 const SOUND_KEY = 'vgb-money-muted'
+// Gold coin prize and Slot machine win siren, from Mixkit (mixkit.co) under its Sound Effects Free License
+const COIN_SOUND = '/sounds/coin-prize.mp3'
+const JACKPOT_SOUND = '/sounds/jackpot-siren.mp3'
+const VOLUME = 0.7
 
 type Bill = { id: number; bill: string; x: number; rain: boolean; delay: number; size: number }
 
@@ -30,24 +33,35 @@ export default function ThrowMoney() {
   const [total, setTotal] = useState(0)
   const [muted, setMuted] = useState(false)
   const nextId = useRef(0)
-  const audio = useRef<AudioContext | null>(null)
+  const sounds = useRef<{ coin: HTMLAudioElement; jackpot: HTMLAudioElement } | null>(null)
 
   useEffect(() => {
     let saved = false
     try { saved = !!localStorage.getItem(SOUND_KEY) } catch {}
     // eslint-disable-next-line react-hooks/set-state-in-effect -- browser storage can only be read after loading
     setMuted(saved)
+    // Nothing keeps ringing after leaving the page
+    return () => { sounds.current?.jackpot.pause(); sounds.current?.coin.pause() }
   }, [])
+
+  // The files only load once someone comes near the button
+  function loadSounds() {
+    if (sounds.current) return sounds.current
+    const load = (src: string) => { const a = new Audio(src); a.preload = 'auto'; a.volume = VOLUME; return a }
+    sounds.current = { coin: load(COIN_SOUND), jackpot: load(JACKPOT_SOUND) }
+    return sounds.current
+  }
+
+  function playFromStart(sound: HTMLAudioElement) {
+    sound.currentTime = 0
+    sound.play().catch(() => { /* No sound on this browser: the money still flies */ })
+  }
 
   function ring(jackpot: boolean) {
     if (muted) return
-    try {
-      audio.current ??= new AudioContext()
-      void audio.current.resume()
-      playChaChing(audio.current)
-      // A jackpot rings the register again
-      if (jackpot) setTimeout(() => { if (audio.current) playChaChing(audio.current, { volume: 0.7 }) }, 260)
-    } catch { /* No sound on this browser: the money still flies */ }
+    const { coin, jackpot: siren } = loadSounds()
+    if (jackpot) playFromStart(siren)
+    else playFromStart(coin)
   }
 
   function toss() {
@@ -71,6 +85,7 @@ export default function ThrowMoney() {
   function toggleSound() {
     const next = !muted
     setMuted(next)
+    if (next) { sounds.current?.jackpot.pause(); sounds.current?.coin.pause() }
     try { if (next) localStorage.setItem(SOUND_KEY, '1'); else localStorage.removeItem(SOUND_KEY) } catch {}
   }
 
@@ -97,7 +112,7 @@ export default function ThrowMoney() {
         <img key={`peek-${count}`} src="/puzzles/dugdug.png" alt="" aria-hidden className="vgb-motion" style={{ position: 'absolute', top: -46, left: '50%', marginLeft: -36, width: 72, pointerEvents: 'none', animation: count ? 'vgb-hop .45s ease-out both' : undefined }} />
         <span aria-hidden className="vgb-motion" style={{ position: 'absolute', top: -12, left: -14, fontSize: 18, zIndex: 2, pointerEvents: 'none', animation: 'vgb-twinkle 1.6s ease-in-out infinite' }}>✨</span>
         <span aria-hidden className="vgb-motion" style={{ position: 'absolute', bottom: -6, right: -12, fontSize: 15, zIndex: 2, pointerEvents: 'none', animation: 'vgb-twinkle 1.6s ease-in-out .8s infinite' }}>💖</span>
-        <button type="button" onClick={toss} className="vgb-motion vgb-cute-button"
+        <button type="button" onClick={toss} onPointerEnter={loadSounds} onFocus={loadSounds} className="vgb-motion vgb-cute-button"
           style={{ position: 'relative', zIndex: 1, padding: '15px 30px', fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(18px, 4vw, 22px)', fontStyle: 'italic', fontWeight: 700, lineHeight: 1.1, whiteSpace: 'nowrap', cursor: 'pointer', borderRadius: 999, border: '3px solid #1a1014', color: '#1a1014',
                    background: jackpotNow ? 'linear-gradient(180deg, #ffe680 0%, #f2b632 100%)' : 'linear-gradient(180deg, #ffe0e8 0%, #ffb3c7 100%)', boxShadow: `0 6px 0 ${jackpotNow ? '#c9901a' : '#d77a96'}`, animation: count ? `vgb-cha-${count % 2} .28s ease-out` : undefined }}>
           Throw money at me 💸
