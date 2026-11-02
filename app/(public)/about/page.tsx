@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ArtFill from '@/components/ArtFill'
+import ArtistId from '@/components/ArtistId'
 import ThrowMoney from '@/components/ThrowMoney'
 import Ticker from '@/components/Ticker'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
@@ -13,18 +14,6 @@ export const metadata: Metadata = {
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 const INK = '#1a1014'
 const PORTRAIT_TITLE = 'Me & Dug-Dug'
-
-// The artist's Instagram bio, as a set of ID card details
-const ID_CARD = [
-  { label: 'Occupation', value: 'Architect, artist, money-hungry yes-woman', color: '#7a3040' },
-  { label: 'Day job', value: 'Corporate. Mornings. Please send snacks.', color: '#4a3a7a' },
-  { label: 'Pronoun', value: 'Pauvre', color: '#1e3a8a' },
-  { label: 'Responds to', value: 'Machine payment sounds, or money being thrown at me', color: '#1a6060' },
-  { label: 'Condition', value: 'Paw-sessed woof worshipper', color: '#7a5020' },
-  { label: 'Emergency contact', value: 'Dug-Dug (does not pick up)', color: '#b0552f' },
-  { label: 'Bank balance', value: 'See name of website', color: '#3d4f45' },
-  { label: 'Current status', value: 'In a meeting, physically', color: '#9a5a64' },
-]
 
 // A joke, not a timesheet
 const DAY = [
@@ -98,21 +87,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* The Instagram bio, as an ID card */}
-      <section aria-labelledby="id-card" style={{ background: '#fff', border: `2px solid ${INK}`, marginBottom: 48 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 16px', padding: '12px 20px', background: INK, color: '#fff' }}>
-          <h2 id="id-card" style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.35em', textTransform: 'uppercase' }}>Official artist ID</h2>
-          <span style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: 'rgba(255,255,255,.65)' }}>Est. 2024</span>
-        </div>
-        <dl className="grid sm:grid-cols-2">
-          {ID_CARD.map(row => (
-            <div key={row.label} style={{ padding: '20px', borderTop: '1px solid #ebebeb', borderLeft: `4px solid ${row.color}` }}>
-              <dt style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 500, color: row.color, marginBottom: 6 }}>{row.label}</dt>
-              <dd style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(19px, 2.4vw, 24px)', lineHeight: 1.25, color: INK }}>{row.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+      <ArtistId portraitUrl={portrait?.image_url} />
 
       {/* A normal day */}
       <section aria-labelledby="normal-day" style={{ marginBottom: 48 }}>
