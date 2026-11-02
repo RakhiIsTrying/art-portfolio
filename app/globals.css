@@ -218,5 +218,15 @@ label[style*="text-transform: uppercase"] { white-space: nowrap; }
 /* About: money thrown at the artist */
 @keyframes vgb-money {
   0%   { transform: translate(-50%, 0) rotate(0); opacity: 1; }
-  100% { transform: translate(calc(-50% + var(--vgb-x, 0px)), -170px) rotate(40deg); opacity: 0; }
+  100% { transform: translate(calc(-50% + var(--vgb-x, 0px)), -210px) rotate(220deg); opacity: 0; }
+}
+@keyframes vgb-money-rain {
+  0%   { transform: translateY(0) rotate(0); opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(420deg); opacity: 0; }
+}
+@keyframes vgb-cha {
+  0%   { transform: translate(3px, 3px) scale(.96); box-shadow: 2px 2px 0 #1a1014; }
+  45%  { transform: translate(0, -3px) scale(1.06) rotate(-2deg); }
+  100% { transform: none; }
 }
