@@ -82,10 +82,10 @@ export default async function AboutPage() {
             <div className="prose max-w-none" style={{ fontSize: 15, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }} dangerouslySetInnerHTML={{ __html: content.html }} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 15, lineHeight: 1.8, fontWeight: 300, color: '#3a3a3a' }}>
-              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(20px, 3vw, 26px)', lineHeight: 1.25, color: INK }}>I am three raccoons in a business-casual blazer.</p>
-              <p>From 9 to 6:30, the blazer goes to a corporate job. It says “great point.” It has circled back so many times that it is now legally a roundabout.</p>
-              <p>At night, the blazer comes off and the raccoons get to work. We have drawn KATSEYE. We have drawn the Joker. We have drawn my dog more times than we have drunk water this year.</p>
-              <p>Dug-Dug is the only one who knows. He hasn’t told HR. His silence costs me four treats a day.</p>
+              <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(20px, 3vw, 26px)', lineHeight: 1.25, color: INK }}>Running away from responsibilities and human interaction since 2024.</p>
+              <p>I have a corporate job. I attend its meetings the way a hostage attends a birthday party: smiling, nodding, one eye on the door. I say yes to everything. I am a money-hungry yes-woman and the machine goes ding.</p>
+              <p>At 6:30 I sprint home to a 70lb chocolate lab who has never once asked me to align on anything. I have put him in Squid Game. I have put him in a thug life. He told me my skin barrier was looking a little ruff. He was right. I haven’t slept since Naruto.</p>
+              <p>Every piece I make ends with me asking, at 3 AM, “should the dog be in this one too?” He snores in response. It’s the best feedback I’ve had all quarter.</p>
               <p>I also trained as an architect, so I can walk into any room and feel disappointed. And Van Gone Broke isn’t a brand name. It’s a financial forecast.</p>
             </div>
           )}
