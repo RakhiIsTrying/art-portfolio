@@ -1,5 +1,7 @@
 // The question box without the AI: picks out what's being asked, runs the same calculator and says the answer plainly.
 import { ALL_COUNTRIES } from '@/lib/countries'
+import { chartWord, type ChartSpec } from './chart'
+import { buildChart, type ChartContext, type ChartRequest } from './chartData'
 import { runQuery, type Filters, type Group, type Metric } from './query'
 import { showMoney, type SalesSummary } from './sales'
 import type { Insight } from './insights'
@@ -45,6 +47,37 @@ function pickFilters(q: string, original: string): Filters {
   return f
 }
 
+function readQuestion(question: string) {
+  const q = question.toLowerCase()
+  const [, metric, one, many] = METRIC_WORDS.find(([re]) => re.test(q)) ?? [null, 'visitors' as Metric, 'visitor', 'visitors']
+  let group = GROUP_WORDS.find(([re]) => re.test(q))?.[1] ?? null
+  // "visitors from India" filters on India; it doesn't ask for a list of countries
+  const filters = pickFilters(q, question)
+  if (group === 'country' && filters.country) group = null
+  if (group === 'source' && filters.source) group = null
+  return { metric, one, many, group, filters, days: pickDays(q) }
+}
+
+const WANTS_VISUAL = /chart|graph|plot|visual|trend|over time|\b(pie|donut|bar|bars|line|columns?)\b|show me/
+
+/** The chart that goes with a basic answer, when one would help or was asked for. */
+export function basicChart(question: string, ctx: ChartContext): ChartSpec | null {
+  const q = question.toLowerCase()
+  const asked = chartWord(q)
+  const visual = WANTS_VISUAL.test(q)
+  const view = (v: ChartRequest['view']) => buildChart(ctx, { view: v, chart_type: asked })
+  if (/project|forecast|predict|next month|expect/.test(q)) return view('visitors_with_forecast')
+  if (/drop|funnel|journey|steps|leak/.test(q)) return view(/shop|order|print\b/.test(q) ? 'shop_steps' : 'print_club_steps')
+  if (/revenue|income|earn|sales\b|money|mrr/.test(q)) {
+    if (!visual && !/\bby\b|per day|daily/.test(q)) return null
+    return view(/countr/.test(q) ? 'members_by_country' : /\b(pieces?|art|prints?)\b/.test(q) ? 'orders_by_piece' : /day|daily|time/.test(q) ? 'sales_per_day' : 'members_by_tier')
+  }
+  if (/\bwhy\b|should i|improve|advice|recommend|how can|how do i|suggest|what.*(fix|do)\b/.test(q)) return null
+  const { metric, group, filters, days } = readQuestion(question)
+  if (!group && !visual) return null
+  return buildChart(ctx, { view: 'custom_query', chart_type: asked, query: { metric, days, group_by: group ?? 'day', filters } })
+}
+
 export function basicAnswer(question: string, ctx: { events: AnalyticsEvent[]; sales: SalesSummary; projection: SalesProjection; insights: Insight[]; now?: Date }) {
   const q = question.toLowerCase()
   if (/project|forecast|predict|next month|expect|going to/.test(q)) {
@@ -60,13 +93,7 @@ export function basicAnswer(question: string, ctx: { events: AnalyticsEvent[]; s
     return ctx.insights.slice(0, 3).map(i => `${i.title}. ${i.detail}`).join('\n\n')
   }
 
-  const [, metric, one, many] = METRIC_WORDS.find(([re]) => re.test(q)) ?? [null, 'visitors' as Metric, 'visitor', 'visitors']
-  let group = GROUP_WORDS.find(([re]) => re.test(q))?.[1] ?? null
-  // "visitors from India" filters on India; it doesn't ask for a list of countries
-  const filters = pickFilters(q, question)
-  if (group === 'country' && filters.country) group = null
-  if (group === 'source' && filters.source) group = null
-  const days = pickDays(q)
+  const { metric, one, many, group, filters, days } = readQuestion(question)
   const result = runQuery(ctx.events, { metric, days, group_by: group, filters }, ctx.now)
   const scope = [filters.country && `in ${ALL_COUNTRIES.find(c => c.iso === filters.country)?.name}`, filters.source && `from ${filters.source}`, filters.device && `on ${filters.device.toLowerCase()}s`, filters.path_contains && `on ${filters.path_contains}`].filter(Boolean).join(' ')
   const period = days === 1 ? 'today' : `in the last ${days} days`

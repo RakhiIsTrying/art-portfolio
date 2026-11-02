@@ -26,6 +26,18 @@ export function forecastVisitors(daily: number[], horizon = HORIZON_DAYS) {
   return { confidence: (n >= GOOD_DAYS ? 'good' : n >= FAIR_DAYS ? 'fair' : 'rough') as Confidence, days: n, low: Math.max(0, Math.round(mid - margin)), mid: Math.round(mid), high: Math.round(mid + margin), perDay: Math.round((mid / horizon) * 10) / 10 }
 }
 
+/** The trend day by day, for drawing the projection. */
+export function forecastDaily(daily: number[], horizon = HORIZON_DAYS) {
+  const start = daily.findIndex(v => v > 0)
+  const values = start === -1 ? [] : daily.slice(start)
+  const n = values.length
+  if (n < MIN_DAYS) return []
+  const xBar = (n - 1) / 2, yBar = values.reduce((a, b) => a + b, 0) / n
+  const denominator = values.reduce((t, _, x) => t + (x - xBar) ** 2, 0)
+  const slope = values.reduce((t, y, x) => t + (x - xBar) * (y - yBar), 0) / denominator
+  return Array.from({ length: horizon }, (_, h) => Math.max(0, Math.round(yBar + slope * (n + h - xBar))))
+}
+
 const scale = (money: Money, factor: number): Money => Object.fromEntries(Object.entries(money).map(([k, v]) => [k, v * factor]))
 const plus = (a: Money, b: Money): Money => { const t = { ...a }; for (const [k, v] of Object.entries(b)) t[k] = (t[k] ?? 0) + v; return t }
 

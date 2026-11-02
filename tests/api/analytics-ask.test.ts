@@ -36,14 +36,14 @@ describe('POST /api/admin/analytics-ask', () => {
 
   it('works without an AI key, using the calculator', async () => {
     vi.stubEnv('ANTHROPIC_API_KEY', '')
-    expect(await (await post({ question: 'how many visitors from india?' })).json()).toEqual({ answer: '1 visitor in India in the last 30 days.', mode: 'basic' })
+    expect(await (await post({ question: 'how many visitors from india?' })).json()).toEqual({ answer: '1 visitor in India in the last 30 days.', mode: 'basic', charts: [] })
     expect(create).not.toHaveBeenCalled()
   })
 
   it('lets the AI look up real numbers, then answers', async () => {
     vi.stubEnv('ANTHROPIC_API_KEY', 'test-key')
     create.mockResolvedValueOnce(toolCall('query_visits', { metric: 'visitors', days: 30, group_by: 'source', filters: { country: 'India', city: null, source: null, device: null, path_contains: null, label_contains: null } })).mockResolvedValueOnce(text('Instagram sent your 1 visitor.'))
-    expect(await (await post({ question: 'where do they come from?' })).json()).toEqual({ answer: 'Instagram sent your 1 visitor.', mode: 'ai' })
+    expect(await (await post({ question: 'where do they come from?' })).json()).toEqual({ answer: 'Instagram sent your 1 visitor.', mode: 'ai', charts: [] })
     const second = create.mock.calls[1][0]
     expect(second.model).toBe('claude-opus-5-5')
     const result = JSON.parse(second.messages.at(-1).content[0].content)
@@ -58,6 +58,23 @@ describe('POST /api/admin/analytics-ask', () => {
     expect(sent).not.toContain('Secret')
     expect(sent).not.toContain('secret.com')
     expect(sent).toContain('Gone Baroque')
+  })
+
+  it('sends back charts built from real numbers, and limits them', async () => {
+    vi.stubEnv('ANTHROPIC_API_KEY', 'test-key')
+    create.mockResolvedValueOnce(toolCall('show_chart', { view: 'custom_query', title: 'By source', chart_type: 'auto', query: { metric: 'visitors', days: 30, group_by: 'source', filters: { country: null, city: null, source: null, device: null, path_contains: null, label_contains: null } } })).mockResolvedValueOnce(text('Instagram leads.'))
+    const body = await (await post({ question: 'chart my sources' })).json()
+    expect(body).toMatchObject({ answer: 'Instagram leads.', mode: 'ai', charts: [{ title: 'By source', type: 'number', total: 1, rows: [{ key: 'Instagram', value: 1 }] }] })
+    create.mockReset()
+    const again = toolCall('show_chart', { view: 'members_by_tier', title: 'T', chart_type: 'pie', query: null })
+    create.mockResolvedValueOnce(again).mockResolvedValueOnce(again).mockResolvedValueOnce(again).mockResolvedValueOnce(again).mockResolvedValueOnce(text('Done.'))
+    expect((await (await post({ question: 'many charts' })).json()).charts).toHaveLength(3)
+  })
+
+  it('draws charts in basic mode too', async () => {
+    vi.stubEnv('ANTHROPIC_API_KEY', '')
+    const body = await (await post({ question: 'sources as a pie' })).json()
+    expect(body.charts[0]).toMatchObject({ type: 'pie', rows: [{ key: 'Instagram', value: 1 }] })
   })
 
   it('reports a failed lookup to the AI instead of crashing', async () => {
