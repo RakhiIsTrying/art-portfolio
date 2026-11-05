@@ -215,6 +215,10 @@ label[style*="text-transform: uppercase"] { white-space: nowrap; }
   100% { transform: none; }
 }
 
+/* Every page's content sits in the same width, so nothing jumps moving between them */
+.page-width { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: 16px; }
+@media (min-width: 640px) { .page-width { padding-inline: 36px; } }
+
 /* About: money thrown at the artist */
 @keyframes vgb-money {
   0%   { transform: translate(-50%, 0) rotate(0); opacity: 1; }

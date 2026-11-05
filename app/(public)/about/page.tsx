@@ -37,7 +37,7 @@ export default async function AboutPage() {
   const idPhoto = art?.find(a => a.title === ID_PHOTO_TITLE)
 
   return (
-    <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 1040, margin: '0 auto' }}>
+    <div className="page-width pt-8 sm:pt-10 pb-16">
 
       <div style={{ margin: '-8px 0 28px' }}>
         <Ticker direction="left" variant="rust" text="★ Corporate by day ✦ Feral by night ✦ Will draw for rent ✦ Payment sounds welcome ✦ Dug-Dug approved ✦ This could have been an email" />

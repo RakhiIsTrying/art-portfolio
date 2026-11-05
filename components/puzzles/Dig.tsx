@@ -19,6 +19,10 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
   const [dugUp, setDugUp] = useState(0)      // restarts the dig-up animation on each reveal
   const boardRef = useRef<HTMLDivElement>(null)
   const dragging = useRef(false)
+  // The square under the finger: a shaky tap stays on it, so it only counts once
+  const underFinger = useRef<number | null>(null)
+  // A found word that was pressed. It's put back if the finger lifts without moving away.
+  const pressedWord = useRef<number | null>(null)
 
   const solved = found.length === words.length
   useEffect(() => { if (solved) onSolved() }, [solved, onSolved])
@@ -50,8 +54,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
     const p = path
     if (!p.length) return setPath([cell])
     const at = p.indexOf(cell)
-    if (at !== -1 && at === p.length - 2) return setPath(p.slice(0, -1))   // step back
-    if (at !== -1) return
+    if (at !== -1) return setPath(p.slice(0, at + 1))                      // dragged back: rewind to here
     if (!adjacent(p[p.length - 1], cell)) return setPath([cell])          // start again from here
     const next = [...p, cell]
     if (!check(next)) setPath(next)
@@ -69,16 +72,25 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
     if (cell === null) return
     dragging.current = true
     try { boardRef.current!.setPointerCapture(e.pointerId) } catch {}
-    if (path.length && path[path.length - 1] === cell) setPath(p => p.slice(0, -1))   // tap the last letter to take it back
+    underFinger.current = cell
+    pressedWord.current = owner.get(cell) ?? null
+    if (owner.has(cell)) return
+    const at = path.indexOf(cell)
+    if (at === path.length - 1 && at !== -1) setPath(p => p.slice(0, -1))   // tap the last letter to take it back
+    else if (at !== -1) setPath(p => p.slice(0, at + 1))                    // tap an earlier letter to go back to it
     else extend(cell)
   }
   function move(e: React.PointerEvent) {
     if (!dragging.current || solved) return
     const cell = cellAt(e)
-    if (cell !== null && cell !== path[path.length - 1]) extend(cell)
+    if (cell === null || cell === underFinger.current) return
+    underFinger.current = cell
+    pressedWord.current = null
+    if (cell !== path[path.length - 1]) extend(cell)
   }
   function up() {
     dragging.current = false
+    if (pressedWord.current !== null) { release(pressedWord.current); pressedWord.current = null }
     if (path.length > 2 && !left.some(i => words[i].word === spelled)) {
       // Long enough to be a guess and not a hidden word: let them know, keep it for tapping on
       if (!left.some(i => words[i].word.startsWith(spelled))) say('Not one of today’s words')
@@ -90,6 +102,18 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
     callBee('undo')
   }
 
+  // One button for every mistake: the last letter, or else the last word found
+  function undo() {
+    if (path.length) setPath(p => p.slice(0, -1))
+    else if (found.length) release(found.length - 1)
+  }
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Backspace' && !solved) { e.preventDefault(); undo() } }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
   const centre = (i: number) => [((i % size) + .5) * (100 / size), (Math.floor(i / size) + .5) * (100 / size)]
   // Only a word still hidden stays lit
   const clueCells = (clue && leftWords.includes(clue.word) && words.find(w => w.word === clue.word)?.cells) || []
@@ -99,7 +123,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
   return (
     <div className="vgb-puzzle" style={CENTERED}>
       <Rules who="dug" title="Dug’s Dig" intro="Dug-Dug buried today’s words in the garden. Dig them all up!"
-        steps={['Drag through neighbouring letters (up, down, left or right) to spell a word.', 'Every letter belongs to exactly one word, and all fit today’s theme.', 'The tiles under the grid show how long each word is.', 'Tap a found word to put it back if it blocks another.']} />
+        steps={['Drag through neighbouring letters (up, down, left or right) to spell a word.', 'Every letter belongs to exactly one word, and all fit today’s theme.', 'The tiles under the grid show how long each word is.', 'Made a mistake? Press Undo, tap a letter to go back to it, or tap a found word to put it back.']} />
 
       <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>Today’s theme</p>
       <p style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: INK, marginBottom: 14 }}>{theme}</p>
@@ -111,7 +135,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
           : <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: INK }}>{spelled}</span>}
       </div>
 
-      <div ref={boardRef} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
+      <div ref={boardRef} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={() => { pressedWord.current = null; up() }}
         style={{ position: 'relative', width: 'min(100%, 460px)', aspectRatio: '1', border: `2px solid ${INK}`, background: '#fff', touchAction: 'none', userSelect: 'none', cursor: solved ? 'default' : 'pointer' }}>
         {/* Found words and the current trace */}
         <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
@@ -151,7 +175,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
                     background: 'linear-gradient(180deg, #f6efe4 0%, #eadcc6 100%)', border: '2px solid #c9a97e', boxShadow: 'inset 0 -8px 0 rgba(122,82,40,.08)' }}>
         <p style={{ fontFamily: PLAYFAIR, fontSize: 18, fontWeight: 700, color: '#6b4524', marginBottom: 2 }}>🦴 Dug-Dug’s bone stash</p>
         <p style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: '#9a7652', marginBottom: 12 }}>
-          {found.length} of {words.length} dug up{!solved && found.length ? ' · tap one to bury it again' : ''}
+          {found.length} of {words.length} dug up
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10 }}>
           {words.map((w, i) => {
@@ -181,6 +205,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
 
       {!solved && (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 12 }}>
+          <SmallButton dark onClick={undo}>↩ Undo</SmallButton>
           <SmallButton bee="clear" onClick={() => setPath([])}>Clear word</SmallButton>
           <SmallButton bee="reset" onClick={() => { setFound([]); setPath([]); setClue(null) }}>Start over</SmallButton>
         </div>

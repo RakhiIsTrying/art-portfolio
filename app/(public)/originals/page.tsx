@@ -34,7 +34,7 @@ export default async function OriginalsPage() {
 
   return (
     <ShopSettingsProvider sizes={settings.printSizes} greetings={settings.greetings}>
-      <div className="mx-auto max-w-[1240px] px-4 sm:px-8 pt-8 sm:pt-12 pb-16">
+      <div className="page-width pt-8 sm:pt-12 pb-16">
 
         {/* Header */}
         <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end" style={{ marginBottom: 30, paddingBottom: 26, borderBottom: '1px solid #d0d0d0', position: 'relative' }}>

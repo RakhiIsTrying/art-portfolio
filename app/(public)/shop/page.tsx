@@ -44,7 +44,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
   return (
     <ShopSettingsProvider sizes={settings.printSizes} greetings={settings.greetings}>
-    <div style={{ maxWidth: 1200, margin: '0 auto' }} className="px-5 md:px-9 pt-9 pb-16">
+    <div className="page-width pt-9 pb-16">
 
       {/* Header */}
       <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-end" style={{ paddingBottom: 28, marginBottom: 28, borderBottom: '1px solid #d0d0d0' }}>

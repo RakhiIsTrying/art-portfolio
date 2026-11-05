@@ -13,7 +13,7 @@ export default async function VideosPage() {
 
   if (!videos?.length) {
     return (
-      <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 1100, margin: '0 auto' }}>
+      <div className="page-width pt-8 sm:pt-10 pb-16">
         <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
           No videos yet. Check back soon.
         </p>

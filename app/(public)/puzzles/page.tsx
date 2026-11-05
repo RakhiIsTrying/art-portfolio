@@ -32,7 +32,7 @@ export default async function PuzzlesPage({ searchParams }: { searchParams: Prom
   const theme = { mascot, arts: arts.slice(daily.number % Math.max(arts.length, 1)).concat(arts.slice(0, daily.number % Math.max(arts.length, 1))) }
 
   return (
-    <div className="mx-auto max-w-[1120px] xl:max-w-[min(1280px,calc(100vw-400px))] px-4 sm:px-6 md:px-9 pt-8 md:pt-10 pb-16">
+    <div className="page-width pt-8 md:pt-10 pb-16">
       <div style={{ paddingBottom: 22, borderBottom: '1px solid #d0d0d0', marginBottom: 22, textAlign: 'center' }}>
         <PuzzleLogo />
         <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#4a3a7a', marginTop: 14 }}>
