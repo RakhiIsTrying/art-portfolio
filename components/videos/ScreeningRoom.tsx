@@ -77,7 +77,7 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
       {/* Category stripe */}
       <div style={{ height: 3, background: 'linear-gradient(90deg, #7a3040 25%, #1e3a8a 25% 50%, #1a6060 50% 75%, #7a5020 75%)' }} />
 
-      <div style={{ maxWidth: 1240, margin: '0 auto' }} className="px-5 md:px-10 pt-12 md:pt-16 pb-20">
+      <div className="page-width pt-12 md:pt-16 pb-20">
 
         {/* ── Now showing ── */}
         {featured && (

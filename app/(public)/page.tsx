@@ -54,11 +54,14 @@ export default async function HomePage() {
   return (
     <>
       <Ticker text={TOP_TICKER} direction="left" variant="rust" />
+      <div className="page-width">
       <Hero latest={hero ?? undefined} label={pinned ? 'Featured Work' : 'Latest Work'} stats={stats} cutouts={cutouts}
         originalsTile={{ featured: koiRes.data ? { title: koiRes.data.title, url: koiRes.data.image_url } : null, flower: cutoutByTitle(ORIGINALS_TILE_FLOWER) }}
         printsCutout={cutoutByTitle(PRINTS_TILE_CUTOUT)} />
+      </div>
       <Ticker text={BOTTOM_TICKER} direction="right" variant="blush" />
 
+      <div className="page-width">
       {/* ── Featured Work header ── */}
       <div style={{
         display: 'flex', alignItems: 'stretch',
@@ -110,6 +113,7 @@ export default async function HomePage() {
       </div>
 
       <CollectionsStrip cutouts={cutouts} />
+      </div>
     </>
   )
 }
