@@ -10,40 +10,20 @@ export const metadata: Metadata = {
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
 const UPDATED = '2 November 2026'
 
-const h2: React.CSSProperties = { fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, lineHeight: 1.2, color: '#1a1014', margin: '36px 0 10px', scrollMarginTop: 84 }
+const h2: React.CSSProperties = { fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, lineHeight: 1.2, color: '#1a1014', margin: '36px 0 10px' }
 const list: React.CSSProperties = { paddingLeft: 20, listStyle: 'disc', display: 'flex', flexDirection: 'column', gap: 8 }
 const link: React.CSSProperties = { color: '#7a3040', textDecoration: 'underline' }
 
-const SECTIONS = [
-  ['what-i-collect-when-you-just-browse', 'What I collect when you just browse'],
-  ['what-i-collect-when-you-fill-in-a-form', 'What I collect when you fill in a form'],
-  ['what-stays-in-your-browser', 'What stays in your browser'],
-  ['your-choice-on-analytics', 'Your choice on analytics'],
-  ['who-helps-run-the-site', 'Who helps run the site'],
-  ['how-long-i-keep-it', 'How long I keep it'],
-  ['your-rights', 'Your rights'],
-  ['children', 'Children'],
-  ['changes', 'Changes'],
-]
-
 export default function PrivacyPage() {
   return (
-    <div className="page-width pt-8 sm:pt-10 pb-16" style={{ fontSize: 15, lineHeight: 1.75, fontWeight: 300, color: '#3a3a3a', whiteSpace: 'normal' }}>
+    <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 760, margin: '0 auto', fontSize: 15, lineHeight: 1.75, fontWeight: 300, color: '#3a3a3a', whiteSpace: 'normal' }}>
       <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 8 }}>The boring but important bit</p>
       <h1 style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(36px, 6vw, 52px)', fontWeight: 700, lineHeight: 1, color: '#1a1014', marginBottom: 10 }}>Privacy Policy</h1>
       <p style={{ fontSize: 13, color: '#787878', marginBottom: 20 }}>Last updated {UPDATED}</p>
 
-      <div className="grid lg:grid-cols-[1fr_3fr] gap-8 lg:gap-12 items-start">
-        <nav aria-label="On this page" className="lg:sticky lg:top-[64px]" style={{ fontSize: 14 }}>
-          <p style={{ fontWeight: 600, color: '#1a1014', marginBottom: 8 }}>On this page</p>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {SECTIONS.map(([id, label]) => <li key={id}><a href={`#${id}`} style={link}>{label}</a></li>)}
-          </ul>
-        </nav>
-        <div style={{ minWidth: 0 }}>
       <p>Van Gone Broke is run by me, Rakhi Sinha, from India. I’m one artist, not a data company. I only collect what I need to run this site, answer you and send you art, and I don’t sell your information to anyone.</p>
 
-      <h2 id="what-i-collect-when-you-just-browse" style={h2}>What I collect when you just browse</h2>
+      <h2 style={h2}>What I collect when you just browse</h2>
       <p style={{ marginBottom: 10 }}>The site keeps its own simple visitor statistics, so I can see what people enjoy. For each visit it records:</p>
       <ul style={list}>
         <li>the pages you view, roughly how long you spend on them, and what you do on the site, such as picking a piece or a tier, opening or solving a puzzle, or clicking a link away;</li>
@@ -54,21 +34,21 @@ export default function PrivacyPage() {
       </ul>
       <p style={{ marginTop: 10 }}>These statistics don’t include your name or email, and your IP address isn’t saved with them. The ID isn’t linked to anything you type into a form.</p>
 
-      <h2 id="what-i-collect-when-you-fill-in-a-form" style={h2}>What I collect when you fill in a form</h2>
+      <h2 style={h2}>What I collect when you fill in a form</h2>
       <ul style={list}>
         <li><b style={{ fontWeight: 600 }}>Print orders and messages:</b> your name, email, the piece, sizes and card message you choose, and anything you write to me.</li>
         <li><b style={{ fontWeight: 600 }}>Print Club:</b> your name, email, phone number, country and tier. For tiers I post, also your shipping address. For Gone Baroque, also your birthday and birthday request, if you choose to share them.</li>
       </ul>
       <p style={{ marginTop: 10 }}>I use these to reply to you, process your request, send what you’ve signed up for, and send emails about your membership. Payments aren’t taken on this site at the moment. I’ll update this page before that changes.</p>
 
-      <h2 id="what-stays-in-your-browser" style={h2}>What stays in your browser</h2>
+      <h2 style={h2}>What stays in your browser</h2>
       <p>Your browser’s storage keeps your puzzle progress, the visitor ID above and your analytics choice. Puzzle progress never leaves your device. The site doesn’t use advertising cookies. If you sign in to Admin, which is only for me, a sign-in cookie keeps you signed in.</p>
 
-      <h2 id="your-choice-on-analytics" style={h2}>Your choice on analytics</h2>
+      <h2 style={h2}>Your choice on analytics</h2>
       <p style={{ marginBottom: 12 }}>You can turn visitor statistics off in this browser at any time. This also removes the ID from your browser.</p>
       <AnalyticsOptOut />
 
-      <h2 id="who-helps-run-the-site" style={h2}>Who helps run the site</h2>
+      <h2 style={h2}>Who helps run the site</h2>
       <p style={{ marginBottom: 10 }}>These services handle data for me, and some of them are outside your country, including outside India:</p>
       <ul style={list}>
         <li><b style={{ fontWeight: 600 }}>Vercel</b> hosts the site and provides the approximate location.</li>
@@ -80,19 +60,17 @@ export default function PrivacyPage() {
       </ul>
       <p style={{ marginTop: 10 }}>I may also share information if the law requires it.</p>
 
-      <h2 id="how-long-i-keep-it" style={h2}>How long I keep it</h2>
+      <h2 style={h2}>How long I keep it</h2>
       <p>Sign-ups and messages stay for as long as I need them for your membership, order or conversation, and for any records I have to keep. Visitor statistics stay until I no longer find them useful. You can ask me to delete your details at any time.</p>
 
-      <h2 id="your-rights" style={h2}>Your rights</h2>
+      <h2 style={h2}>Your rights</h2>
       <p>You can ask to see, correct or delete your information, withdraw your consent, or complain about how I’ve handled it. <Link href="/inquire" style={link}>Send me a message</Link> and I’ll sort it out. Depending on where you live, you may also be able to complain to your local data protection authority.</p>
 
-      <h2 id="children" style={h2}>Children</h2>
+      <h2 style={h2}>Children</h2>
       <p>The site is for a general audience, but forms and Print Club are meant for adults. If you’re under 18, please ask a parent or guardian to fill them in.</p>
 
-      <h2 id="changes" style={h2}>Changes</h2>
+      <h2 style={h2}>Changes</h2>
       <p>This whole website is a work in progress, and this page will change as it does. I’ll update the date at the top each time.</p>
-        </div>
-      </div>
     </div>
   )
 }

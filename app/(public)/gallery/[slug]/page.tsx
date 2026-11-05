@@ -32,7 +32,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
   const color = categoryColors[slug] ?? '#1a1014'
 
   return (
-    <div className="page-width pt-8 sm:pt-10 pb-16">
+    <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 1200, margin: '0 auto' }}>
 
       {/* Page header */}
       <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #d0d0d0' }}>

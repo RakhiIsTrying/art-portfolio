@@ -35,7 +35,7 @@ export default async function GalleryPage() {
   })
 
   return (
-    <div className="page-width pt-8 sm:pt-12 pb-16">
+    <div className="mx-auto max-w-[1240px] px-4 sm:px-8 pt-8 sm:pt-12 pb-16">
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5" style={{ marginBottom: 32 }}>

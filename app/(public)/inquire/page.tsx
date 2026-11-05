@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { Suspense } from 'react'
 import InquireForm from '@/components/InquireForm'
 import { planForVisitor } from '@/lib/printClubServer'
@@ -10,7 +9,7 @@ export default async function InquirePage() {
   const settings = await getSettings()
 
   return (
-    <div className="page-width pt-8 sm:pt-10 pb-16">
+    <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 640, margin: '0 auto' }}>
 
       {/* Page header */}
       <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #d0d0d0' }}>
@@ -24,23 +23,11 @@ export default async function InquirePage() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_2fr] gap-8 lg:gap-12 items-start">
-        <nav aria-label="Looking for something else?" style={{ fontSize: 14, lineHeight: 1.6, color: '#3a3a3a' }}>
-          <p style={{ fontWeight: 600, color: '#1a1014', marginBottom: 8 }}>Looking for something else?</p>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {[['/shop', 'Prints and cards'], ['/originals', 'Originals for sale'], ['/print-club', 'Print Club']].map(([href, label]) => (
-              <li key={href}><Link href={href} style={{ color: '#4a3a7a', textDecoration: 'underline' }}>{label}</Link></li>
-            ))}
-          </ul>
-        </nav>
-        <div style={{ minWidth: 0 }}>
-          <Suspense fallback={null}>
-            <ShopSettingsProvider sizes={settings.printSizes} greetings={settings.greetings}>
-              <InquireForm currency={currency} />
-            </ShopSettingsProvider>
-          </Suspense>
-        </div>
-      </div>
+      <Suspense fallback={null}>
+        <ShopSettingsProvider sizes={settings.printSizes} greetings={settings.greetings}>
+          <InquireForm currency={currency} />
+        </ShopSettingsProvider>
+      </Suspense>
 
     </div>
   )

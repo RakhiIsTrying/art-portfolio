@@ -36,7 +36,7 @@ export default async function PrintClubPage() {
   const PLANS = (await getSettings()).plans
 
   return (
-    <div className="page-width pt-10 pb-16">
+    <div style={{ maxWidth: 1140, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
 
       <div className="grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-center" style={{ marginBottom: 56 }}>
 

@@ -26,7 +26,7 @@ export default async function ClubBoxesPage() {
   const byId = new Map(((arts ?? []) as Artwork[]).map(a => [a.id, a]))
 
   return (
-    <div className="page-width pt-10 pb-16">
+    <div style={{ maxWidth: 1140, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6" style={{ paddingBottom: 28, borderBottom: '1px solid #d0d0d0', marginBottom: 8 }}>
