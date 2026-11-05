@@ -37,11 +37,10 @@ export default async function AboutPage() {
   const idPhoto = art?.find(a => a.title === ID_PHOTO_TITLE)
 
   return (
+    <>
+    {/* Full width, straight under the menu, like the banners on the front page */}
+    <Ticker direction="left" variant="rust" text="★ Corporate by day ✦ Feral by night ✦ Will draw for rent ✦ Payment sounds welcome ✦ Dug-Dug approved ✦ This could have been an email" />
     <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 1040, margin: '0 auto' }}>
-
-      <div style={{ margin: '-8px 0 28px' }}>
-        <Ticker direction="left" variant="rust" text="★ Corporate by day ✦ Feral by night ✦ Will draw for rent ✦ Payment sounds welcome ✦ Dug-Dug approved ✦ This could have been an email" />
-      </div>
 
       {/* The whole site is still being built */}
       <div role="note" style={{ background: '#e8c55a', border: `3px solid ${INK}`, marginBottom: 40 }}>
@@ -126,5 +125,6 @@ export default async function AboutPage() {
       </section>
 
     </div>
+    </>
   )
 }
