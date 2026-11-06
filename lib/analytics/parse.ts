@@ -3,6 +3,29 @@ const BOTS = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp\/|head
 
 export const isBot = (ua: string) => !ua || BOTS.test(ua)
 
+// The version number after a browser's or system's name, such as 17.4 or 129
+const version = (ua: string, re: RegExp) => ua.match(re)?.[1]?.replace(/_/g, '.') ?? null
+
+export function parseVersions(ua: string, browser: string, os: string) {
+  const browserVersion =
+    browser === 'Instagram app' ? version(ua, /Instagram ([\d.]+)/i)
+    : browser === 'Facebook app' ? version(ua, /FBAV\/([\d.]+)/i)
+    : browser === 'Edge' ? version(ua, /Edg\/([\d.]+)/)
+    : browser === 'Opera' ? version(ua, /OPR\/([\d.]+)/)
+    : browser === 'Samsung Internet' ? version(ua, /SamsungBrowser\/([\d.]+)/)
+    : browser === 'Firefox' ? version(ua, /(?:Firefox|FxiOS)\/([\d.]+)/)
+    : browser === 'Chrome' ? version(ua, /(?:Chrome|CriOS)\/([\d.]+)/)
+    : browser === 'Safari' ? version(ua, /Version\/([\d.]+)/) : null
+  const osVersion =
+    os === 'iOS' ? version(ua, /OS ([\d_]+) like Mac/)
+    : os === 'Android' ? version(ua, /Android ([\d.]+)/)
+    : os === 'Mac' ? version(ua, /Mac OS X ([\d_.]+)/)
+    : os === 'Windows' ? version(ua, /Windows NT ([\d.]+)/) : null
+  // Keep it short: 129.0.6668.89 becomes 129.0
+  const short = (v: string | null) => v?.split('.').slice(0, 2).join('.') ?? null
+  return { browser_version: short(browserVersion), os_version: short(osVersion) }
+}
+
 export function parseDevice(ua: string) {
   const device = /ipad|tablet|(android(?!.*mobile))/i.test(ua) ? 'Tablet' : /mobi|iphone|android/i.test(ua) ? 'Phone' : 'Computer'
   const browser = /instagram/i.test(ua) ? 'Instagram app'

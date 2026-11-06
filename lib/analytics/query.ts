@@ -3,7 +3,7 @@ import { findCountry } from '@/lib/countries'
 import { istDay, type AnalyticsEvent } from './summary'
 
 export const METRICS = ['visitors', 'visits', 'pageviews', 'seconds', 'order_request', 'club_signup', 'inquiry', 'tier_selected', 'piece_selected', 'puzzle_opened', 'puzzle_solved', 'outbound'] as const
-export const GROUPS = ['source', 'referrer', 'campaign', 'country', 'region', 'city', 'device', 'browser', 'os', 'path', 'label', 'day', 'hour', 'weekday'] as const
+export const GROUPS = ['source', 'referrer', 'campaign', 'country', 'region', 'city', 'device', 'browser', 'os', 'screen', 'language', 'timezone', 'path', 'label', 'day', 'hour', 'weekday'] as const
 export type Metric = typeof METRICS[number]
 export type Group = typeof GROUPS[number]
 export type Filters = { country?: string | null; region?: string | null; city?: string | null; source?: string | null; device?: string | null; browser?: string | null; path_contains?: string | null; label_contains?: string | null }
@@ -23,6 +23,7 @@ function groupOf(e: AnalyticsEvent, by: Group, source?: string) {
     case 'day': return istDay(e.created_at)
     case 'hour': return `${String(at.getUTCHours()).padStart(2, '0')}:00`
     case 'weekday': return WEEKDAYS[at.getUTCDay()]
+    case 'screen': case 'language': case 'timezone': return e[by] ?? null
     default: return e[by]
   }
 }

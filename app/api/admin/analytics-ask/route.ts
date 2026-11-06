@@ -148,7 +148,9 @@ export async function POST(req: NextRequest) {
     .map(m => ({ role: m.role, content: m.content.slice(0, 2000) }))
 
   const now = new Date()
-  const [{ events, error }, { members, orders }] = await Promise.all([loadEvents(new Date(now.getTime() - LOOKBACK_DAYS * 86_400_000)), loadSales()])
+  const [{ events: withIps, error }, { members, orders }] = await Promise.all([loadEvents(new Date(now.getTime() - LOOKBACK_DAYS * 86_400_000)), loadSales()])
+  // IP addresses stay in Admin: nothing the AI can look up includes them
+  const events = withIps.map(({ ip: _ip, ...rest }) => rest)
   if (error) return NextResponse.json({ error: `Couldn’t load analytics: ${error}` }, { status: 500 })
 
   const overview = (days: number) => {

@@ -3,6 +3,7 @@ export type AnalyticsEvent = {
   created_at: string; name: string; path: string | null; label: string | null; seconds: number | null
   visitor_id: string; session_id: string; source: string | null; referrer: string | null; utm_medium: string | null; utm_campaign: string | null
   country: string | null; region: string | null; city: string | null; device: string | null; browser: string | null; os: string | null
+  ip?: string | null; browser_version?: string | null; os_version?: string | null; screen?: string | null; language?: string | null; timezone?: string | null
 }
 export type Row = { key: string; value: number; extra?: number }
 
@@ -48,6 +49,34 @@ function headline(events: AnalyticsEvent[]) {
     avgSeconds: count ? Math.round(list.reduce((t, s) => t + s.seconds, 0) / count) : 0,
     conversionRate: visitors ? (conversions / visitors) * 100 : 0,
   }
+}
+
+export type Visit = { at: string; minutes: number; pages: string[]; source: string | null; country: string | null; region: string | null; city: string | null; device: string | null; browser: string; os: string; screen: string | null; language: string | null; timezone: string | null; ip: string | null; actions: string[]; returning: boolean }
+
+/** One row per visit, newest first, with everything known about it. */
+export function recentVisits(events: AnalyticsEvent[], limit = 100): Visit[] {
+  const sorted = [...events].sort((a, b) => a.created_at.localeCompare(b.created_at))
+  const visits = new Map<string, Visit & { first: number; last: number; visitor: string }>()
+  const firstSeen = new Map<string, string>()
+  for (const e of sorted) {
+    if (!firstSeen.has(e.visitor_id)) firstSeen.set(e.visitor_id, e.session_id)
+    const t = new Date(e.created_at).getTime()
+    let v = visits.get(e.session_id)
+    if (!v) {
+      v = { at: e.created_at, first: t, last: t, minutes: 0, pages: [], source: null, country: e.country, region: e.region, city: e.city, device: e.device, visitor: e.visitor_id,
+            browser: [e.browser, e.browser_version].filter(Boolean).join(' '), os: [e.os, e.os_version].filter(Boolean).join(' '), screen: e.screen ?? null, language: e.language ?? null, timezone: e.timezone ?? null, ip: e.ip ?? null, actions: [], returning: false }
+      visits.set(e.session_id, v)
+    }
+    v.last = Math.max(v.last, t)
+    if (e.source && !v.source) v.source = e.source
+    if (e.ip && !v.ip) v.ip = e.ip
+    if (e.name === 'pageview' && e.path && v.pages.at(-1) !== e.path) v.pages.push(e.path)
+    else if (e.name !== 'pageview' && e.name !== 'leave') v.actions.push(e.label ? `${e.name.replace(/_/g, ' ')}: ${e.label}` : e.name.replace(/_/g, ' '))
+  }
+  return [...visits.entries()].map(([session, v]) => {
+    const { first, last, visitor, ...visit } = v
+    return { ...visit, minutes: Math.round(((last - first) / 60000) * 10) / 10, returning: firstSeen.get(visitor) !== session }
+  }).sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit)
 }
 
 export function summarise(all: AnalyticsEvent[], days: number, now = new Date()) {

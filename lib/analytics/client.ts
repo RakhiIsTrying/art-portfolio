@@ -1,4 +1,4 @@
-// Sends anonymous events to /api/track: a random id, never a name or an IP address. Admin's own browser opts out.
+// Sends events to /api/track with a random id, never a name. Admin's own browser opts out.
 const ID_CHARS = /^[a-z0-9-]{8,40}$/
 
 const storedId = (store: Storage, key: string) => {
@@ -15,6 +15,7 @@ export function track(name: EventName, extra: { label?: string; seconds?: number
     const body = JSON.stringify({
       name, path: extra.path ?? location.pathname, label: extra.label, seconds: extra.seconds, referrer: extra.referrer, utm: extra.utm,
       visitor: storedId(localStorage, 'vgb-vid'), session: storedId(sessionStorage, 'vgb-sid'),
+      screen: `${screen.width}x${screen.height}`, language: navigator.language, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     })
     if (!navigator.sendBeacon?.('/api/track', new Blob([body], { type: 'application/json' }))) {
       fetch('/api/track', { method: 'POST', body, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(() => {})

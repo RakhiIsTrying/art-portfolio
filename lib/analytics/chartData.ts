@@ -14,7 +14,7 @@ export type ChartContext = { events: AnalyticsEvent[]; members: SaleMember[]; or
 const FORECAST_WINDOW_DAYS = 60
 const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const METRIC_LABELS: Record<Metric, string> = { visitors: 'Visitors', visits: 'Visits', pageviews: 'Page views', seconds: 'Seconds on the site', order_request: 'Print order requests', club_signup: 'Print Club sign-ups', inquiry: 'Messages', tier_selected: 'Tier picks', piece_selected: 'Pieces picked', puzzle_opened: 'Puzzles opened', puzzle_solved: 'Puzzles solved', outbound: 'Links clicked away' }
-const GROUP_LABELS: Record<Group, string> = { source: 'source', referrer: 'site', campaign: 'campaign', country: 'country', region: 'region', city: 'city', device: 'device', browser: 'browser', os: 'system', path: 'page', label: 'item', day: 'day', hour: 'hour', weekday: 'weekday' }
+const GROUP_LABELS: Record<Group, string> = { source: 'source', referrer: 'site', campaign: 'campaign', country: 'country', region: 'region', city: 'city', device: 'device', browser: 'browser', os: 'system', screen: 'screen size', language: 'language', timezone: 'time zone', path: 'page', label: 'item', day: 'day', hour: 'hour', weekday: 'weekday' }
 
 const period = (days: number) => (days === 1 ? 'today' : `last ${days} days`)
 const countryName = (key: string) => ALL_COUNTRIES.find(c => c.iso === key)?.name ?? key

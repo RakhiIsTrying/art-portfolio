@@ -6,7 +6,7 @@ import { projectSales } from '@/lib/analytics/forecast'
 import { findInsights, verdict, type Insight } from '@/lib/analytics/insights'
 import { loadEvents, loadSales } from '@/lib/analytics/load'
 import { salesSummary, showMoney } from '@/lib/analytics/sales'
-import { percent, summarise, type AnalyticsEvent, type Row } from '@/lib/analytics/summary'
+import { percent, recentVisits, summarise, type AnalyticsEvent, type Row } from '@/lib/analytics/summary'
 import { tierOf, TIER_IDS, TIERS } from '@/lib/printClub'
 
 export const dynamic = 'force-dynamic'
@@ -71,6 +71,39 @@ function InsightCard({ insight }: { insight: Insight }) {
       <h3 style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.3, color: INK, marginBottom: 5, whiteSpace: 'normal' }}>{insight.title}</h3>
       <p style={{ fontSize: 13, fontWeight: 400, lineHeight: 1.55, color: '#3a3a3a', whiteSpace: 'normal' }}>{insight.detail}</p>
     </article>
+  )
+}
+
+const at = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })
+
+function VisitsTable({ visits }: { visits: ReturnType<typeof recentVisits> }) {
+  if (!visits.length) return <Empty />
+  const cell: React.CSSProperties = { padding: '7px 10px 7px 0', verticalAlign: 'top', borderTop: '1px solid #eee' }
+  const nowrap: React.CSSProperties = { ...cell, whiteSpace: 'nowrap' }
+  return (
+    <div style={{ overflow: 'auto', maxHeight: 560 }}>
+      <table style={{ width: '100%', minWidth: 1000, borderCollapse: 'collapse', fontSize: 13, color: INK }}>
+        <thead style={{ position: 'sticky', top: 0, background: '#fff' }}>
+          <tr style={{ textAlign: 'left', color: '#595959' }}>{['When', 'Stayed', 'Pages', 'Came from', 'Where', 'Device', 'Browser', 'System', 'Screen', 'Language', 'IP address', 'Did'].map(h => <th key={h} style={{ fontWeight: 600, padding: '0 10px 8px 0', whiteSpace: 'nowrap' }}>{h}</th>)}</tr>
+        </thead>
+        <tbody>{visits.map((v, i) => (
+          <tr key={i}>
+            <td style={nowrap}>{at(v.at)}{v.returning && <span style={{ display: 'block', fontSize: 12, color: '#2f7a43' }}>came back</span>}</td>
+            <td style={nowrap}>{v.minutes < 1 ? 'under 1 min' : `${v.minutes} min`}</td>
+            <td style={{ ...cell, minWidth: 140, overflowWrap: 'anywhere' }}>{v.pages.join(' → ') || '–'}</td>
+            <td style={cell}>{v.source ?? '–'}</td>
+            <td style={cell}>{[v.city, v.region, v.country && countryName(v.country)].filter(Boolean).join(', ') || '–'}{v.timezone && <span style={{ display: 'block', fontSize: 12, color: '#595959' }}>{v.timezone}</span>}</td>
+            <td style={cell}>{v.device ?? '–'}</td>
+            <td style={nowrap}>{v.browser || '–'}</td>
+            <td style={nowrap}>{v.os || '–'}</td>
+            <td style={cell}>{v.screen ?? '–'}</td>
+            <td style={cell}>{v.language ?? '–'}</td>
+            <td style={{ ...cell, fontFamily: 'ui-monospace, Menlo, Consolas, monospace', fontSize: 12, overflowWrap: 'anywhere' }}>{v.ip ?? '–'}</td>
+            <td style={{ ...cell, minWidth: 120 }}>{v.actions.join(', ') || '–'}</td>
+          </tr>
+        ))}</tbody>
+      </table>
+    </div>
   )
 }
 
@@ -256,6 +289,10 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         <h2 style={{ fontSize: 16, fontWeight: 700, color: INK, marginBottom: 12 }}>Visitors, last {days} days</h2>
         <DailyChart days={s.daily} />
       </div>
+
+      <Panel wide title="Every visit" note={`Newest first, last ${days} days. Times are India time. Location and IP address come from the visitor's connection, so they're approximate.`}>
+        <VisitsTable visits={recentVisits(events.filter(e => new Date(e.created_at).getTime() >= now.getTime() - days * 86_400_000))} />
+      </Panel>
 
       <details style={{ background: '#fff', border: '1px solid #d0d0d0' }}>
         <summary style={{ padding: '14px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: INK }}>Show all the detailed numbers</summary>

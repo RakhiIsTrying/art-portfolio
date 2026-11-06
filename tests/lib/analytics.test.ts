@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { isBot, parseDevice, sourceOf } from '@/lib/analytics/parse'
-import { istDay, percent, summarise, type AnalyticsEvent } from '@/lib/analytics/summary'
+import { isBot, parseDevice, parseVersions, sourceOf } from '@/lib/analytics/parse'
+import { istDay, percent, recentVisits, summarise, type AnalyticsEvent } from '@/lib/analytics/summary'
 
 const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1'
 const NOW = new Date('2026-11-02T12:00:00Z')
@@ -64,5 +64,29 @@ describe('summarise', () => {
 
   it('does sums', () => {
     expect(percent(1, 0)).toBe(0)
+  })
+})
+
+describe('versions', () => {
+  it('reads browser and system versions', () => {
+    const chrome = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/129.0.6668.89 Safari/537.36'
+    expect(parseVersions(chrome, 'Chrome', 'Windows')).toEqual({ browser_version: '129.0', os_version: '10.0' })
+    expect(parseVersions(IPHONE, 'Safari', 'iOS')).toEqual({ browser_version: '17.0', os_version: '17.0' })
+    expect(parseVersions('nothing useful', 'Other', 'Other')).toEqual({ browser_version: null, os_version: null })
+  })
+})
+
+describe('recentVisits', () => {
+  it('makes one row per visit, newest first, with how long it lasted and what happened', () => {
+    const rows = recentVisits([
+      ev({ session_id: 'a', created_at: '2026-11-02T10:00:00Z', source: 'Instagram', ip: '1.2.3.4', browser_version: '17.4', os_version: '17.4', screen: '390x844' }),
+      ev({ session_id: 'a', path: '/shop', created_at: '2026-11-02T10:02:00Z' }),
+      ev({ session_id: 'a', name: 'piece_selected', label: 'Koi Pond', created_at: '2026-11-02T10:03:00Z' }),
+      ev({ session_id: 'a', name: 'leave', seconds: 30, path: '/shop', created_at: '2026-11-02T10:04:30Z' }),
+      ev({ session_id: 'b', created_at: '2026-11-03T09:00:00Z' }),
+    ])
+    expect(rows).toHaveLength(2)
+    expect(rows[0]).toMatchObject({ returning: true, pages: ['/'] })
+    expect(rows[1]).toMatchObject({ minutes: 4.5, pages: ['/', '/shop'], source: 'Instagram', ip: '1.2.3.4', browser: 'Safari 17.4', os: 'iOS 17.4', screen: '390x844', actions: ['piece selected: Koi Pond'], returning: false })
   })
 })

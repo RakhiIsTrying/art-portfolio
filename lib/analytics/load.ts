@@ -8,14 +8,18 @@ import type { SaleMember, SaleOrder } from './sales'
 
 const PAGE_SIZE = 1000
 const MAX_EVENTS = 200_000
-const COLUMNS = 'created_at, name, path, label, seconds, visitor_id, session_id, source, referrer, utm_medium, utm_campaign, country, region, city, device, browser, os'
+const BASIC = 'created_at, name, path, label, seconds, visitor_id, session_id, source, referrer, utm_medium, utm_campaign, country, region, city, device, browser, os'
+// Added by migration 013; until it runs, the basic columns are read alone
+const DETAIL = 'ip, browser_version, os_version, screen, language, timezone'
 
 export async function loadEvents(since: Date) {
   const db = getSupabaseAdminClient()
   const events: AnalyticsEvent[] = []
   while (events.length < MAX_EVENTS) {
-    const { data, error } = await db.from('analytics_events').select(COLUMNS)
+    const read = (columns: string) => db.from('analytics_events').select(columns)
       .gte('created_at', since.toISOString()).order('created_at', { ascending: false }).range(events.length, events.length + PAGE_SIZE - 1)
+    let { data, error } = await read(`${BASIC}, ${DETAIL}`)
+    if (error?.code === '42703' || error?.code === 'PGRST204') ({ data, error } = await read(BASIC))
     if (error) return { events, error: error.message }
     events.push(...(data as unknown as AnalyticsEvent[]))
     if (!data || data.length < PAGE_SIZE) break

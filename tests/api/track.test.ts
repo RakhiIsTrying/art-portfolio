@@ -13,12 +13,25 @@ const post = (body: unknown, headers: Record<string, string> = {}) => POST(new N
 describe('POST /api/track', () => {
   beforeEach(() => { insert.mockReset(); insert.mockResolvedValue({ error: null }) })
 
-  it('saves source, location and device, and only the referring site, never its full address or the IP', async () => {
-    expect((await post(good, { 'x-vercel-ip-country': 'IN', 'x-vercel-ip-city': 'New%20Delhi', 'x-forwarded-for': '1.2.3.4' })).status).toBe(204)
+  it('saves source, location, device, IP and the extra detail, but only the referring site, never its full address', async () => {
+    const detail = { ...good, screen: '390x844', language: 'en-IN', timezone: 'Asia/Kolkata' }
+    expect((await post(detail, { 'x-vercel-ip-country': 'IN', 'x-vercel-ip-city': 'New%20Delhi', 'x-forwarded-for': '1.2.3.4, 10.0.0.1', 'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 Version/17.4 Mobile/15E148 Safari/604.1' })).status).toBe(204)
     const row = insert.mock.calls[0][0]
-    expect(row).toMatchObject({ name: 'pageview', source: 'Instagram', referrer: 'instagram.com', country: 'IN', city: 'New Delhi', device: 'Phone' })
-    expect(JSON.stringify(row)).not.toContain('1.2.3.4')
+    expect(row).toMatchObject({ name: 'pageview', source: 'Instagram', referrer: 'instagram.com', country: 'IN', city: 'New Delhi', device: 'Phone', ip: '1.2.3.4', browser_version: '17.4', os_version: '17.4', screen: '390x844', language: 'en-IN', timezone: 'Asia/Kolkata' })
     expect(JSON.stringify(row)).not.toContain('private')
+  })
+
+  it('ignores a made-up screen size', async () => {
+    await post({ ...good, screen: '<script>' })
+    expect(insert.mock.calls[0][0].screen).toBeNull()
+  })
+
+  it('still saves the visit before the new columns exist', async () => {
+    insert.mockResolvedValueOnce({ error: { code: 'PGRST204', message: 'no column' } })
+    await post({ ...good, screen: '390x844' }, { 'x-forwarded-for': '1.2.3.4' })
+    expect(insert).toHaveBeenCalledTimes(2)
+    expect(insert.mock.calls[1][0]).not.toHaveProperty('ip')
+    expect(insert.mock.calls[1][0]).toMatchObject({ name: 'pageview', source: 'Instagram' })
   })
 
   it('ignores bots, bad data and unknown events', async () => {

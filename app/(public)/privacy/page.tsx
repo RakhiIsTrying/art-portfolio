@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 }
 
 const PLAYFAIR = 'var(--font-playfair,"Playfair Display",Georgia,serif)'
-const UPDATED = '2 November 2026'
+const UPDATED = '6 November 2026'
 
 const h2: React.CSSProperties = { fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, lineHeight: 1.2, color: '#1a1014', margin: '36px 0 10px' }
 const list: React.CSSProperties = { paddingLeft: 20, listStyle: 'disc', display: 'flex', flexDirection: 'column', gap: 8 }
@@ -29,10 +29,12 @@ export default function PrivacyPage() {
         <li>the pages you view, roughly how long you spend on them, and what you do on the site, such as picking a piece or a tier, opening or solving a puzzle, or clicking a link away;</li>
         <li>the website or app that sent you here, and any campaign tag in the link you used;</li>
         <li>your approximate location (country, region and city), worked out from your connection;</li>
-        <li>your type of device, browser and operating system;</li>
+        <li>your type of device, browser and operating system, with their version numbers, and your screen size;</li>
+        <li>your browser’s language and time zone;</li>
+        <li>your IP address (the number your internet connection uses);</li>
         <li>a random ID, stored in your browser, that lets me tell a returning visitor from a new one.</li>
       </ul>
-      <p style={{ marginTop: 10 }}>These statistics don’t include your name or email, and your IP address isn’t saved with them. The ID isn’t linked to anything you type into a form.</p>
+      <p style={{ marginTop: 10 }}>These statistics don’t include your name or email, and they aren’t linked to anything you type into a form. Only I can see them, in my private Admin page.</p>
 
       <h2 style={h2}>What I collect when you fill in a form</h2>
       <ul style={list}>
@@ -54,7 +56,7 @@ export default function PrivacyPage() {
         <li><b style={{ fontWeight: 600 }}>Vercel</b> hosts the site and provides the approximate location.</li>
         <li><b style={{ fontWeight: 600 }}>Supabase</b> stores sign-ups, messages and statistics.</li>
         <li><b style={{ fontWeight: 600 }}>Resend</b> delivers the site’s emails.</li>
-        <li><b style={{ fontWeight: 600 }}>Anthropic</b> powers a question box in my private Admin page, if switched on. It can receive visitor statistics and sales totals, never names, emails, phone numbers or addresses.</li>
+        <li><b style={{ fontWeight: 600 }}>Anthropic</b> powers a question box in my private Admin page, if switched on. It can receive visitor statistics and sales totals, never names, emails, phone numbers, addresses or IP addresses.</li>
         <li><b style={{ fontWeight: 600 }}>India Post’s pincode service and Zippopotam</b> receive the postal code you type, so your city and state can fill in. They get only the code and country.</li>
         <li><b style={{ fontWeight: 600 }}>YouTube and Instagram</b> are separate services with their own policies. Video players and links to them may collect information once you use them.</li>
       </ul>

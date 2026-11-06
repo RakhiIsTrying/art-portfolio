@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
-import { isBot, parseDevice, referrerHost, sourceOf } from '@/lib/analytics/parse'
+import { isBot, parseDevice, parseVersions, referrerHost, sourceOf } from '@/lib/analytics/parse'
 
 const NAMES = new Set(['pageview', 'leave', 'piece_selected', 'tier_selected', 'order_request', 'club_signup', 'inquiry', 'puzzle_opened', 'puzzle_solved', 'outbound'])
 const MAX_BODY = 4000
@@ -14,7 +14,7 @@ const header = (req: NextRequest, name: string) => {
 }
 const done = () => new NextResponse(null, { status: 204 })
 
-// POST /api/track from the visitor's browser. The IP address is never read or saved.
+// POST /api/track from the visitor's browser
 export async function POST(req: NextRequest) {
   const ua = req.headers.get('user-agent') ?? ''
   if (isBot(ua)) return done()
@@ -31,7 +31,8 @@ export async function POST(req: NextRequest) {
   const firstPage = name === 'pageview' && (body.referrer !== undefined || utmSource)
   const seconds = typeof body.seconds === 'number' && body.seconds > 0 ? Math.min(Math.round(body.seconds), MAX_SECONDS) : null
 
-  const { error } = await getSupabaseAdminClient().from('analytics_events').insert({
+  const device = parseDevice(ua)
+  const row = {
     name,
     path: text(body.path, 200),
     label: text(body.label, 200),
@@ -46,8 +47,20 @@ export async function POST(req: NextRequest) {
     country: header(req, 'x-vercel-ip-country'),
     region: header(req, 'x-vercel-ip-country-region'),
     city: header(req, 'x-vercel-ip-city'),
-    ...parseDevice(ua),
-  })
+    ...device,
+  }
+  // Extra detail, listed in the privacy policy
+  const detail = {
+    ip: (req.headers.get('x-forwarded-for')?.split(',')[0] ?? req.headers.get('x-real-ip') ?? '').trim().slice(0, 45) || null,
+    ...parseVersions(ua, device.browser, device.os),
+    screen: typeof body.screen === 'string' && /^\d{2,5}x\d{2,5}$/.test(body.screen) ? body.screen : null,
+    language: text(body.language, 20),
+    timezone: text(body.timezone, 60),
+  }
+  const table = getSupabaseAdminClient().from('analytics_events')
+  let { error } = await table.insert({ ...row, ...detail })
+  // Until migration 013 has run there are no columns for the extra detail, so save the visit without it
+  if (error?.code === 'PGRST204' || error?.code === '42703') ({ error } = await table.insert(row))
   if (error) console.error('Analytics not saved:', error.message)
   return done()
 }
