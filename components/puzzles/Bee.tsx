@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { nextClue, revealClue, type WordClue } from '@/lib/puzzles/rules'
 import { CENTERED, HintButton, HONEY, INK, PhoneKeyboard, PLAYFAIR, Rules, SmallButton, SolvedBanner, useDailyState } from './shared'
 
-type Props = { date: string; letters: string; center: string; answers: string[]; onSolved: () => void }
+type Props = { date: string; letters: string; center: string; answers: string[]; extra?: string[]; onSolved: () => void }
 
 const RANKS: [string, number][] = [
   ['Beginner', 0], ['Good Start', .02], ['Moving Up', .05], ['Good', .08], ['Solid', .15],
@@ -12,7 +12,7 @@ const RANKS: [string, number][] = [
 const isPangram = (w: string, letters: string) => new Set(w).size === letters.length && [...letters].every(l => w.includes(l))
 const points = (w: string, letters: string) => (w.length === 4 ? 1 : w.length) + (isPangram(w, letters) ? 7 : 0)
 
-export default function Bee({ date, letters, center, answers, onSolved }: Props) {
+export default function Bee({ date, letters, center, answers, extra = [], onSolved }: Props) {
   const [found, setFound] = useDailyState<string[]>(date, 'bee', [])
   // The word behind Bee's latest hint; Dug-Dug's reveal gives this word unless it's been found
   const [clue, setClue] = useDailyState<WordClue | null>(date, 'bee-clue', null)
@@ -24,6 +24,8 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
   const [sniff, setSniff] = useState<{ word: string; key: number } | null>(null)
 
   const max = useMemo(() => answers.reduce((s, w) => s + points(w, letters), 0), [answers, letters])
+  const foundMain = found.filter(w => answers.includes(w)).length
+  const bonus = found.length - foundMain
   const score = found.reduce((s, w) => s + points(w, letters), 0)
   const rankIndex = RANKS.reduce((best, [, f], i) => (score >= Math.round(f * max) ? i : best), 0)
   const genius = rankIndex === RANKS.length - 1
@@ -39,11 +41,12 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
     if (!w.includes(center)) return flash('Missing centre letter')
     if ([...w].some(l => !letters.includes(l))) return flash('Bad letters')
     if (found.includes(w)) return flash('Already found')
-    if (!answers.includes(w)) return flash('Not in word list')
+    // Rarer real words count too, as bonus words; hints only ever point at the main list
+    if (!answers.includes(w) && !extra.includes(w)) return flash('Not in word list')
     setFound(f => [...f, w])
     setFresh(w)
     flash(isPangram(w, letters) ? 'Pangram! 🐝' : w.length === 4 ? 'Good!' : w.length < 7 ? 'Nice!' : 'Awesome!')
-  }, [word, center, letters, found, answers, setFound])
+  }, [word, center, letters, found, answers, extra, setFound])
 
   const typed = useCallback((key: string) => {
     if (key === 'Enter') submit()
@@ -122,7 +125,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
           <img src="/puzzles/bee.png" alt="" aria-hidden style={{ position: 'absolute', right: 10, top: -34, height: 58, filter: 'drop-shadow(0 0 2px #fff) drop-shadow(0 4px 6px rgba(0,0,0,.18))' }} />
           <p style={{ fontFamily: PLAYFAIR, fontSize: 18, fontWeight: 700, color: '#8a6414', marginBottom: 2 }}>🍯 Bee’s honey jar</p>
           <p style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: '#a78a3c', marginBottom: 12 }}>
-            {found.length} of {answers.length} {answers.length === 1 ? 'word' : 'words'} · {score} {score === 1 ? 'point' : 'points'}
+            {foundMain} of {answers.length} {answers.length === 1 ? 'word' : 'words'}{bonus > 0 && ` + ${bonus} bonus`} · {score} {score === 1 ? 'point' : 'points'}
           </p>
           {found.length === 0 && <p style={{ fontSize: 13, fontStyle: 'italic', color: '#a78a3c' }}>Empty for now. Every word you find drips in here!</p>}
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8 }}>
@@ -148,7 +151,7 @@ export default function Bee({ date, letters, center, answers, onSolved }: Props)
         </div>
       </div>
 
-      <HintButton host="bee" date={date} game="bee" disabled={genius && found.length === answers.length}
+      <HintButton host="bee" date={date} game="bee" disabled={genius && foundMain === answers.length}
         getHint={() => {
           // Bee builds up one word still to find over three hints: first letter, then two, then three
           const left = answers.filter(w => !found.includes(w))

@@ -14,7 +14,7 @@ export type Daily = {
   queens: { regions: number[][]; unique: boolean; solution: number[] }   // solution: queen column for each row
   wend: { size: number; numbers: Record<string, number>; last: number; solution: number[] }  // solution: one valid path
   wordle: { answer: string }
-  bee: { letters: string; center: string; answers: string[] }
+  bee: { letters: string; center: string; answers: string[]; extra: string[] }   // extra: other real words that are accepted but never hinted
   dig: { size: number; theme: string; letters: string; words: { word: string; cells: number[] }[] }   // words along one path through every cell
 }
 

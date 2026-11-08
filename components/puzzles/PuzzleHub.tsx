@@ -22,24 +22,24 @@ const GAMES = [
 ] as const
 type GameId = typeof GAMES[number]['id']
 
-/** Time until midnight in India, when the next puzzles arrive. */
-/** Time until 12:01 am India time, when the next puzzles arrive; reloads the page then if asked to. */
-function useCountdown(reloadAtZero: boolean) {
+/** Time until 12:01 am India time, when the next puzzles arrive. Never reloads: whoever's mid-puzzle keeps playing. */
+function useCountdown() {
   const [left, setLeft] = useState('')
+  const [ready, setReady] = useState(false)
   useEffect(() => {
+    const now = new Date()
+    const ist = new Date(now.getTime() + 5.5 * 3600_000 - 60_000)
+    const next = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1) - 5.5 * 3600_000 + 60_000
     const tick = () => {
-      const now = new Date()
-      const ist = new Date(now.getTime() + 5.5 * 3600_000 - 60_000)
-      const next = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1) - 5.5 * 3600_000 + 60_000
-      const s = Math.max(0, Math.floor((next - now.getTime()) / 1000))
+      const s = Math.max(0, Math.floor((next - Date.now()) / 1000))
       setLeft(`${String(Math.floor(s / 3600)).padStart(2, '0')}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`)
-      if (s === 0 && reloadAtZero) setTimeout(() => window.location.reload(), 1500)
+      if (s === 0) { setReady(true); clearInterval(t) }
     }
-    tick()
     const t = setInterval(tick, 1000)
+    tick()
     return () => clearInterval(t)
-  }, [reloadAtZero])
-  return left
+  }, [])
+  return { left, ready }
 }
 
 /** Past days on the left: click a date to play that day; shows how many you solved. */
@@ -89,7 +89,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
   // Confetti only for a fresh win, not when reopening a puzzle solved earlier today
   const [burst, setBurst] = useState(0)
   const [celebrating, setCelebrating] = useState(false)
-  const countdown = useCountdown(isToday)
+  const { left: countdown, ready: newDayReady } = useCountdown()
   // Confetti once, at the moment a puzzle is solved (never again on reopening or reloading it)
   const celebrate = useCallback(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -119,7 +119,12 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
         <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878' }}>
           {pretty} · No. {daily.number} · {solvedCount}/{GAMES.length} solved
         </p>
-        {isToday ? (
+        {isToday && newDayReady ? (
+          // Midnight came while they were playing: say so, and let them finish first
+          <a href="/puzzles" style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN }}>
+            Fresh puzzles are out! Finish up here, then play them →
+          </a>
+        ) : isToday ? (
           <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
             New puzzles in <span style={{ color: INK, fontVariantNumeric: 'tabular-nums' }}>{countdown}</span>
           </p>
@@ -155,7 +160,7 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
       {active === 'wordle' && <Wordle date={daily.date} answer={daily.wordle.answer} onSolved={done('wordle')} />}
       {active === 'queens' && <Queens date={daily.date} regions={daily.queens.regions} solution={daily.queens.solution} onSolved={done('queens')} />}
       {active === 'wend'   && <Wend date={daily.date} size={daily.wend.size} numbers={daily.wend.numbers} last={daily.wend.last} solution={daily.wend.solution} onSolved={done('wend')} />}
-      {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} onSolved={done('bee')} />}
+      {active === 'bee'    && <Bee date={daily.date} letters={daily.bee.letters} center={daily.bee.center} answers={daily.bee.answers} extra={daily.bee.extra} onSolved={done('bee')} />}
       {active === 'dig'    && <Dig date={daily.date} size={daily.dig.size} theme={daily.dig.theme} letters={daily.dig.letters} words={daily.dig.words} onSolved={done('dig')} />}
       <BeeCallout />
       {celebrating && <Confetti burst={burst} />}

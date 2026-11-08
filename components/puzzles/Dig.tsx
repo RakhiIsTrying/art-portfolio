@@ -49,22 +49,27 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
     return true
   }
 
-  function extend(cell: number) {
+  function extend(cell: number, dragged = false) {
     if (owner.has(cell)) return
     const p = path
     if (!p.length) return setPath([cell])
     const at = p.indexOf(cell)
     if (at !== -1) return setPath(p.slice(0, at + 1))                      // dragged back: rewind to here
-    if (!adjacent(p[p.length - 1], cell)) return setPath([cell])          // start again from here
+    // Not next to the last letter. A tap starts again from here; a drag that clipped a corner is ignored, so a wobble never wipes the word
+    if (!adjacent(p[p.length - 1], cell)) return dragged ? undefined : setPath([cell])
     const next = [...p, cell]
     if (!check(next)) setPath(next)
   }
 
-  function cellAt(e: React.PointerEvent) {
+  // While dragging, a square only counts once the finger is well inside it, not brushing its edge
+  function cellAt(e: React.PointerEvent, middleOnly = false) {
     const box = boardRef.current!.getBoundingClientRect()
-    const c = Math.floor(((e.clientX - box.left) / box.width) * size)
-    const r = Math.floor(((e.clientY - box.top) / box.height) * size)
-    return r < 0 || c < 0 || r >= size || c >= size ? null : r * size + c
+    const x = ((e.clientX - box.left) / box.width) * size
+    const y = ((e.clientY - box.top) / box.height) * size
+    const c = Math.floor(x), r = Math.floor(y)
+    if (r < 0 || c < 0 || r >= size || c >= size) return null
+    if (middleOnly && (Math.abs(x - c - .5) > .32 || Math.abs(y - r - .5) > .32)) return null
+    return r * size + c
   }
   function down(e: React.PointerEvent) {
     if (solved) return
@@ -82,11 +87,11 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
   }
   function move(e: React.PointerEvent) {
     if (!dragging.current || solved) return
-    const cell = cellAt(e)
+    const cell = cellAt(e, true)
     if (cell === null || cell === underFinger.current) return
     underFinger.current = cell
     pressedWord.current = null
-    if (cell !== path[path.length - 1]) extend(cell)
+    if (cell !== path[path.length - 1]) extend(cell, true)
   }
   function up() {
     dragging.current = false
@@ -136,7 +141,7 @@ export default function Dig({ date, size, theme, letters, words, onSolved }: Pro
       </div>
 
       <div ref={boardRef} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={() => { pressedWord.current = null; up() }}
-        style={{ position: 'relative', width: 'min(100%, 460px)', aspectRatio: '1', border: `2px solid ${INK}`, background: '#fff', touchAction: 'none', userSelect: 'none', cursor: solved ? 'default' : 'pointer' }}>
+        style={{ position: 'relative', width: 'min(calc(100% - 40px), 460px)', aspectRatio: '1', border: `2px solid ${INK}`, background: '#fff', touchAction: 'none', userSelect: 'none', cursor: solved ? 'default' : 'pointer' }}>
         {/* Found words and the current trace */}
         <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
           {found.map((f, i) => f.cells.length > 1 && (
