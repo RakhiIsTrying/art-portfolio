@@ -99,7 +99,15 @@ function VisitsTable({ visits }: { visits: ReturnType<typeof recentVisits> }) {
             <td style={cell}>{v.screen ?? '–'}</td>
             <td style={cell}>{v.language ?? '–'}</td>
             <td style={{ ...cell, fontFamily: 'ui-monospace, Menlo, Consolas, monospace', fontSize: 12, overflowWrap: 'anywhere' }}>{v.ip ?? '–'}</td>
-            <td style={{ ...cell, minWidth: 120 }}>{v.actions.join(', ') || '–'}</td>
+            <td style={{ ...cell, minWidth: 160, maxWidth: 260 }}>
+              {v.actions.length === 0 ? '–' : v.actions.length === 1 ? <span style={{ display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={v.actions[0]}>{v.actions[0]}</span> : (
+                // One line until clicked, then the full list
+                <details>
+                  <summary style={{ cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{v.actions.length} things: {v.actions[0]}…</summary>
+                  <ul style={{ margin: '6px 0 0', paddingLeft: 16, listStyle: 'disc' }}>{v.actions.map((a, k) => <li key={k} style={{ overflowWrap: 'anywhere' }}>{a}</li>)}</ul>
+                </details>
+              )}
+            </td>
           </tr>
         ))}</tbody>
       </table>
