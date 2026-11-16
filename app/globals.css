@@ -195,6 +195,9 @@ html {
 .vgb-lb-info { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 14px 18px 16px; border-top: 3px solid; }
 .vgb-lb-text { flex: 999 1 220px; min-width: 0; }
 .vgb-lb-buy { flex: 1 1 auto; display: flex; flex-wrap: wrap; gap: 8px; }
+/* Buttons with a line of explanation need a little more room under the art */
+.vgb-lb-roomy { --lb-h: calc(100svh - 310px); }
+@media (max-width: 360px) { .vgb-lb-roomy { --lb-h: calc(100svh - 340px); } }   /* the explanations wrap onto two lines */
 @media (orientation: landscape) and (min-width: 700px) {
   .vgb-lb { --lb-h: calc(100svh - 72px); --lb-side: 300px; padding: 52px 24px 20px; }
   .vgb-lb-card { display: flex; width: auto; max-width: 100%; }
