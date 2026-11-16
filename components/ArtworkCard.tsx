@@ -48,7 +48,7 @@ export default function ArtworkCard({ artwork, onClick, size = 'medium' }: Props
         transition: 'opacity .25s, transform .25s',
       }} className="group-hover:[opacity:1] group-hover:[transform:translateY(0)]">
         <p style={{
-          fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
+          fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
           color: 'rgba(255,255,255,.55)', marginBottom: 4,
         }}>
           {artwork.collection_slug}

@@ -39,7 +39,7 @@ export default async function OriginalsPage() {
         {/* Header */}
         <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end" style={{ marginBottom: 30, paddingBottom: 26, borderBottom: '1px solid #d0d0d0', position: 'relative' }}>
           <div>
-            <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', color: '#b0552f', marginBottom: 12 }}>✦ One of one</p>
+            <p style={{ fontSize: 11, letterSpacing: '.5em', textTransform: 'uppercase', color: '#b0552f', marginBottom: 12 }}>✦ One of one</p>
             <h1>
               <span style={{ display: 'block', fontFamily: PLAYFAIR, fontSize: 'clamp(42px, 7vw, 84px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.03em', lineHeight: .92, color: '#1a1014' }}>Originals</span>
               <span style={{ display: 'block', fontFamily: PLAYFAIR, fontSize: 'clamp(42px, 7vw, 84px)', fontWeight: 400, fontStyle: 'italic', lineHeight: 1.02, color: '#b07880' }}>for sale</span>
@@ -54,7 +54,7 @@ export default async function OriginalsPage() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={featured.image_url} alt={featured.title} style={{ display: 'block', height: 230, maxWidth: 320, objectFit: 'contain' }} />
               </span>
-              <span style={{ display: 'block', marginTop: 10, textAlign: 'center', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: '#b0552f' }}>Featured · {featured.title}</span>
+              <span style={{ display: 'block', marginTop: 10, textAlign: 'center', fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', color: '#b0552f' }}>Featured · {featured.title}</span>
             </a>
           )}
         </div>
@@ -62,17 +62,17 @@ export default async function OriginalsPage() {
         {originals.length ? (
           <div id="pieces" style={{ scrollMarginTop: 70 }}><ShopGrid artworks={originals} kind="original" currency={currency} /></div>
         ) : (
-          <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 22, color: '#a0a0a0', padding: '40px 0' }}>New originals soon.</p>
+          <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 22, color: '#767676', padding: '40px 0' }}>New originals soon.</p>
         )}
 
         {/* Prints and commissions */}
         <div className="grid sm:grid-cols-2 gap-4" style={{ marginTop: 40 }}>
           <Link href="/shop" className="group" style={{ background: '#1a1014', color: '#fff', padding: '24px 26px', textDecoration: 'none' }}>
-            <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#b07880', marginBottom: 8 }}>Prefer a print?</p>
+            <p style={{ fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', color: '#b07880', marginBottom: 8 }}>Prefer a print?</p>
             <p style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700 }}>Prints &amp; cards <span className="inline-block transition-transform group-hover:translate-x-1">→</span></p>
           </Link>
           <Link href={`/inquire?piece=${encodeURIComponent('Commission: original piece')}`} className="group" style={{ background: '#7a3040', color: '#fff', padding: '24px 26px', textDecoration: 'none' }}>
-            <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,.65)', marginBottom: 8 }}>Something else in mind?</p>
+            <p style={{ fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,.65)', marginBottom: 8 }}>Something else in mind?</p>
             <p style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700 }}>Commission an original <span className="inline-block transition-transform group-hover:translate-x-1">→</span></p>
           </Link>
         </div>

@@ -63,7 +63,7 @@ export default function CollectionsStrip({ cutouts = {} }: { cutouts?: Record<st
             {/* Description */}
             <span style={{
               position: 'relative',
-              fontSize: 10, fontWeight: 300, letterSpacing: '.15em',
+              fontSize: 11, fontWeight: 300, letterSpacing: '.15em',
               color: 'rgba(255,255,255,.6)', display: 'block',
             }}>
               {desc}

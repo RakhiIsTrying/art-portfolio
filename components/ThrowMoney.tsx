@@ -129,7 +129,7 @@ export default function ThrowMoney({ currency }: { currency: string }) {
         {count === 0 ? 'Go on. It’s in my bio.' : REPLIES[replyAt ?? 1]}
         {count >= JACKPOT_EVERY && <> <span style={{ display: 'block', fontSize: 12, color: '#787878' }}>All imaginary, sadly. <Link href="/shop" style={{ color: '#7a3040', textDecoration: 'underline' }}>Real money works here.</Link></span></>}
       </p>
-      <button type="button" onClick={toggleSound} aria-pressed={muted} style={{ padding: 0, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, color: '#787878' }}>
+      <button type="button" className="vgb-tap" onClick={toggleSound} aria-pressed={muted} style={{ padding: 0, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, color: '#787878' }}>
         {muted ? '🔇 Sound off' : '🔊 Sound on'}
       </button>
     </div>

@@ -37,7 +37,7 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
       <div style={{ position: 'relative', aspectRatio: '4/5', overflow: 'hidden' }}>
         <ArtFill src={artwork.image_url} alt={artwork.title} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px" />
         <span style={{
-          position: 'absolute', top: 10, left: 10, fontSize: 8, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
+          position: 'absolute', top: 10, left: 10, fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
           color: '#fff', background: kind === 'original' ? '#1a1014' : color, padding: '4px 7px',
         }}>
           {kind === 'original' ? 'Original · 1/1' : 'Print'}
@@ -45,7 +45,7 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
       </div>
 
       <div style={{ padding: '12px 14px 14px', borderTop: `2px solid ${color}` }}>
-        <p style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 5 }}>
+        <p style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '2px 8px', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 5 }}>
           <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{collectionName}</span>
           <span style={{ color: '#787878', letterSpacing: '.15em', whiteSpace: 'nowrap' }}>
             {kind === 'original' ? 'Price on request' : `From ${formatPrice(lowestPrice(sizes, currency), currency)}`}
@@ -60,11 +60,11 @@ export default function ShopCard({ artwork, kind, currency, collectionName, onSe
         <span
           className="group-hover:[color:#7a3040] group-hover:[border-color:#7a3040]"
           style={{
-            fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014',
+            fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014',
             borderBottom: '1px solid #1a1014', paddingBottom: 1, transition: 'color .2s, border-color .2s',
           }}
         >
-          {onSelect ? (selected ? 'Selected ✓' : 'Choose this piece →') : kind === 'original' ? 'Buy or ask →' : 'Order a print →'}
+          {onSelect ? (selected ? 'Selected ✓' : <>Choose<span className="max-sm:hidden"> this piece</span> →</>) : kind === 'original' ? 'Buy or ask →' : <>Order<span className="max-sm:hidden"> a print</span> →</>}
         </span>
       </div>
     </>

@@ -141,7 +141,7 @@ export default function Bee({ date, letters, center, answers, extra = [], onSolv
                 }}>
                   {pangram && <span aria-label="pangram">🐝</span>}
                   {w}
-                  <span style={{ fontSize: 10, fontWeight: 700, color: pangram ? INK : '#8a6414', background: pangram ? 'rgba(255,255,255,.55)' : '#fdf0c4', borderRadius: 999, padding: '1px 6px' }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: pangram ? INK : '#8a6414', background: pangram ? 'rgba(255,255,255,.55)' : '#fdf0c4', borderRadius: 999, padding: '1px 6px' }}>
                     +{points(w, letters)}
                   </span>
                 </span>

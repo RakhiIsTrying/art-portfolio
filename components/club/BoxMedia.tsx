@@ -24,7 +24,7 @@ export default function BoxMedia({ month, videoUrl, photos }: { month: string; v
         <div style={{ position: 'relative', background: '#1a1014' }}>
           <video src={videoUrl} controls playsInline preload="metadata" poster={photos[0]}
                  style={{ width: '100%', maxHeight: '70vh', display: 'block', background: '#1a1014' }} />
-          <span style={{ position: 'absolute', top: 12, left: 12, padding: '5px 10px', fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', background: '#fff', color: '#1a1014', pointerEvents: 'none' }}>
+          <span style={{ position: 'absolute', top: 12, left: 12, padding: '5px 10px', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', background: '#fff', color: '#1a1014', pointerEvents: 'none' }}>
             ▶ Unboxing
           </span>
         </div>
@@ -54,7 +54,7 @@ export default function BoxMedia({ month, videoUrl, photos }: { month: string; v
               <ViewerButton side="right" label="Next"     onClick={() => setOpen((open + 1) % photos.length)}>›</ViewerButton>
             </>
           )}
-          <p style={{ position: 'absolute', bottom: 20, left: 0, right: 0, textAlign: 'center', fontSize: 10, letterSpacing: '.4em', color: 'rgba(255,255,255,.6)' }}>
+          <p style={{ position: 'absolute', bottom: 20, left: 0, right: 0, textAlign: 'center', fontSize: 11, letterSpacing: '.4em', color: 'rgba(255,255,255,.6)' }}>
             {open + 1} / {photos.length}
           </p>
           <button type="button" onClick={() => setOpen(null)} aria-label="Close"

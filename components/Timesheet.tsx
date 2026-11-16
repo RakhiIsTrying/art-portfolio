@@ -23,7 +23,7 @@ export default function Timesheet() {
     <section aria-labelledby="timesheet" style={{ position: 'relative', marginBottom: 48, background: PAPER, border: `2px solid ${INK}`, borderRadius: 6, boxShadow: '0 22px 50px rgba(26,16,20,.16)' }}>
       <header style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '6px 18px', padding: 'clamp(16px, 3vw, 24px) clamp(16px, 3vw, 26px) 14px clamp(38px, 6vw, 70px)', borderBottom: `3px double ${INK}` }}>
         <div>
-          <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 600, color: RED, marginBottom: 4 }}>Form VGB-247 · Daily timesheet</p>
+          <p style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 600, color: RED, marginBottom: 4 }}>Form VGB-247 · Daily timesheet</p>
           <h2 id="timesheet" style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(26px, 4.4vw, 40px)', fontWeight: 700, lineHeight: 1.05, color: INK }}>
             Timesheet of a <span style={{ fontWeight: 400, fontStyle: 'italic', color: '#b07880' }}>known flight risk</span>
           </h2>
@@ -42,7 +42,7 @@ export default function Timesheet() {
           <li key={e.at + e.stamp} className="grid grid-cols-[1fr_auto] sm:grid-cols-[92px_1fr_128px]" style={{ alignItems: 'center', gap: '4px 16px', padding: '13px 0', borderBottom: `1px solid ${RULE}` }}>
             <time style={{ fontFamily: MONO, fontSize: 13, fontWeight: 700, color: RED, whiteSpace: 'nowrap' }}>{e.at}</time>
             <span className="col-span-2 row-start-2 sm:col-span-1 sm:row-start-auto sm:col-start-2" style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(16px, 2vw, 19px)', lineHeight: 1.35, color: INK, whiteSpace: 'normal' }}>{e.what}</span>
-            <span className="justify-self-end sm:justify-self-center sm:col-start-3 sm:row-start-1" style={{ display: 'inline-block', padding: '3px 8px', fontSize: 10, fontWeight: 800, letterSpacing: '.12em', lineHeight: 1.25, textAlign: 'center', textTransform: 'uppercase', color: e.color, border: `2px solid ${e.color}`, borderRadius: 3, opacity: .85, transform: `rotate(${e.tilt}deg)`, whiteSpace: 'nowrap' }}>{e.stamp}</span>
+            <span className="justify-self-end sm:justify-self-center sm:col-start-3 sm:row-start-1" style={{ display: 'inline-block', padding: '3px 8px', fontSize: 11, fontWeight: 800, letterSpacing: '.12em', lineHeight: 1.25, textAlign: 'center', textTransform: 'uppercase', color: e.color, border: `2px solid ${e.color}`, borderRadius: 3, opacity: .85, transform: `rotate(${e.tilt}deg)`, whiteSpace: 'nowrap' }}>{e.stamp}</span>
           </li>
         ))}
       </ol>
@@ -51,7 +51,7 @@ export default function Timesheet() {
         <p style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, lineHeight: 1.5, color: INK }}>Total corporate: 9.5 hrs<br />Total sleep: pending approval</p>
         <p style={{ textAlign: 'center' }}>
           <span aria-hidden style={{ display: 'block', fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 20, lineHeight: 1.1, color: '#1e3a8a', transform: 'rotate(-3deg)' }}>R. Sinha</span>
-          <span style={{ display: 'block', marginTop: 4, paddingTop: 3, borderTop: `1px solid ${INK}`, fontSize: 9, letterSpacing: '.2em', textTransform: 'uppercase', color: '#5a4a4e' }}>Signed under duress</span>
+          <span style={{ display: 'block', marginTop: 4, paddingTop: 3, borderTop: `1px solid ${INK}`, fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', color: '#5a4a4e' }}>Signed under duress</span>
         </p>
       </footer>
     </section>

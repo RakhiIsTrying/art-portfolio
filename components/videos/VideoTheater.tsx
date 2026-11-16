@@ -16,7 +16,7 @@ type Props = {
 }
 
 const navButton: React.CSSProperties = {
-  fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+  fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
   color: 'rgba(255,255,255,.75)', background: 'none', border: '1px solid rgba(255,255,255,.25)',
   padding: '9px 14px', cursor: 'pointer', fontFamily: 'inherit', transition: 'border-color .2s, color .2s',
 }
@@ -116,7 +116,7 @@ export default function VideoTheater({ videos, index, onClose, onNavigate, onSel
 
         {/* Info panel */}
         <div className="w-full md:w-[280px]" style={{ pointerEvents: 'auto', maxWidth: 420 }}>
-          <p style={{ fontSize: 10, letterSpacing: '.4em', fontWeight: 400, color: 'rgba(255,255,255,.5)', marginBottom: 14 }}>
+          <p style={{ fontSize: 11, letterSpacing: '.4em', fontWeight: 400, color: 'rgba(255,255,255,.5)', marginBottom: 14 }}>
             {String(index + 1).padStart(2, '0')} <span style={{ color: 'rgba(255,255,255,.25)' }}>/ {String(videos.length).padStart(2, '0')}</span>
           </p>
           <h2 key={`t-${video.id}`} className="vgb-motion" style={{
@@ -141,7 +141,7 @@ export default function VideoTheater({ videos, index, onClose, onNavigate, onSel
           {video.instagram_url && (
             <div style={{ marginTop: 22 }}><InstagramLink href={video.instagram_url} /></div>
           )}
-          <p className="hidden md:block" style={{ marginTop: 18, fontSize: 10, letterSpacing: '.2em', color: 'rgba(255,255,255,.3)' }}>
+          <p className="hidden md:block" style={{ marginTop: 18, fontSize: 11, letterSpacing: '.2em', color: 'rgba(255,255,255,.3)' }}>
             ← → to browse · Esc to close
           </p>
         </div>

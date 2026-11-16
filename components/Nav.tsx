@@ -21,9 +21,9 @@ export default function Nav() {
     <nav className="lg:h-[44px]" style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1px solid #d0d0d0', position: 'sticky', top: 0, zIndex: 50, background: '#e6e6e6' }}>
       <Link
         href="/"
+        className="vgb-nav-home"
         style={{
-          padding: '0 24px',
-          fontSize: 10, letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 600,
+          textTransform: 'uppercase', fontWeight: 600,
           color: '#7a3040',
           borderRight: '1px solid #d0d0d0',
           display: 'flex', alignItems: 'center',
@@ -43,11 +43,11 @@ export default function Nav() {
             <Link
               key={href}
               href={href}
-              className="h-9 lg:h-auto"
+              className="vgb-nav-link h-10 lg:h-auto"
               style={{
-                flex: '1 0 auto', padding: '0 4px', whiteSpace: 'nowrap',
+                flex: '1 0 auto', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase',
+                textTransform: 'uppercase',
                 fontWeight: active ? 500 : 300,
                 color: active ? '#fff' : 'rgba(255,255,255,.6)',
                 background: color,
@@ -66,8 +66,8 @@ export default function Nav() {
 
       <div className="hidden xl:flex" style={{
         padding: '0 24px',
-        fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
-        color: '#a0a0a0',
+        fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
+        color: '#767676',
         borderLeft: '1px solid #d0d0d0',
         alignItems: 'center',
         background: '#e6e6e6',

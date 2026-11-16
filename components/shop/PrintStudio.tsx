@@ -17,7 +17,7 @@ const MAX_PX_PER_INCH = 17      // largest scale for the side-by-side size compa
 const CARD_PX_PER_INCH = 30     // the larger greeting-card mockup
 const MARGIN_INCHES = .25       // white margin printed around the art
 
-const label: React.CSSProperties = { display: 'block', fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: INK, marginBottom: 8 }
+const label: React.CSSProperties = { display: 'block', fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: INK, marginBottom: 8 }
 const input: React.CSSProperties = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #d0d0d0', padding: '7px 0', fontSize: 13, fontWeight: 300, color: INK, outline: 'none', fontFamily: 'inherit' }
 
 /** A print on paper: the whole art, as big as fits inside a small white margin. */
@@ -35,7 +35,7 @@ function Paper({ art, w, h, ppi, highlight, onView }: { art: Artwork; w: number;
     }}>
       <div style={{ width: '100%', height: '100%', background: edge ?? '#fff' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={art.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+        <img src={art.image_url} alt={art.title} style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
       </div>
     </div>
   )
@@ -144,7 +144,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
           ) : (
             <form onSubmit={submit} noValidate style={{ padding: '20px 20px 22px', display: 'flex', flexDirection: 'column', gap: 20 }}>
               <div>
-                <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a3040', marginBottom: 12 }}>Your order</p>
+                <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a3040', marginBottom: 12 }}>Your order</p>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <button type="button" onClick={() => setViewing(art)} title="View full size" aria-label={`View ${art.title} full size`}
@@ -153,9 +153,9 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                   </button>
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 19, color: INK, lineHeight: 1.15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{art.title}</p>
-                    <span style={{ display: 'flex', gap: 14 }}>
-                      <button type="button" onClick={() => setViewing(art)} style={{ padding: 0, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>⤢ Full size</button>
-                      <a href="#choose-piece" style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>Change piece ↓</a>
+                    <span style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 14px' }}>
+                      <button type="button" className="vgb-tap" onClick={() => setViewing(art)} style={{ padding: 0, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>⤢ Full size</button>
+                      <a href="#choose-piece" className="vgb-tap" style={{ fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', color: '#1e3a8a' }}>Change piece ↓</a>
                     </span>
                   </div>
                 </div>
@@ -168,10 +168,10 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                     const on = (orientation ?? suggested) === o
                     return (
                       <button key={o} type="button" onClick={() => setOrientation(o)} aria-pressed={on}
-                        style={{ flex: 1, padding: '9px 10px', fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
+                        style={{ flex: 1, padding: '9px 10px', fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
                                  border: `1px solid ${on ? '#4a3a7a' : '#d0d0d0'}`, background: on ? '#4a3a7a' : '#fff', color: on ? '#fff' : INK }}>
                         {o === 'portrait' ? '▯ Portrait' : '▭ Landscape'}
-                        {o === suggested && <span style={{ display: 'block', fontSize: 8, letterSpacing: '.15em', marginTop: 3, opacity: .75 }}>suggested</span>}
+                        {o === suggested && <span style={{ display: 'block', fontSize: 10, letterSpacing: '.15em', marginTop: 3, opacity: .75 }}>suggested</span>}
                       </button>
                     )
                   })}
@@ -186,7 +186,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                   <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
                     {([['random', 'Surprise me'], ['custom', 'Write my own']] as const).map(([mode, text]) => (
                       <button key={mode} type="button" onClick={() => setGreetingMode(mode)}
-                        style={{ flex: 1, padding: '8px 10px', fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
+                        style={{ flex: 1, padding: '8px 10px', fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
                                  border: `1px solid ${greetingMode === mode ? '#4a3a7a' : '#d0d0d0'}`, background: greetingMode === mode ? '#4a3a7a' : '#fff', color: greetingMode === mode ? '#fff' : INK }}>
                         {text}
                       </button>
@@ -208,7 +208,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                 </div>
               ))}
               <div>
-                <label htmlFor="order-note" style={label}>Note <span style={{ fontWeight: 300, color: '#a0a0a0', letterSpacing: '.2em' }}>(optional)</span></label>
+                <label htmlFor="order-note" style={label}>Note <span style={{ fontWeight: 300, color: '#767676', letterSpacing: '.2em' }}>(optional)</span></label>
                 <textarea id="order-note" rows={2} value={contact.note} onChange={e => setContact(c => ({ ...c, note: e.target.value }))} style={{ ...input, resize: 'vertical' }} />
               </div>
 
@@ -216,11 +216,11 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                 <p style={{ fontSize: 11, color: '#7a3040' }}>{error ?? 'Something went wrong. Please try again.'}</p>
               )}
               <button type="submit" disabled={status === 'sending'} className="hover:[background:#7a3040]"
-                style={{ padding: '14px 18px', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, background: INK, color: '#fff', opacity: status === 'sending' ? .6 : 1, transition: 'background .25s' }}>
+                style={{ padding: '14px 18px', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, background: INK, color: '#fff', opacity: status === 'sending' ? .6 : 1, transition: 'background .25s' }}>
                 {status === 'sending' ? 'Sending…' : 'Send order request →'}
               </button>
-              <p style={{ fontSize: 10, fontWeight: 300, color: '#a0a0a0', lineHeight: 1.6, marginTop: -8 }}>
-                No payment yet. I’ll confirm the total and shipping by email. <Link href="/privacy" style={{ textDecoration: 'underline' }}>Privacy policy</Link>
+              <p style={{ fontSize: 11, fontWeight: 300, color: '#767676', lineHeight: 1.6, marginTop: -8 }}>
+                No payment yet. I’ll confirm the total and shipping by email. <Link href="/privacy" className="vgb-tap" style={{ textDecoration: 'underline' }}>Privacy policy</Link>
               </p>
             </form>
           )}
@@ -228,7 +228,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
 
         {/* ── Previews ── */}
         <div style={{ minWidth: 0 }}>
-          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>See it to scale</p>
+          <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>See it to scale</p>
           <h3 style={{ fontFamily: PLAYFAIR, fontSize: 24, fontWeight: 700, color: INK, marginBottom: 18 }}>{art.title}, every size</h3>
           <p style={{ fontSize: 11, fontWeight: 300, color: '#787878', margin: '-12px 0 18px' }}>
             {landscape ? '▭ Landscape' : '▯ Portrait'}: switch it in your order. Every size shows the whole artwork as large as it fits, with a small white margin.
@@ -249,7 +249,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                   ) : (
                     <Paper art={art} {...fit(s)} ppi={PX_PER_INCH} highlight={(qty[s.id] ?? 0) > 0} onView={() => setViewing(art)} />
                   )}
-                  <p style={{ marginTop: 10, fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: INK }}>
+                  <p style={{ marginTop: 10, fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: INK }}>
                     {s.card ? 'Card' : s.name}{(qty[s.id] ?? 0) > 0 && <span style={{ color: '#4a3a7a' }}> ×{qty[s.id]}</span>}
                   </p>
                   <p style={{ fontSize: 11, fontWeight: 300, color: '#787878' }}>{dims(s)} · {formatPrice(s[currency], currency)}</p>
@@ -260,7 +260,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
 
           {/* Greeting card, closed and open */}
           <div style={{ marginTop: 36, paddingTop: 24, borderTop: '1px solid #d0d0d0' }}>
-            <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>Greeting card · {dims(card)}{landscape ? ' · landscape, folds at the top' : ''}</p>
+            <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', color: '#787878', marginBottom: 4 }}>Greeting card · {dims(card)}{landscape ? ' · landscape, folds at the top' : ''}</p>
             <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginBottom: 18, maxWidth: 520 }}>
               The art is printed on the front flap. Inside, a greeting: a surprise one from me, or your own words.
             </p>
@@ -273,7 +273,7 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                     ? { position: 'absolute', left: 0, right: 0, top: 0, height: 8, background: 'linear-gradient(180deg, rgba(26,16,20,.2), transparent)' }
                     : { position: 'absolute', left: 0, top: 0, bottom: 0, width: 8, background: 'linear-gradient(90deg, rgba(26,16,20,.2), transparent)' }} />
                 </div>
-                <p style={{ marginTop: 12, fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>Front</p>
+                <p style={{ marginTop: 12, fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', color: '#767676' }}>Front</p>
               </div>
 
               {/* Open */}
@@ -290,16 +290,16 @@ export default function PrintStudio({ artworks, currency: initialCurrency, initi
                       {greetingText}
                     </p>
                     <span style={{ width: 22, height: 1, background: '#b07880', margin: '14px 0 8px' }} />
-                    <span style={{ fontSize: 9, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+                    <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#767676' }}>
                       {greetingMode === 'custom' && greeting.trim() ? 'Your message' : 'Surprise greeting'}
                     </span>
                   </div>
                 </div>
-                <p style={{ marginTop: 12, fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+                <p style={{ marginTop: 12, fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', color: '#767676' }}>
                   Inside
                   {!(greetingMode === 'custom' && greeting.trim()) && (
-                    <button type="button" onClick={() => setSample(n => n + 1)}
-                            style={{ marginLeft: 10, background: 'none', border: 'none', color: '#1e3a8a', cursor: 'pointer', fontFamily: 'inherit', fontSize: 10, letterSpacing: '.2em' }}>
+                    <button type="button" className="vgb-tap" onClick={() => setSample(n => n + 1)}
+                            style={{ marginLeft: 10, background: 'none', border: 'none', color: '#1e3a8a', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, letterSpacing: '.2em' }}>
                       ⟳ another example
                     </button>
                   )}

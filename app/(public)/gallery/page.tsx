@@ -40,7 +40,7 @@ export default async function GalleryPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5" style={{ marginBottom: 32 }}>
         <div>
-          <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', color: '#7a3040', marginBottom: 12 }}>✦ Browse</p>
+          <p style={{ fontSize: 11, letterSpacing: '.5em', textTransform: 'uppercase', color: '#7a3040', marginBottom: 12 }}>✦ Browse</p>
           <h1>
             <span style={{ display: 'block', fontFamily: PLAYFAIR, fontSize: 'clamp(42px, 7vw, 84px)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.03em', lineHeight: .92, color: '#1a1014' }}>The</span>
             <span style={{ display: 'block', fontFamily: PLAYFAIR, fontSize: 'clamp(42px, 7vw, 84px)', fontWeight: 400, fontStyle: 'italic', lineHeight: 1.02, color: '#b07880' }}>Gallery</span>
@@ -70,13 +70,13 @@ export default async function GalleryPage() {
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(circle at 75% 40%, rgba(176,120,128,.28) 0%, transparent 55%)' }} />
           <div style={{ position: 'relative', zIndex: 4, padding: 'clamp(22px, 3vw, 34px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 18 }}>
             <div>
-              <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#b07880', marginBottom: 10 }}>
+              <p style={{ fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', color: '#b07880', marginBottom: 10 }}>
                 One of one · {originals.length ? `${originals.length} available` : 'coming soon'}
               </p>
               <h2 style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(28px, 4.4vw, 56px)', fontWeight: 700, lineHeight: 1.02, whiteSpace: 'nowrap' }}>Originals <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#b07880' }}>for sale</span></h2>
               <p style={{ fontSize: 13, fontWeight: 300, color: 'rgba(255,255,255,.72)', marginTop: 10 }}>The hand-made pieces themselves, ready for a new home. Ask for the price.</p>
             </div>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500 }}>
               See the originals <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
             </span>
           </div>
@@ -88,7 +88,7 @@ export default async function GalleryPage() {
                   style={{ position: 'absolute', left: '50%', top: '50%', width: '34%', aspectRatio: '4/5', zIndex: f.z,
                            transform: `translate(calc(-50% + ${f.x}), calc(-50% + ${f.y})) rotate(${f.rotate}deg)`,
                            background: '#fff', padding: '4%', boxShadow: '0 16px 34px rgba(0,0,0,.45)' }}>
-                  <div style={{ position: 'relative', width: '100%', height: '100%' }}><ArtFill src={art.image_url} sizes="240px" /></div>
+                  <div style={{ position: 'relative', width: '100%', height: '100%' }}><ArtFill src={art.image_url} alt={art.title} sizes="240px" /></div>
                 </div>
               )
             })}
@@ -110,13 +110,13 @@ export default async function GalleryPage() {
             {/* Words */}
             <div style={{ position: 'relative', zIndex: 4, padding: 'clamp(22px, 3vw, 34px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 18 }}>
               <div>
-                <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)', marginBottom: 10 }}>
+                <p style={{ fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)', marginBottom: 10 }}>
                   {String(i + 1).padStart(2, '0')} · {c.total} {c.total === 1 ? 'piece' : 'pieces'}
                 </p>
                 <h2 style={{ fontFamily: PLAYFAIR, fontSize: i === 0 ? 'clamp(28px, 4.4vw, 56px)' : 'clamp(22px, 2.5vw, 34px)', fontWeight: 700, lineHeight: 1.02, whiteSpace: 'nowrap', textShadow: '0 2px 14px rgba(0,0,0,.35)' }}>{c.name}</h2>
                 <p style={{ fontSize: 13, fontWeight: 300, color: 'rgba(255,255,255,.72)', marginTop: 10 }}>{c.desc}</p>
               </div>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500 }}>
                 Explore <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
               </span>
             </div>
@@ -131,7 +131,7 @@ export default async function GalleryPage() {
                              transform: `translate(calc(-50% + ${f.x}), calc(-50% + ${f.y})) rotate(${f.rotate}deg)`,
                              background: '#fff', padding: '4%', boxShadow: '0 16px 34px rgba(0,0,0,.35)' }}>
                     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                      <ArtFill src={art.image_url} sizes="240px" />
+                      <ArtFill src={art.image_url} alt={art.title} sizes="240px" />
                     </div>
                   </div>
                 )

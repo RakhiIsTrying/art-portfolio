@@ -65,11 +65,11 @@ const ADDRESS: FieldDef[] = [
 ]
 
 const labelStyle: React.CSSProperties = {
-  display: 'block', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8,
+  display: 'block', fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 8,
 }
 
 const groupStyle: React.CSSProperties = {
-  fontSize: 9, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#b07880',
+  fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#b07880',
   paddingBottom: 8, borderBottom: '1px solid #ebebeb', marginBottom: 2,
 }
 
@@ -181,7 +181,7 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
     <div key={id} className={half ? 'col-span-2 sm:col-span-1' : 'col-span-2'}>
       <label htmlFor={`pc-${id}`} style={labelStyle}>
         {label}
-        {optional && <span style={{ fontWeight: 300, color: '#a0a0a0', letterSpacing: '.2em' }}> (optional)</span>}
+        {optional && <span style={{ fontWeight: 300, color: '#767676', letterSpacing: '.2em' }}> (optional)</span>}
       </label>
       {multiline ? (
         <textarea
@@ -194,8 +194,8 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
           {input}
         </div>
       ) : input}
-      {hint && !errors[id] && <p style={{ fontSize: 10, letterSpacing: '.1em', fontWeight: 300, color: '#a0a0a0', marginTop: 6 }}>{hint}</p>}
-      {errors[id] && <p style={{ fontSize: 10, letterSpacing: '.2em', color: '#7a3040', marginTop: 6 }}>{errors[id]}</p>}
+      {hint && !errors[id] && <p style={{ fontSize: 11, letterSpacing: '.1em', fontWeight: 300, color: '#767676', marginTop: 6 }}>{hint}</p>}
+      {errors[id] && <p style={{ fontSize: 11, letterSpacing: '.2em', color: '#7a3040', marginTop: 6 }}>{errors[id]}</p>}
     </div>
     )
   }
@@ -257,8 +257,8 @@ export default function PrintClubForm({ defaultPlan, visitorCountry, plans: PLAN
         {status === 'sending' ? 'Sending…' : `Apply · ${tierPrice(plan, tier)} / month →`}
       </button>
 
-      <p className="col-span-2" style={{ fontSize: 10, lineHeight: 1.7, fontWeight: 300, color: '#a0a0a0' }}>
-        Your details are only used to contact you{shipping ? ' and ship your prints' : ''}. <Link href="/privacy" style={{ textDecoration: 'underline' }}>Privacy policy</Link>
+      <p className="col-span-2" style={{ fontSize: 11, lineHeight: 1.7, fontWeight: 300, color: '#767676' }}>
+        Your details are only used to contact you{shipping ? ' and ship your prints' : ''}. <Link href="/privacy" className="vgb-tap" style={{ textDecoration: 'underline' }}>Privacy policy</Link>
       </p>
     </form>
   )

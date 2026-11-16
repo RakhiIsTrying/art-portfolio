@@ -51,7 +51,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
           <div style={{ width: 3, background: '#1a1014', marginRight: 18, flexShrink: 0 }} />
           <div>
-            <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
+            <p style={{ fontSize: 11, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
               ✦ Shop
             </p>
             <h1>
@@ -66,8 +66,8 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
               {settings.shopIntro}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
-              <a href="#prints" style={{ padding: '8px 14px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', background: '#1a1014', color: '#fff', textDecoration: 'none' }}>Prints &amp; cards ↓</a>
-              <a href="/originals" style={{ padding: '8px 14px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', background: '#7a3040', color: '#fff', textDecoration: 'none' }}>
+              <a href="#prints" style={{ padding: '8px 14px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', background: '#1a1014', color: '#fff', textDecoration: 'none' }}>Prints &amp; cards ↓</a>
+              <a href="/originals" style={{ padding: '8px 14px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', background: '#7a3040', color: '#fff', textDecoration: 'none' }}>
                 Originals for sale{originals.length ? ` · ${originals.length}` : ''} →
               </a>
             </div>
@@ -75,12 +75,13 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </div>
 
         {/* How it works */}
-        <ol className="grid grid-cols-1 sm:grid-cols-3 lg:w-[480px]" style={{ listStyle: 'none', border: '1px solid #d0d0d0', background: '#d0d0d0', gap: 1 }}>
+        <ol className="grid grid-cols-3 lg:w-[480px]" style={{ listStyle: 'none', border: '1px solid #d0d0d0', background: '#d0d0d0', gap: 1 }}>
           {STEPS.map(s => (
-            <li key={s.n} style={{ background: '#e6e6e6', padding: '14px 14px 16px' }}>
-              <p style={{ fontSize: 10, letterSpacing: '.3em', color: '#b07880', marginBottom: 8 }}>{s.n}</p>
-              <p style={{ fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', marginBottom: 6 }}>{s.title}</p>
-              <p style={{ fontSize: 11, lineHeight: 1.6, fontWeight: 300, color: '#787878' }}>{s.body}</p>
+            <li key={s.n} className="px-2.5 pt-3 pb-3 sm:px-3.5 sm:pt-3.5 sm:pb-4" style={{ background: '#e6e6e6' }}>
+              <p className="mb-1 sm:mb-2" style={{ fontSize: 11, letterSpacing: '.3em', color: '#b07880' }}>{s.n}</p>
+              <p className="tracking-[.08em] sm:tracking-[.25em] sm:mb-1.5" style={{ fontSize: 11, lineHeight: 1.35, textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>{s.title}</p>
+              {/* The sentence under each step is left out on phones, where the titles say enough */}
+              <p className="hidden sm:block" style={{ fontSize: 11, lineHeight: 1.6, fontWeight: 300, color: '#787878' }}>{s.body}</p>
             </li>
           ))}
         </ol>
@@ -96,10 +97,10 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           <span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}>From </span>{clubPrice}<span style={{ fontFamily: 'inherit', fontSize: 11, fontWeight: 300, color: '#787878' }}> / mo</span>
         </span>
         <span>
-          <span style={{ display: 'block', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', marginBottom: 4 }}>Print Club</span>
+          <span style={{ display: 'block', fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', marginBottom: 4 }}>Print Club</span>
           <span style={{ fontSize: 13, fontWeight: 300, color: '#787878' }}>A new print in your mailbox every month.</span>
         </span>
-        <span className="group-hover:[color:#7a3040] group-hover:[border-color:#7a3040]" style={{ justifySelf: 'start', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', borderBottom: '1px solid #1a1014', paddingBottom: 1, transition: 'color .2s, border-color .2s' }}>
+        <span className="group-hover:[color:#7a3040] group-hover:[border-color:#7a3040]" style={{ justifySelf: 'start', fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', borderBottom: '1px solid #1a1014', paddingBottom: 1, transition: 'color .2s, border-color .2s' }}>
           Join the club →
         </span>
       </Link>
@@ -108,14 +109,14 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       <section id="prints" style={{ marginBottom: 56, scrollMarginTop: 60 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 18 }}>
           <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Prints &amp; cards</h2>
-          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+          <span style={{ fontSize: 11, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#767676' }}>
             From {formatPrice(Math.min(...settings.printSizes.map(s => s[currency])), currency)}
           </span>
         </div>
         {prints.length > 0 ? (
           <PrintStudio artworks={prints} currency={currency} initialTitle={piece ?? 'Happy Pupper Dug-Dug'} />
         ) : (
-          <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
+          <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#767676', padding: '40px 0' }}>
             Prints coming soon.
           </p>
         )}
@@ -125,18 +126,25 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       <section id="originals" style={{ scrollMarginTop: 60, marginBottom: 56 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px 16px', marginBottom: 18, paddingBottom: 12, borderBottom: '1px solid #d0d0d0' }}>
           <h2 style={{ fontFamily: PLAYFAIR, fontSize: 26, fontWeight: 700, color: '#1a1014' }}>Originals for sale</h2>
-          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+          <span style={{ fontSize: 11, fontWeight: 300, letterSpacing: '.3em', textTransform: 'uppercase', color: '#767676', whiteSpace: 'normal' }}>
             {originals.length ? `${originals.length} one-of-one ${originals.length === 1 ? 'piece' : 'pieces'} · price on request` : 'One of one · price on request'}
           </span>
         </div>
 
-        {originals.length > 0 && <ShopGrid artworks={originals} kind="original" currency={currency} showFilters={false} />}
+        {/* Phones see the first six here; the Originals page has them all */}
+        {originals.length > 0 && <ShopGrid artworks={originals} kind="original" currency={currency} showFilters={false} phoneFirstSix />}
+        {originals.length > 6 && (
+          <Link href="/originals" className="block sm:hidden"
+                style={{ marginTop: 14, padding: '14px 18px', textAlign: 'center', fontSize: 11, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014', background: '#fff', border: '1px solid #1a1014', textDecoration: 'none' }}>
+            See all {originals.length} originals →
+          </Link>
+        )}
 
         {/* Commission card, always offered */}
         <div className="grid md:grid-cols-[1fr_auto] gap-6 items-center" style={{ marginTop: originals.length ? 24 : 0, background: '#1a1014', padding: '28px 30px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: 'linear-gradient(180deg, #7a3040 25%, #1e3a8a 25% 50%, #1a6060 50% 75%, #7a5020 75%)' }} />
           <div>
-            <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#b07880', marginBottom: 10 }}>
+            <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', color: '#b07880', marginBottom: 10 }}>
               {originals.length ? 'Want something else?' : 'New originals coming soon'}
             </p>
             <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(22px, 2.6vw, 30px)', lineHeight: 1.2, color: '#fff', marginBottom: 8 }}>
@@ -150,7 +158,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             href={`/inquire?piece=${encodeURIComponent('Commission: original piece')}`}
             className="hover:[background:#b07880] hover:[border-color:#b07880]"
             style={{
-              justifySelf: 'start', fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500,
+              justifySelf: 'start', fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500,
               color: '#fff', border: '1px solid rgba(255,255,255,.6)', padding: '13px 22px', textDecoration: 'none',
               transition: 'background .25s, border-color .25s', whiteSpace: 'nowrap',
             }}

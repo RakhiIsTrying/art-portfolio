@@ -51,10 +51,10 @@ export default function ArtistId({ portraitUrl }: { portraitUrl?: string }) {
 
       <header style={{ position: 'relative', background: INK, color: PAPER, padding: '14px clamp(16px, 3vw, 26px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 16px' }}>
         <div>
-          <p style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: '#e8c55a', marginBottom: 3 }}>Republic of Van Gone Broke</p>
+          <p style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: '#e8c55a', marginBottom: 3 }}>Republic of Van Gone Broke</p>
           <h2 id="id-card" style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: 700, lineHeight: 1.1 }}>Official Artist ID</h2>
         </div>
-        <p style={{ fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(251,243,223,.75)' }}>No. VGB-0001 · Est. 2024</p>
+        <p style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(251,243,223,.75)' }}>No. VGB-0001 · Est. 2024</p>
       </header>
       <div aria-hidden style={{ position: 'relative', height: 5, background: 'linear-gradient(90deg, #7a3040 25%, #1e3a8a 25% 50%, #1a6060 50% 75%, #7a5020 75%)' }} />
 
@@ -72,7 +72,7 @@ export default function ArtistId({ portraitUrl }: { portraitUrl?: string }) {
           </div>
           <p style={{ marginTop: 22, textAlign: 'center' }}>
             <span style={{ display: 'block', fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 25, lineHeight: 1.1, color: '#1e3a8a', transform: 'rotate(-3deg)' }}>Rakhi Sinha</span>
-            <span style={{ display: 'block', marginTop: 4, paddingTop: 4, borderTop: `1px solid ${INK}`, fontSize: 9, letterSpacing: '.25em', textTransform: 'uppercase', color: '#6b5a4a' }}>Signature of holder</span>
+            <span style={{ display: 'block', marginTop: 4, paddingTop: 4, borderTop: `1px solid ${INK}`, fontSize: 10, letterSpacing: '.25em', textTransform: 'uppercase', color: '#6b5a4a' }}>Signature of holder</span>
           </p>
         </div>
 
@@ -81,13 +81,13 @@ export default function ArtistId({ portraitUrl }: { portraitUrl?: string }) {
           <dl>
             {DETAILS.map(([label, value], i) => (
               <div key={label} className="grid grid-cols-1 sm:grid-cols-[172px_1fr]" style={{ alignItems: 'baseline', gap: '2px 14px', padding: `${i ? 11 : 0}px 0 11px`, borderBottom: '1px dashed rgba(26,16,20,.3)' }}>
-                <dt style={{ fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', fontWeight: 600, lineHeight: 1.5, color: WINE, whiteSpace: 'nowrap' }}>{label}</dt>
+                <dt style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', fontWeight: 600, lineHeight: 1.5, color: WINE, whiteSpace: 'nowrap' }}>{label}</dt>
                 <dd style={{ margin: 0, fontFamily: PLAYFAIR, fontSize: 'clamp(17px, 2vw, 20px)', lineHeight: 1.3, color: INK, whiteSpace: 'normal' }}>{value}</dd>
               </div>
             ))}
           </dl>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 14 }}>
-            <div aria-hidden style={{ padding: '6px 10px', border: '3px double #1a6060', borderRadius: 4, color: '#1a6060', opacity: .85, mixBlendMode: 'multiply', fontSize: 10, fontWeight: 800, letterSpacing: '.14em', lineHeight: 1.3, textAlign: 'center', transform: 'rotate(4deg)' }}>
+            <div aria-hidden style={{ padding: '6px 10px', border: '3px double #1a6060', borderRadius: 4, color: '#1a6060', opacity: .85, mixBlendMode: 'multiply', fontSize: 11, fontWeight: 800, letterSpacing: '.14em', lineHeight: 1.3, textAlign: 'center', transform: 'rotate(4deg)' }}>
               APPROVED<br />BY DUG-DUG 🐾
             </div>
           </div>

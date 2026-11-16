@@ -27,7 +27,7 @@ export default function Footer() {
             style={{
               display: 'flex', alignItems: 'center',
               padding: '0 14px',
-              fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
+              fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
               color: 'rgba(255,255,255,.3)',
               borderRight: '1px solid rgba(255,255,255,.07)',
               textDecoration: 'none',
@@ -43,15 +43,16 @@ export default function Footer() {
         ))}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px 20px' }}>
+      <div className="gap-x-5 gap-y-5 md:gap-y-2" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
         {socials.map(({ href, label }) => (
           <a
             key={label}
             href={href}
             target="_blank"
             rel="noopener noreferrer"
+            className="vgb-tap"
             style={{
-              fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
+              fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300,
               color: 'rgba(255,255,255,.3)', textDecoration: 'none',
             }}
           >
@@ -60,8 +61,9 @@ export default function Footer() {
         ))}
         <Link
           href="/privacy"
+          className="vgb-tap"
           style={{
-            fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+            fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
             color: '#b07880', textDecoration: 'none',
           }}
         >
@@ -69,8 +71,9 @@ export default function Footer() {
         </Link>
         <Link
           href="/shop"
+          className="vgb-tap"
           style={{
-            fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+            fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
             color: '#b07880', textDecoration: 'none',
           }}
         >
@@ -78,8 +81,9 @@ export default function Footer() {
         </Link>
         <Link
           href="/print-club"
+          className="vgb-tap"
           style={{
-            fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+            fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
             color: '#b07880', textDecoration: 'none',
           }}
         >
@@ -87,8 +91,9 @@ export default function Footer() {
         </Link>
         <Link
           href="/gallery"
+          className="vgb-tap"
           style={{
-            fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+            fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
             color: '#faf8f5', borderBottom: '1px solid rgba(250,248,245,.35)', paddingBottom: 1,
             textDecoration: 'none',
           }}

@@ -59,7 +59,7 @@ function Archive({ dates, current, today }: { dates: string[]; current: string; 
     // Wide screens: pinned to the far left so the puzzles stay centred. Narrower: a strip above them.
     <nav aria-label="Past puzzles"
          className="no-scrollbar flex gap-1 overflow-x-auto mb-5 xl:mb-0 xl:flex-col xl:fixed xl:left-6 xl:top-[120px] xl:w-[170px] xl:max-h-[calc(100vh-150px)] xl:overflow-x-visible xl:overflow-y-auto xl:z-10">
-      <p className="hidden xl:block" style={{ fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878', marginBottom: 8 }}>Past month</p>
+      <p className="hidden xl:block" style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878', marginBottom: 8 }}>Past month</p>
       {dates.map(d => {
         const on = d === current
         const n = counts[d] ?? 0
@@ -68,10 +68,10 @@ function Archive({ dates, current, today }: { dates: string[]; current: string; 
              style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '8px 10px', textDecoration: 'none',
                       background: on ? BEE_BEN : '#fff', color: on ? '#fff' : INK, border: `1px solid ${on ? BEE_BEN : '#e0dcdc'}` }}>
             <span style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
-              <span style={{ fontSize: 9, letterSpacing: '.2em', textTransform: 'uppercase', opacity: .65, marginRight: 6 }}>{d === today ? 'Today' : weekday(d)}</span>
+              <span style={{ fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', opacity: .65, marginRight: 6 }}>{d === today ? 'Today' : weekday(d)}</span>
               {label(d)}
             </span>
-            <span style={{ fontSize: 10, whiteSpace: 'nowrap', color: on ? '#fff' : n === GAMES.length ? '#3f8f4f' : '#a0a0a0' }}>{n === GAMES.length ? `★ ${n}/${GAMES.length}` : `${n}/${GAMES.length}`}</span>
+            <span style={{ fontSize: 11, whiteSpace: 'nowrap', color: on ? '#fff' : n === GAMES.length ? '#3f8f4f' : '#767676' }}>{n === GAMES.length ? `★ ${n}/${GAMES.length}` : `${n}/${GAMES.length}`}</span>
           </a>
         )
       })}
@@ -116,20 +116,20 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
       <Archive dates={dates} current={daily.date} today={today} />
       {/* Date strip */}
       <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2" style={{ marginBottom: 18, textAlign: 'center' }}>
-        <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878' }}>
+        <p style={{ fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', color: '#787878' }}>
           {pretty} · No. {daily.number} · {solvedCount}/{GAMES.length} solved
         </p>
         {isToday && newDayReady ? (
           // Midnight came while they were playing: say so, and let them finish first
-          <a href="/puzzles" style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN }}>
+          <a href="/puzzles" style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN }}>
             Fresh puzzles are out! Finish up here, then play them →
           </a>
         ) : isToday ? (
-          <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#a0a0a0' }}>
+          <p style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', color: '#767676' }}>
             New puzzles in <span style={{ color: INK, fontVariantNumeric: 'tabular-nums' }}>{countdown}</span>
           </p>
         ) : (
-          <a href="/puzzles" style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN }}>
+          <a href="/puzzles" style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN }}>
             Playing a past day · Back to today →
           </a>
         )}

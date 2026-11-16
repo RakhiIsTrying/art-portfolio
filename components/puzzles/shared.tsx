@@ -53,7 +53,7 @@ export function SolvedBanner({ title, detail, artIndex = 0 }: { title: string; d
       <div>
         <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 21, color: INK, lineHeight: 1.2 }}>{title}</p>
         {detail && <p style={{ fontSize: 12, fontWeight: 300, color: '#787878', marginTop: 4 }}>{detail}</p>}
-        <p style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: BEE_BEN, marginTop: 8 }}>🐾 New puzzle tomorrow</p>
+        <p style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: BEE_BEN, marginTop: 8 }}>🐾 New puzzle tomorrow</p>
       </div>
     </div>
   )
@@ -86,8 +86,8 @@ export function Rules({ who, title, intro, steps }: { who: keyof typeof HOST; ti
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={h.img} alt={h.name} style={{ position: 'absolute', right: 8, top: -34, height: 62, filter: 'drop-shadow(0 0 2px #fff) drop-shadow(0 5px 8px rgba(26,16,20,.2))' }} />
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingRight: 50 }}>
-        <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: h.ink, fontWeight: 600, whiteSpace: 'nowrap' }}>How to play</p>
-        <button type="button" onClick={skip} className="vgb-skip"
+        <p style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', color: h.ink, fontWeight: 600, whiteSpace: 'nowrap' }}>How to play</p>
+        <button type="button" onClick={skip} className="vgb-skip vgb-tap"
           style={{ alignItems: 'center', padding: '3px 9px', fontSize: 11, lineHeight: 1.3, fontFamily: 'inherit', whiteSpace: 'nowrap', cursor: 'pointer', borderRadius: 999, border: `1px solid ${h.ink}`, background: '#fff', color: h.ink }}>
           ↓ To the puzzle
         </button>
@@ -110,7 +110,7 @@ export function Rules({ who, title, intro, steps }: { who: keyof typeof HOST; ti
 export function SmallButton({ onClick, children, dark, bee }: { onClick: () => void; children: React.ReactNode; dark?: boolean; bee?: keyof typeof BEE_LINES }) {
   return (
     <button type="button" onClick={() => { onClick(); if (bee) callBee(bee) }}
-      style={{ padding: '9px 14px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
+      style={{ padding: '9px 14px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit', cursor: 'pointer',
                border: `1px solid ${dark ? BEE_BEN : INK}`, background: dark ? BEE_BEN : '#fff', color: dark ? '#fff' : INK }}>
       {children}
     </button>
@@ -256,7 +256,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled, host = 'b
                className={dug ? 'vgb-motion vgb-bubble-img' : 'vgb-bubble-img'}
                style={{ position: 'absolute', left: 6, bottom: 0, height: dug || host === 'dug' ? 92 : 108, filter: 'drop-shadow(0 0 2px #fbf1e4) drop-shadow(0 6px 10px rgba(0,0,0,.25))',
                         animation: dug && said.word ? 'vgb-hop .7s ease-out .1s 2 both' : undefined }} />
-          <span style={{ fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: dug ? HONEY : host === 'bee' ? '#6b4d0e' : host === 'dug' ? HONEY : '#f3c98b', display: 'block', marginBottom: 4 }}>
+          <span style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: dug ? HONEY : host === 'bee' ? '#6b4d0e' : host === 'dug' ? HONEY : '#f3c98b', display: 'block', marginBottom: 4 }}>
             {dug ? 'Dug-Dug reveals' : `${h.name} says`}
           </span>
           <span style={{ fontSize: 13, lineHeight: 1.55 }}>{said.text}</span>
@@ -273,14 +273,14 @@ export function HintButton({ date, game, getHint, getReveal, disabled, host = 'b
         </div>
       )}
       {disabled ? (
-        <span style={{ padding: '9px 16px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', border: '1px solid #d0d0d0', color: '#787878', background: '#fff' }}>
+        <span style={{ padding: '9px 16px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', border: '1px solid #d0d0d0', color: '#787878', background: '#fff' }}>
           ✓ Solved, no hints needed
         </span>
       ) : (
         <>
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10 }}>
             <button type="button" onClick={ask} disabled={wait > 0} className="hover:-translate-y-0.5"
-              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 18px 6px 8px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit',
+              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 18px 6px 8px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit',
                        cursor: wait > 0 ? 'not-allowed' : 'pointer', border: 'none', borderRadius: 999,
                        background: wait > 0 ? '#e6e1e1' : HINT[0], color: wait > 0 ? '#787878' : HINT[2], boxShadow: wait > 0 ? 'none' : `0 6px 16px ${HINT[1]}55`, transition: 'transform .15s, background .3s' }}>
               <span style={{ width: 34, height: 34, borderRadius: '50%', background: '#fbf1e4', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', flexShrink: 0 }}>
@@ -292,7 +292,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled, host = 'b
 
             {revealsReady > 0 && (
               <button type="button" onClick={reveal} className="hover:-translate-y-0.5 vgb-motion"
-                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 18px 4px 6px', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit',
+                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 18px 4px 6px', fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontFamily: 'inherit',
                          cursor: 'pointer', border: 'none', borderRadius: 999, background: BEE_BEN, color: '#fff', boxShadow: '0 6px 16px rgba(74,58,122,.35)',
                          transition: 'transform .15s', animation: 'vgb-pop .45s cubic-bezier(.2,1.4,.4,1) both' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -302,7 +302,7 @@ export function HintButton({ date, game, getHint, getReveal, disabled, host = 'b
             )}
           </div>
           {revealsReady < 1 && (
-            <p style={{ fontSize: 10, letterSpacing: '.2em', color: '#a0a0a0' }}>
+            <p style={{ fontSize: 11, letterSpacing: '.2em', color: '#767676' }}>
               🐾 Dug-Dug’s reveal unlocks in {toNext} more {toNext === 1 ? 'hint' : 'hints'}
             </p>
           )}
@@ -347,7 +347,7 @@ export function BeeCallout() {
                   animation: 'vgb-bee-in .4s cubic-bezier(.2,1.3,.4,1) both' }}>
       <div className="vgb-bee-say" style={{ marginBottom: 96, padding: '10px 14px', maxWidth: 200, background: '#fff', color: INK, fontSize: 13, lineHeight: 1.4,
                     border: `2px solid ${BEE_BEN}`, borderRadius: 14, borderBottomRightRadius: 2, boxShadow: '0 10px 24px rgba(26,16,20,.18)' }}>
-        <span style={{ display: 'block', fontSize: 9, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN, marginBottom: 2 }}>Bee</span>
+        <span style={{ display: 'block', fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: BEE_BEN, marginBottom: 2 }}>Bee</span>
         {said.text}
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}

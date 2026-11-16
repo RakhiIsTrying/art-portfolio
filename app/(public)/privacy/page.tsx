@@ -17,7 +17,7 @@ const link: React.CSSProperties = { color: '#7a3040', textDecoration: 'underline
 export default function PrivacyPage() {
   return (
     <div className="px-4 sm:px-9 pt-8 sm:pt-10 pb-16" style={{ maxWidth: 760, margin: '0 auto', fontSize: 15, lineHeight: 1.75, fontWeight: 300, color: '#3a3a3a', whiteSpace: 'normal' }}>
-      <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 8 }}>The boring but important bit</p>
+      <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a5020', marginBottom: 8 }}>The boring but important bit</p>
       <h1 style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(36px, 6vw, 52px)', fontWeight: 700, lineHeight: 1, color: '#1a1014', marginBottom: 10 }}>Privacy Policy</h1>
       <p style={{ fontSize: 13, color: '#787878', marginBottom: 20 }}>Last updated {UPDATED}</p>
 
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
       <p>Sign-ups and messages stay for as long as I need them for your membership, order or conversation, and for any records I have to keep. Visitor statistics stay until I no longer find them useful. You can ask me to delete your details at any time.</p>
 
       <h2 style={h2}>Your rights</h2>
-      <p>You can ask to see, correct or delete your information, withdraw your consent, or complain about how I’ve handled it. <Link href="/inquire" style={link}>Send me a message</Link> and I’ll sort it out. Depending on where you live, you may also be able to complain to your local data protection authority.</p>
+      <p>You can ask to see, correct or delete your information, withdraw your consent, or complain about how I’ve handled it. <Link href="/inquire" className="vgb-tap" style={link}>Send me a message</Link> and I’ll sort it out. Depending on where you live, you may also be able to complain to your local data protection authority.</p>
 
       <h2 style={h2}>Children</h2>
       <p>The site is for a general audience, but forms and Print Club are meant for adults. If you’re under 18, please ask a parent or guardian to fill them in.</p>

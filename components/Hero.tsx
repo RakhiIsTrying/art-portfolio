@@ -49,7 +49,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts, or
           >
             <span style={{
               writingMode: 'vertical-rl',
-              fontSize: 8, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 300,
+              fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 300,
               transform: 'rotate(180deg)',
               color: 'rgba(255,255,255,.7)',
             }}>
@@ -89,7 +89,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts, or
 
         <span style={{
           position: 'absolute', top: 18, left: 18, pointerEvents: 'none',
-          fontSize: 9, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
+          fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400,
           color: latest ? 'rgba(255,255,255,.75)' : 'rgba(255,255,255,.28)',
         }}>
           {label}
@@ -127,7 +127,7 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts, or
       }}>
         <div>
           <p style={{
-            fontSize: 10, letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 400,
+            fontSize: 11, letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 400,
             color: '#7a3040', marginBottom: 10,
           }}>
             ✦ Welcome to the studio
@@ -166,11 +166,11 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts, or
         {/* Where to next, four colour tiles, each with a cut-out peeking in */}
         <div className="grid grid-cols-2 grid-rows-3" style={{ gap: 8, marginTop: 22, flex: 1, minHeight: 300 }}>
           {[
-            { href: '/originals', label: 'Originals for sale', sub: 'One of one, ask for price', color: '#b0552f', img: cutouts?.['bee-ben']?.url, extra: true },
-            { href: '/gallery', label: 'Explore the gallery', sub: stats ? `${stats.works} works` : 'All collections', color: '#7a3040', img: cutouts?.music?.url ?? cutouts?.comics?.url },
-            { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: printsCutout?.url ?? cutouts?.comics?.url },
-            { href: '/print-club', label: 'Print Club', sub: stats ? `From ${stats.clubPrice} / month` : 'A print every month', color: '#9a5a64', img: cutouts?.movies?.url ?? cutouts?.comics?.url },
-            { href: '/puzzles', label: 'Daily puzzles', sub: '6 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png', friends: true },
+            { href: '/originals', label: 'Originals for sale', sub: 'One of one, ask for price', color: '#b0552f', img: cutouts?.['bee-ben']?.url, alt: '', extra: true },
+            { href: '/gallery', label: 'Explore the gallery', sub: stats ? `${stats.works} works` : 'All collections', color: '#7a3040', img: cutouts?.music?.url ?? cutouts?.comics?.url, alt: (cutouts?.music ?? cutouts?.comics)?.title ?? '' },
+            { href: '/shop', label: 'Prints & cards', sub: stats ? `From ${stats.printFrom}` : 'Originals & prints', color: '#1a1014', img: printsCutout?.url ?? cutouts?.comics?.url, alt: (printsCutout ?? cutouts?.comics)?.title ?? '' },
+            { href: '/print-club', label: 'Print Club', sub: stats ? `From ${stats.clubPrice} / month` : 'A print every month', color: '#9a5a64', img: cutouts?.movies?.url ?? cutouts?.comics?.url, alt: (cutouts?.movies ?? cutouts?.comics)?.title ?? '' },
+            { href: '/puzzles', label: 'Daily puzzles', sub: '6 new every day', color: '#4a3a7a', img: '/puzzles/dugdug.png', alt: '', friends: true },
           ].map(t => (
             <Link key={t.href} href={t.href} className={`group ${'extra' in t ? 'col-span-2' : ''}`}
               style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: 110,
@@ -190,25 +190,25 @@ export default function Hero({ latest, label = 'Latest Work', stats, cutouts, or
                   {originalsTile?.featured && (
                     <span style={{ height: '92%', maxWidth: '52%', background: '#fff', padding: 4, transform: 'rotate(-3deg)', boxShadow: '0 8px 14px rgba(0,0,0,.35)', display: 'flex' }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={originalsTile.featured.url} alt="" style={{ height: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                      <img src={originalsTile.featured.url} alt={originalsTile.featured.title} style={{ height: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                     </span>
                   )}
                   {originalsTile?.flower && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={originalsTile.flower.url} alt="" style={{ height: '100%', maxWidth: '44%', objectFit: 'contain', transform: 'rotate(3deg)', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
+                    <img src={originalsTile.flower.url} alt={originalsTile.flower.title} style={{ height: '100%', maxWidth: '44%', objectFit: 'contain', transform: 'rotate(3deg)', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.35))' }} />
                   )}
                 </span>
               )}
               {t.img && !('friends' in t) && !('extra' in t) && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <span aria-hidden className="vgb-motion transition-transform duration-500 group-hover:-translate-y-1" style={{ position: 'absolute', right: 8, top: 8, height: '72%', width: '50%', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                  <img src={t.img} alt="" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.35))' }} />
+                  <img src={t.img} alt={t.alt} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.35))' }} />
                 </span>
               )}
               <span style={{ position: 'relative', zIndex: 4, fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif', fontSize: 'clamp(14px, 1.5vw, 21px)', fontWeight: 700, lineHeight: 1.15, whiteSpace: 'nowrap', textShadow: '0 1px 8px rgba(0,0,0,.45)' }}>
                 {t.label}
               </span>
-              <span style={{ position: 'relative', zIndex: 4, fontSize: 10, letterSpacing: '.12em', color: 'rgba(255,255,255,.72)', marginTop: 3, display: 'flex', justifyContent: 'space-between', gap: 6 }}>
+              <span style={{ position: 'relative', zIndex: 4, fontSize: 11, letterSpacing: '.12em', color: 'rgba(255,255,255,.72)', marginTop: 3, display: 'flex', justifyContent: 'space-between', gap: 6 }}>
                 {t.sub}<span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
               </span>
             </Link>

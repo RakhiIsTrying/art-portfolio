@@ -45,9 +45,9 @@ export default function SizePicker({ qty, onChange, currency, onCurrency }: Prop
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-        <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>Sizes</p>
-        <button type="button" onClick={() => onCurrency(currency === 'inr' ? 'usd' : 'inr')}
-                style={{ fontSize: 10, letterSpacing: '.2em', background: 'none', border: 'none', color: '#1e3a8a', cursor: 'pointer', fontFamily: 'inherit' }}>
+        <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 500, color: '#1a1014' }}>Sizes</p>
+        <button type="button" className="vgb-tap" onClick={() => onCurrency(currency === 'inr' ? 'usd' : 'inr')}
+                style={{ fontSize: 11, letterSpacing: '.2em', background: 'none', border: 'none', color: '#1e3a8a', cursor: 'pointer', fontFamily: 'inherit' }}>
           Show in {currency === 'inr' ? 'USD $' : 'INR ₹'}
         </button>
       </div>

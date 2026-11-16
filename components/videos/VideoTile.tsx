@@ -53,7 +53,7 @@ export default function VideoTile({ video, index, onOpen, active }: Props) {
       {video.thumbnail_url && (
         <Image
           src={video.thumbnail_url}
-          alt=""
+          alt={video.title}
           fill
           className="object-contain vgb-motion"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
@@ -84,7 +84,7 @@ export default function VideoTile({ video, index, onOpen, active }: Props) {
       {/* Index + preview indicator */}
       <span style={{
         position: 'absolute', top: 12, left: 14,
-        fontSize: 10, letterSpacing: '.3em', fontWeight: 400, color: 'rgba(255,255,255,.7)',
+        fontSize: 11, letterSpacing: '.3em', fontWeight: 400, color: 'rgba(255,255,255,.7)',
       }}>
         {String(index + 1).padStart(2, '0')}
       </span>

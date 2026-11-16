@@ -26,7 +26,7 @@ export default function OriginalChoice({ artwork, children }: { artwork: Artwork
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={artwork.image_url} alt="" style={{ width: 64, height: 64, objectFit: 'contain', background: '#f4f2ef', flexShrink: 0 }} />
               <div style={{ minWidth: 0, flex: 1 }}>
-                <p style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#b0552f', marginBottom: 4 }}>Original · 1/1</p>
+                <p style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', color: '#b0552f', marginBottom: 4 }}>Original · 1/1</p>
                 <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontStyle: 'italic', fontSize: 20, lineHeight: 1.2, color: '#1a1014', whiteSpace: 'normal' }}>{artwork.title}</p>
               </div>
               <button type="button" onClick={() => setOpen(false)} aria-label="Close" style={{ alignSelf: 'flex-start', background: 'none', border: 'none', fontSize: 20, lineHeight: 1, cursor: 'pointer', color: '#787878' }}>×</button>

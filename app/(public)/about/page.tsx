@@ -67,7 +67,7 @@ export default async function AboutPage() {
           </figure>
         )}
         <div>
-          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a5020', marginBottom: 12 }}>✦ Evidence suggests a human runs this place</p>
+          <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', color: '#7a5020', marginBottom: 12 }}>✦ Evidence suggests a human runs this place</p>
           <h1 style={{ fontFamily: PLAYFAIR, fontSize: 'clamp(42px, 7vw, 72px)', fontWeight: 700, lineHeight: .95, color: INK, marginBottom: 18 }}>
             Hi, I’m <span style={{ fontWeight: 400, fontStyle: 'italic', color: '#b07880' }}>Rakhi.</span>
           </h1>
@@ -112,13 +112,13 @@ export default async function AboutPage() {
           Got an idea, a pet or a pile of money to throw?
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10 }}>
-          <Link href="/inquire" className="hover:[background:#7a3040]" style={{ padding: '13px 22px', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, background: INK, color: '#fff', textDecoration: 'none', transition: 'background .25s' }}>
+          <Link href="/inquire" className="hover:[background:#7a3040]" style={{ padding: '13px 22px', fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, background: INK, color: '#fff', textDecoration: 'none', transition: 'background .25s' }}>
             Get in touch →
           </Link>
-          <a href="https://www.instagram.com/van_gone_broke/" target="_blank" rel="noreferrer" style={{ padding: '12px 22px', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, border: `1px solid ${INK}`, color: INK, textDecoration: 'none' }}>
+          <a href="https://www.instagram.com/van_gone_broke/" target="_blank" rel="noreferrer" style={{ padding: '12px 22px', fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, border: `1px solid ${INK}`, color: INK, textDecoration: 'none' }}>
             @van_gone_broke
           </a>
-          <a href="https://www.youtube.com/@Van_Gone_Broke" target="_blank" rel="noreferrer" style={{ padding: '12px 22px', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, border: `1px solid ${INK}`, color: INK, textDecoration: 'none' }}>
+          <a href="https://www.youtube.com/@Van_Gone_Broke" target="_blank" rel="noreferrer" style={{ padding: '12px 22px', fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, border: `1px solid ${INK}`, color: INK, textDecoration: 'none' }}>
             YouTube
           </a>
         </div>

@@ -38,7 +38,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #d0d0d0' }}>
         <div style={{ width: 3, background: color, marginRight: 16, flexShrink: 0 }} />
         <div style={{ flex: 1 }}>
-          <Link href="/gallery" style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', textDecoration: 'none', display: 'block', marginBottom: 6 }}>
+          <Link href="/gallery" className="vgb-tap" style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 300, color: '#767676', textDecoration: 'none', display: 'block', marginBottom: 6 }}>
             ← Collections
           </Link>
           <h1 style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 'clamp(22px, 6vw, 30px)', fontWeight: 700, color: '#1a1014', lineHeight: 1, whiteSpace: 'nowrap' }}>
@@ -46,7 +46,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
           </h1>
         </div>
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.3em', color: '#a0a0a0', textTransform: 'uppercase' }}>
+          <span style={{ fontSize: 11, fontWeight: 300, letterSpacing: '.3em', color: '#767676', textTransform: 'uppercase' }}>
             {artworks?.length ?? 0} works
           </span>
         </div>
@@ -55,7 +55,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       {artworks && artworks.length > 0 ? (
         <MasonryGrid artworks={arrange(artworks as Artwork[], artworkOrder[slug])} initialId={art} />
       ) : (
-        <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#a0a0a0', padding: '40px 0' }}>
+        <p style={{ fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 300, color: '#767676', padding: '40px 0' }}>
           No pieces here yet. Check back soon.
         </p>
       )}

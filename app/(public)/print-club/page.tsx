@@ -34,6 +34,8 @@ export default async function PrintClubPage() {
   const visitorPlan = await planForVisitor()
   const visitorCountry = await countryForVisitor()
   const PLANS = (await getSettings()).plans
+  // The past-boxes page is only linked once a box has gone out
+  const { count: boxCount } = await supabase.from('club_boxes').select('id', { count: 'exact', head: true })
 
   return (
     <div style={{ maxWidth: 1140, margin: '0 auto' }} className="px-5 md:px-9 pt-10 pb-16">
@@ -42,7 +44,7 @@ export default async function PrintClubPage() {
 
         {/* Pitch */}
         <div>
-          <p style={{ fontSize: 10, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 14 }}>
+          <p style={{ fontSize: 11, letterSpacing: '.5em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 14 }}>
             ✦ Members
           </p>
           <h1 style={{ marginBottom: 22 }}>
@@ -58,14 +60,16 @@ export default async function PrintClubPage() {
             Art in your mailbox instead of bills. Join the club and get a new Van Gone Broke print every month.
           </p>
 
-          <Link href="/print-club/boxes" className="group"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 20, fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', textDecoration: 'none' }}>
+          {(boxCount ?? 0) > 0 && (
+          <Link href="/print-club/boxes" className="group vgb-tap"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 20, fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 500, color: '#7a3040', textDecoration: 'none' }}>
             See past boxes &amp; unboxings <span className="transition-transform group-hover:translate-x-1">→</span>
           </Link>
+          )}
         </div>
 
         {/* Fanned prints */}
-        <div aria-hidden="true" style={{ position: 'relative', height: 'clamp(340px, 46vw, 480px)' }}>
+        <div aria-hidden="true" style={{ position: 'relative', height: 'clamp(340px, 46vw, 480px)', width: '100%', maxWidth: 520, justifySelf: 'center' }}>
           <div style={{ position: 'absolute', inset: '8% 4%', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(176,120,128,.28), transparent 65%)' }} />
           {pieces.map((art, i) => {
             const f = FAN[i + (FAN.length - pieces.length)]
@@ -97,9 +101,9 @@ export default async function PrintClubPage() {
               <p style={{ fontSize: 13, lineHeight: 1.5, minHeight: '3em', fontWeight: 300, color: '#787878', marginBottom: 18 }}>{tier.tagline}</p>
               <p style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
                 <span style={{ fontFamily: PLAYFAIR, fontSize: 40, fontWeight: 700, color: '#1a1014', lineHeight: 1 }}>{tierPrice(PLANS[visitorPlan], id)}</span>
-                <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month · {PLANS[visitorPlan].region}</span>
+                <span style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 300, color: '#787878' }}>/ month · {PLANS[visitorPlan].region}</span>
               </p>
-              <p style={{ fontSize: 11, fontWeight: 300, color: '#a0a0a0', marginBottom: 18 }}>
+              <p style={{ fontSize: 11, fontWeight: 300, color: '#767676', marginBottom: 18 }}>
                 {PLANS[other].region}: {tierPrice(PLANS[other], id)} / month
               </p>
               <ul style={{ listStyle: 'none', borderTop: '1px solid #d0d0d0', marginBottom: 20, flex: 1 }}>
@@ -114,7 +118,7 @@ export default async function PrintClubPage() {
                 ))}
               </ul>
               <Link href={`/print-club?tier=${id}#apply`} className="hover:opacity-85"
-                    style={{ textAlign: 'center', padding: '13px 18px', fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, textDecoration: 'none', background: tier.color, color: '#fff', transition: 'opacity .25s' }}>
+                    style={{ textAlign: 'center', padding: '13px 18px', fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500, textDecoration: 'none', background: tier.color, color: '#fff', transition: 'opacity .25s' }}>
                 Choose this tier →
               </Link>
             </div>
@@ -126,7 +130,7 @@ export default async function PrintClubPage() {
       <div id="apply" className="grid md:grid-cols-[1fr_2fr] gap-10 md:gap-16" style={{ background: '#fff', border: '1px solid #d0d0d0', position: 'relative', scrollMarginTop: 84 }}>
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, #7a3040 25%, #1e3a8a 25% 50%, #1a6060 50% 75%, #7a5020 75%)' }} />
         <div className="p-7 md:p-10 md:pr-0">
-          <p style={{ fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
+          <p style={{ fontSize: 11, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: '#7a3040', marginBottom: 12 }}>
             Apply to join
           </p>
           <p style={{ fontFamily: PLAYFAIR, fontStyle: 'italic', fontSize: 'clamp(24px, 2.6vw, 32px)', lineHeight: 1.2, color: '#1a1014', marginBottom: 14 }}>

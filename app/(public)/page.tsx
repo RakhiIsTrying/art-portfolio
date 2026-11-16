@@ -76,13 +76,13 @@ export default async function HomePage() {
               Featured Work
             </h2>
             {works.length > 0 && (
-              <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
+              <span style={{ fontSize: 11, fontWeight: 300, letterSpacing: '.2em', color: '#767676' }}>
                 {String(works.length).padStart(2, '0')} works
               </span>
             )}
           </div>
-          <a href="/gallery" style={{
-            fontSize: 10, fontWeight: 400, letterSpacing: '.35em', textTransform: 'uppercase',
+          <a href="/gallery" className="vgb-tap" style={{
+            fontSize: 11, fontWeight: 400, letterSpacing: '.35em', textTransform: 'uppercase',
             color: '#7a3040', borderBottom: '1px solid #7a3040', paddingBottom: 1, textDecoration: 'none',
           }}>
             View All →
@@ -103,7 +103,7 @@ export default async function HomePage() {
           <h2 style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.45em', textTransform: 'uppercase', color: '#1a1014' }}>
             Browse Collections
           </h2>
-          <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.2em', color: '#a0a0a0' }}>
+          <span style={{ fontSize: 11, fontWeight: 300, letterSpacing: '.2em', color: '#767676' }}>
             {String(COLLECTIONS.length).padStart(2, '0')} categories
           </span>
         </div>

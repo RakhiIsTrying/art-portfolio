@@ -17,7 +17,7 @@ type Props = {
 }
 
 const buyStyle: React.CSSProperties = {
-  flexShrink: 0, fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
+  flexShrink: 0, fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
   background: '#1a1014', color: '#faf8f5', padding: '10px 18px', textDecoration: 'none',
 }
 
@@ -43,7 +43,7 @@ export default function Lightbox({ artwork, onClose }: Props) {
         {/* Info bar */}
         <div style={{ padding: '16px 20px', borderTop: '1px solid #d0d0d0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 10, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 4 }}>
+            <p style={{ fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 4 }}>
               {artwork.collection_slug}
               {artwork.medium ? ` · ${artwork.medium}` : ''}
               {artwork.year ? ` · ${artwork.year}` : ''}
@@ -56,10 +56,10 @@ export default function Lightbox({ artwork, onClose }: Props) {
                 href={artwork.instagram_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:[color:#1a1014]"
+                className="vgb-tap hover:[color:#1a1014]"
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8,
-                  fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400,
+                  fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', fontWeight: 400,
                   color: '#787878', textDecoration: 'none', transition: 'color .2s',
                 }}
               >
@@ -85,7 +85,7 @@ export default function Lightbox({ artwork, onClose }: Props) {
               </Link>
             )}
             {artwork.prints_available === false && !artwork.original_available && (
-              <span style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: '#787878', padding: '10px 0' }}>Display only</span>
+              <span style={{ fontSize: 11, letterSpacing: '.3em', textTransform: 'uppercase', color: '#787878', padding: '10px 0' }}>Display only</span>
             )}
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function Lightbox({ artwork, onClose }: Props) {
 
       <button
         onClick={onClose}
-        style={{ position: 'absolute', top: 20, right: 24, fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+        style={{ position: 'absolute', top: 20, right: 24, fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
       >
         Close ✕
       </button>

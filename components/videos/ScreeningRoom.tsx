@@ -83,7 +83,7 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
         {featured && (
           <section ref={topRef} className="grid md:grid-cols-[1fr_auto] items-center gap-10 md:gap-16" style={{ marginBottom: 72, scrollMarginTop: 60 }}>
             <div className="vgb-motion" style={{ animation: 'vgb-rise .9s cubic-bezier(.2,.7,.2,1) both' }}>
-              <p style={{ fontSize: 10, letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 400, color: '#b07880', marginBottom: 18 }}>
+              <p style={{ fontSize: 11, letterSpacing: '.55em', textTransform: 'uppercase', fontWeight: 400, color: '#b07880', marginBottom: 18 }}>
                 ✦ Watch · {String(all.length).padStart(2, '0')} reels
               </p>
               <h1 style={{ marginBottom: 24 }}>
@@ -105,7 +105,7 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
               </p>
 
               <div style={{ borderTop: '1px solid rgba(255,255,255,.12)', paddingTop: 22, maxWidth: 420 }}>
-                <p style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 9, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: 'rgba(255,255,255,.5)', marginBottom: 10 }}>
+                <p style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 10, letterSpacing: '.45em', textTransform: 'uppercase', fontWeight: 400, color: 'rgba(255,255,255,.5)', marginBottom: 10 }}>
                   <span className="vgb-motion" style={{ width: 6, height: 6, borderRadius: '50%', background: '#b07880', boxShadow: '0 0 10px rgba(176,120,128,.8)', animation: 'vgb-pulse 1.8s ease-in-out infinite' }} />
                   Now showing
                 </p>
@@ -146,7 +146,7 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
                   style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
                 />
               ) : featured.thumbnail_url && (
-                <Image src={featured.thumbnail_url} alt="" fill priority unoptimized className="object-contain" />
+                <Image src={featured.thumbnail_url} alt={featured.title} fill priority unoptimized className="object-contain" />
               )}
               <div className="vgb-motion opacity-0 group-hover:opacity-100" style={{
                 position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -186,14 +186,14 @@ export default function ScreeningRoom({ videos: all }: { videos: Video[] }) {
                   }}
                 >
                   {t.label}
-                  <span style={{ fontSize: 9, fontWeight: 300, letterSpacing: '.1em', color: active ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.3)' }}>
+                  <span style={{ fontSize: 10, fontWeight: 300, letterSpacing: '.1em', color: active ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.3)' }}>
                     {String(t.count).padStart(2, '0')}
                   </span>
                 </button>
               )
             })}
           </div>
-          <span className="hidden lg:inline" style={{ flexShrink: 0, paddingBottom: 14, fontSize: 10, fontWeight: 300, letterSpacing: '.25em', color: 'rgba(255,255,255,.4)' }}>
+          <span className="hidden lg:inline" style={{ flexShrink: 0, paddingBottom: 14, fontSize: 11, fontWeight: 300, letterSpacing: '.25em', color: 'rgba(255,255,255,.4)' }}>
             Hover for sound · click to play at the top
           </span>
         </div>

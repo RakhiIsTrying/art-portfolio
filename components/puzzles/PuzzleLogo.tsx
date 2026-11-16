@@ -15,7 +15,7 @@ export default function PuzzleLogo() {
     <img src={src} alt={alt} className="vgb-motion" style={{ position: 'absolute', filter: 'drop-shadow(0 0 2px #fff) drop-shadow(0 8px 10px rgba(26,16,20,.22))', ...style }} />
   )
   return (
-    <div style={{ position: 'relative', display: 'inline-block', padding: 'clamp(46px, 7vw, 64px) clamp(44px, 8vw, 92px) 8px' }}>
+    <div style={{ position: 'relative', display: 'inline-block', padding: 'clamp(46px, 7vw, 64px) clamp(min(44px, calc((100vw - 260px) / 2)), 8vw, 92px) 8px' }}>
       {/* Dug-Dug sits on top of the tiles; Bee and Ben lean in from the sides */}
       {friend('/puzzles/dugdug.png', 'Dug-Dug', { left: 'calc(50% - clamp(18px, 2.6vw, 26px))', top: 0, height: 'clamp(56px, 8vw, 80px)', animation: 'vgb-hop 1s ease-out .9s both' })}
       {friend('/puzzles/bee.png', 'Bee', { left: 0, bottom: 0, height: 'clamp(64px, 10vw, 112px)', animation: 'vgb-tile-pop .6s cubic-bezier(.2,1.4,.4,1) .2s both' })}

@@ -4,10 +4,10 @@ export default function InstagramLink({ href }: { href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="hover:[color:#fff] hover:[border-color:#fff]"
+      className="vgb-tap hover:[color:#fff] hover:[border-color:#fff]"
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 8,
-        fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
+        fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 400,
         color: 'rgba(255,255,255,.65)', textDecoration: 'none',
         borderBottom: '1px solid rgba(255,255,255,.3)', paddingBottom: 2, transition: 'color .2s, border-color .2s',
       }}

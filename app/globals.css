@@ -164,6 +164,34 @@ label[style*="text-transform: uppercase"] { white-space: nowrap; }
 [style*="text-transform: uppercase"][style*="letter-spacing: 0.3em"] { letter-spacing: .18em !important; }
 }
 
+/* ── Fonts ─────────────────────────────────────────────────────────────────
+   Each family is two files (see app/layout.tsx); these join them back into
+   the names the rest of the site uses. */
+html {
+  --font-inter: var(--font-inter-latin), var(--font-inter-extra);
+  --font-playfair: var(--font-playfair-latin), var(--font-playfair-extra);
+}
+
+/* ── Menu ──────────────────────────────────────────────────────────────────
+   Phones fit four tabs across, so the letters sit closer together there. */
+.vgb-nav-home { padding: 0 10px; font-size: 11px; letter-spacing: .2em; }
+.vgb-nav-link { padding: 0 2px; font-size: 10px; letter-spacing: .02em; }
+@media (min-width: 375px) {
+  .vgb-nav-home { padding: 0 12px; letter-spacing: .25em; }
+  .vgb-nav-link { padding: 0 4px; font-size: 11px; letter-spacing: .04em; }
+}
+@media (min-width: 640px) { .vgb-nav-link { letter-spacing: .25em; } }
+@media (min-width: 1024px) {
+  .vgb-nav-home { padding: 0 24px; letter-spacing: .55em; }
+  .vgb-nav-link { letter-spacing: .4em; }
+}
+
+/* Small text links get a bigger touch area on phones, without looking any different */
+@media (pointer: coarse) {
+  .vgb-tap { position: relative; }
+  .vgb-tap::after { content: ''; position: absolute; inset: -12px -6px; }
+}
+
 /* ── Puzzles: How to play on the left, Ben & Dug-Dug's hints on the right (wide screens) ── */
 /* Phones and tablets: open the phone's keyboard, and skip past the directions */
 .vgb-touch-only { display: none; }
