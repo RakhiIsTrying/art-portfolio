@@ -1,7 +1,9 @@
 'use client'
 import Link from 'next/link'
+import { useEffect } from 'react'
 import type { Artwork } from '@/lib/types'
 import ArtFill from '@/components/ArtFill'
+import { useAspect } from '@/lib/useAspects'
 
 const categoryColors: Record<string, string> = {
   music:    '#7a3040',
@@ -17,38 +19,53 @@ type Props = {
 }
 
 const buyStyle: React.CSSProperties = {
-  flexShrink: 0, fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
-  background: '#1a1014', color: '#faf8f5', padding: '10px 18px', textDecoration: 'none',
+  flex: '1 1 auto', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', fontWeight: 500,
+  background: '#1a1014', color: '#faf8f5', padding: '12px 18px', textDecoration: 'none',
 }
 
+/**
+ * A big look at one piece: the whole artwork as large as the screen allows, with its
+ * name and the ask / buy buttons underneath. Closes on ✕, Esc or a click outside.
+ */
 export default function Lightbox({ artwork, onClose }: Props) {
   const color = categoryColors[artwork.collection_slug] ?? '#1a1014'
+  // The art's own shape (width ÷ height), so the picture is never cropped
+  const aspect = useAspect(artwork.image_url) ?? 1
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
+  }, [onClose])
 
   return (
     <div
-      style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(26,16,20,.88)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+      role="dialog" aria-modal="true" aria-label={artwork.title}
+      className="vgb-lb"
+      style={{ '--lb-aspect': aspect, position: 'fixed', inset: 0, zIndex: 70, background: 'rgba(14,10,12,.94)', display: 'flex', overflowY: 'auto', animation: 'vgb-fade .25s ease both' } as React.CSSProperties}
       onClick={onClose}
     >
+      {/* Sizes and the side-by-side layout on wide screens live in globals.css (.vgb-lb) */}
       <div
-        style={{ width: '100%', maxWidth: 600, background: '#fff', border: '1px solid #d0d0d0', overflow: 'hidden' }}
+        className="vgb-lb-card"
+        style={{ margin: 'auto', background: '#fff', boxShadow: '0 30px 80px rgba(0,0,0,.55)' }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Image */}
-        <div style={{ position: 'relative', aspectRatio: '1', width: '100%' }}>
-          <ArtFill src={artwork.image_url} alt={artwork.title} sizes="600px" />
-          {/* Category color stripe */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: color }} />
+        {/* The artwork, whole */}
+        <div className="vgb-lb-art" style={{ position: 'relative' }}>
+          <ArtFill src={artwork.image_url} alt={artwork.title} sizes="(max-width: 700px) 100vw, 1320px" priority />
         </div>
 
-        {/* Info bar */}
-        <div style={{ padding: '16px 20px', borderTop: '1px solid #d0d0d0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Name and buttons: beside the art on wide screens, underneath it on phones */}
+        <div className="vgb-lb-info" style={{ borderColor: color }}>
+          <div className="vgb-lb-text">
             <p style={{ fontSize: 11, letterSpacing: '.4em', textTransform: 'uppercase', fontWeight: 400, color, marginBottom: 4 }}>
               {artwork.collection_slug}
               {artwork.medium ? ` · ${artwork.medium}` : ''}
               {artwork.year ? ` · ${artwork.year}` : ''}
             </p>
-            <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 20, fontStyle: 'italic', fontWeight: 400, color: '#1a1014', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 20, fontStyle: 'italic', fontWeight: 400, color: '#1a1014', lineHeight: 1.2 }}>
               {artwork.title}
             </p>
             {artwork.instagram_url && (
@@ -73,7 +90,7 @@ export default function Lightbox({ artwork, onClose }: Props) {
             )}
           </div>
           {/* What visitors can buy follows Admin → Arrange art → "In the shop" */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'flex-end' }}>
+          <div className="vgb-lb-buy">
             {artwork.original_available && (
               <Link href={`/inquire?piece=${encodeURIComponent(`Original: ${artwork.title}`)}`} style={{ ...buyStyle, background: '#7a3040' }}>
                 Buy the original →
@@ -92,8 +109,9 @@ export default function Lightbox({ artwork, onClose }: Props) {
       </div>
 
       <button
-        onClick={onClose}
-        style={{ position: 'absolute', top: 20, right: 24, fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+        type="button"
+        onClick={e => { e.stopPropagation(); onClose() }}
+        style={{ position: 'fixed', top: 6, right: 8, padding: '12px 14px', fontSize: 11, letterSpacing: '.35em', textTransform: 'uppercase', color: 'rgba(255,255,255,.8)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
       >
         Close ✕
       </button>
