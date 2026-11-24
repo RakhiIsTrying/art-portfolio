@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The iPhone app's native project and its own packages
+    "ios-app/**",
   ]),
 ]);
 

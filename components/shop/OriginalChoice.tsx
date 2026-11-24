@@ -18,7 +18,8 @@ export default function OriginalChoice({ artwork, children }: { artwork: Artwork
     <>
       {children(() => setOpen(true))}
       {open && (
-        <BigArt src={artwork.image_url} title={artwork.title} label="Original · 1/1" color="#b0552f" onClose={close} roomy>
+        <BigArt src={artwork.image_url} title={artwork.title} label="Original · 1/1" color="#b0552f" onClose={close} roomy
+                sharePath={`/gallery/${artwork.collection_slug}?art=${artwork.id}`}>
           <Link href={`/inquire?piece=${encodeURIComponent(`Original: ${artwork.title}`)}`} onClick={close} style={{ ...choice, background: '#1a1014', color: '#fff' }}>
             <span style={choiceTitle}>Ask about the original →</span>
             <span style={{ ...choiceNote, color: 'rgba(255,255,255,.7)' }}>The hand-made piece itself. I’ll reply with the price.</span>

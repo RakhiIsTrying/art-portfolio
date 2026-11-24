@@ -1,6 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import ArtFill from '@/components/ArtFill'
+import ShareButton from '@/components/ShareButton'
 import { useAspect } from '@/lib/useAspects'
 
 type Props = {
@@ -11,6 +12,8 @@ type Props = {
   /** Colour of the label and of the line between the art and its name */
   color: string
   onClose: () => void
+  /** Link to this piece on the site, for the Share button */
+  sharePath?: string
   /** Anything that sits under the name (a link, a short note) */
   extra?: React.ReactNode
   /** The ask / buy buttons */
@@ -24,7 +27,7 @@ type Props = {
  * the ask / buy buttons beside it (wide screens) or underneath (phones).
  * Closes on Close, Esc or a click outside. Sizes live in globals.css (.vgb-lb).
  */
-export default function BigArt({ src, title, label, color, onClose, extra, children, roomy }: Props) {
+export default function BigArt({ src, title, label, color, onClose, sharePath, extra, children, roomy }: Props) {
   // The art's own shape (width ÷ height), so the picture is never cropped
   const aspect = useAspect(src) ?? 1
 
@@ -58,6 +61,7 @@ export default function BigArt({ src, title, label, color, onClose, extra, child
             <p style={{ fontFamily: 'var(--font-playfair,"Playfair Display",Georgia,serif)', fontSize: 20, fontStyle: 'italic', fontWeight: 400, color: '#1a1014', lineHeight: 1.2 }}>
               {title}
             </p>
+            {sharePath && <ShareButton title={title} path={sharePath} />}
             {extra}
           </div>
           <div className="vgb-lb-buy">{children}</div>

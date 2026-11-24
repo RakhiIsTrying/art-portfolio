@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
+import AppBridge from '@/components/AppBridge'
 
 // The fonts live in app/fonts, so a build never has to fetch them from Google.
 // Each family comes in two files: everyday letters (loaded up front), and extra
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${interExtra.variable} ${playfair.variable} ${playfairExtra.variable}`}>
       <body style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
         {children}
+        <AppBridge />
       </body>
     </html>
   )

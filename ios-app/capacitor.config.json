@@ -1,0 +1,20 @@
+{
+  "appId": "xyz.faradaycage.vangonebroke",
+  "appName": "Van Gone Broke",
+  "webDir": "www",
+  "backgroundColor": "#faf8f5",
+  "appendUserAgent": "VanGoneBrokeApp/1.0",
+  "server": {
+    "url": "https://faradaycage.xyz",
+    "errorPath": "offline.html"
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "scheme": "Van Gone Broke"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "iconColor": "#4a3a7a"
+    }
+  }
+}

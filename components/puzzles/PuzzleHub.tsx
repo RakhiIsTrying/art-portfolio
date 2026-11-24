@@ -9,6 +9,7 @@ import Wend from './Wend'
 import Bee from './Bee'
 import Dig from './Dig'
 import Confetti from './Confetti'
+import PuzzleReminder from './PuzzleReminder'
 import { GameIcon } from './GameIcons'
 import { BEE_BEN, BeeCallout, INK, PLAYFAIR, ThemeContext, useDailyState, type Theme } from './shared'
 
@@ -134,6 +135,8 @@ export default function PuzzleHub({ daily, art, theme, dates, today }: HubProps)
           </a>
         )}
       </div>
+
+      <PuzzleReminder />
 
       {/* Game picker */}
       <div role="tablist" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6" style={{ gap: 1, background: '#d0d0d0', border: '1px solid #d0d0d0', marginBottom: 28 }}>

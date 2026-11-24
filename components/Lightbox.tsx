@@ -28,6 +28,7 @@ export default function Lightbox({ artwork, onClose }: Props) {
   return (
     <BigArt
       src={artwork.image_url} title={artwork.title} color={color} onClose={onClose}
+      sharePath={`/gallery/${artwork.collection_slug}?art=${artwork.id}`}
       label={<>
         {artwork.collection_slug}
         {artwork.medium ? ` · ${artwork.medium}` : ''}
